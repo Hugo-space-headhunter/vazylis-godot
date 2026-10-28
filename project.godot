@@ -1,0 +1,43 @@
+; Fichier de réglages du projet Godot.
+; La plupart de ces réglages se modifient aussi dans l'éditeur :
+; menu Projet → Paramètres du projet.
+
+config_version=5
+
+[application]
+
+config/name="Vazylis"
+config/description="Vazylis : Le Dernier Rempart — prototype"
+run/main_scene="res://scenes/scene_test.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Config="*res://scripts/autoload/config.gd"
+CatalogueAssets="*res://scripts/autoload/catalogue_assets.gd"
+
+[display]
+
+; Taille de référence carrée : l'interface garde la même taille en portrait et en paysage.
+window/size/viewport_width=720
+window/size/viewport_height=720
+; Taille de la fenêtre sur le PC.
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=6
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

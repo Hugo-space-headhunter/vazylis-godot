@@ -1,0 +1,7 @@
+# Les fichiers texte gardent des fins de ligne Unix (LF), comme Godot les écrit.
+* text=auto eol=lf
+
+# Fichiers binaires
+*.png binary
+*.glb binary
+*.zip binary

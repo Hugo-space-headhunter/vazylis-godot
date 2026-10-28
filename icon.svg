@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Icône provisoire de Vazylis : un rempart doré éclairé par la lumière de Vazylis. -->
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2a4a"/>
+      <stop offset="1" stop-color="#0b1222"/>
+    </linearGradient>
+    <radialGradient id="lumiere" cx="0.5" cy="0.36" r="0.42">
+      <stop offset="0" stop-color="#fff6d8" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffd77a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd77a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="or" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe7a3"/>
+      <stop offset="1" stop-color="#c8913a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#ciel)"/>
+  <circle cx="256" cy="186" r="210" fill="url(#lumiere)"/>
+  <!-- Étoile de Vazylis -->
+  <path d="M256 92 L268 160 L336 172 L268 184 L256 252 L244 184 L176 172 L244 160 Z" fill="#fffaf0"/>
+  <!-- Rempart : deux tours et un mur crénelé -->
+  <path fill="url(#or)" d="
+    M64 448 L64 268 L88 268 L88 292 L112 292 L112 268 L136 268 L136 292 L160 292 L160 268 L184 268
+    L184 336 L208 336 L208 312 L232 312 L232 336 L280 336 L280 312 L304 312 L304 336 L328 336
+    L328 268 L352 268 L352 292 L376 292 L376 268 L400 268 L400 292 L424 292 L424 268 L448 268 L448 448 Z"/>
+  <!-- Porte -->
+  <path d="M224 448 L224 396 A32 32 0 0 1 288 396 L288 448 Z" fill="#0b1222"/>
+  <!-- Fenêtres des tours -->
+  <rect x="114" y="330" width="20" height="36" rx="10" fill="#0b1222"/>
+  <rect x="378" y="330" width="20" height="36" rx="10" fill="#0b1222"/>
+</svg>

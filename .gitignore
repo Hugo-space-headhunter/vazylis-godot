@@ -1,0 +1,10 @@
+# Fichiers de travail de Godot : recréés automatiquement à l'ouverture du projet.
+.godot/
+
+# Résultat de l'export web : construit par GitHub Actions, pas besoin de le garder.
+build/
+
+# Fichiers temporaires
+*.tmp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/compteur_fps.gd" id="1_compteur"]
+
+[node name="CompteurFPS" type="CanvasLayer"]
+
+[node name="Marges" type="MarginContainer" parent="."]
+offset_right = 400.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 40
+
+[node name="Texte" type="Label" parent="Marges"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 30
+text = "… i/s"
+script = ExtResource("1_compteur")
