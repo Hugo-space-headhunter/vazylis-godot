@@ -1,6 +1,10 @@
-; Fichier de réglages du projet Godot.
-; La plupart de ces réglages se modifient aussi dans l'éditeur :
-; menu Projet → Paramètres du projet.
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -19,10 +23,8 @@ CatalogueAssets="*res://scripts/autoload/catalogue_assets.gd"
 
 [display]
 
-; Taille de référence carrée : l'interface garde la même taille en portrait et en paysage.
 window/size/viewport_width=720
 window/size/viewport_height=720
-; Taille de la fenêtre sur le PC.
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
