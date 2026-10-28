@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres"]
 
 var _fichiers := {}
 
@@ -68,6 +68,56 @@ func temps_cible_exposant() -> float:
 
 func monstres_par_minute() -> float:
 	return _nombre("progression", "farm", "monstres_par_minute", 0.0)
+
+
+## Réglages de l'XP gagnée (section [xp] de progression.cfg).
+func xp_base_par_niveau() -> float:
+	return _nombre("progression", "xp", "xp_base_par_niveau", 10.0)
+
+
+func bonus_xp_par_niveau_au_dessus() -> float:
+	return _nombre("progression", "xp", "bonus_par_niveau_au_dessus", 0.05)
+
+
+func bonus_xp_maximum() -> float:
+	return _nombre("progression", "xp", "bonus_maximum", 0.5)
+
+
+func malus_xp_par_niveau_en_dessous() -> float:
+	return _nombre("progression", "xp", "malus_par_niveau_en_dessous", 0.1)
+
+
+func coefficient_xp_minimum() -> float:
+	return _nombre("progression", "xp", "coefficient_minimum", 0.05)
+
+
+# --- Combat ---
+
+## Valeur numérique de combat.cfg, par exemple combat("critique", "chance").
+func combat(section: String, cle: String) -> float:
+	return _nombre("combat", section, cle, 0.0)
+
+
+func rarete_arme_depart() -> String:
+	return str(_valeur("combat", "arme_depart", "rarete", "standard"))
+
+
+# --- Monstres ---
+
+func ids_monstres() -> PackedStringArray:
+	return _fichier("monstres").get_sections()
+
+
+## Toutes les valeurs d'un monstre de monstres.cfg (nom, modele, niveau_min…).
+func monstre(id: String) -> Dictionary:
+	var config := _fichier("monstres")
+	var valeurs := {}
+	if not config.has_section(id):
+		push_error("Config : monstre inconnu « %s »." % id)
+		return valeurs
+	for cle in config.get_section_keys(id):
+		valeurs[cle] = config.get_value(id, cle)
+	return valeurs
 
 
 # --- Personnage ---

@@ -12,6 +12,10 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | --- | --- | --- | --- |
 | `character.heros_homme` | `assets/models/character/heros_homme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
 | `character.heros_femme` | `assets/models/character/heros_femme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
+| `monster.cochonnet_suie` | `assets/models/monster/cochonnet_suie/` | Quaternius, Ultimate Monsters (« Dog »), https://quaternius.com — teinté et réduit dans le catalogue | CC0 |
+| `monster.corbac` | `assets/models/monster/corbac/` | Quaternius, Ultimate Monsters (« Pigeon ») — teinté et réduit dans le catalogue | CC0 |
+| `monster.pomelin` | `assets/models/monster/pomelin/` | Quaternius, Ultimate Monsters (« GreenBlob ») — teinté et réduit dans le catalogue | CC0 |
+| `weapon.epee_depart` | `assets/models/weapon/epee_depart/` | Polyy, 3D Fantasy Weapons Pack, version « low » (« Knight's Longsword »), https://polyy.ai — accord de Hugo le 29/10/2026 | CC0, aucun crédit exigé |
 | `prop.cristal_test` | `assets/models/prop/cristal_test/cristal_test.glb` | Modèle provisoire généré par code (`tools/generer_cristal_test.gd`) | Original, propre au projet |
 | `prop.exemple_manquant` | aucun (volontairement absent) | Modèle provisoire automatique (boîte rose) | Original, propre au projet |
 

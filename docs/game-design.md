@@ -144,6 +144,8 @@ Toutes les valeurs sont dans le fichier de configuration et se règlent en jouan
 
 Un monstre plus haut que le joueur de plus de 5 niveaux frappe 5 % plus fort par niveau d'écart.
 
+**Comment le calibrage se traduit en chiffres (décidé à l'étape 2)** : la vie d'un monstre vaut les dégâts par seconde d'un joueur de son niveau (sans points de statistiques, avec une arme standard de son niveau) multipliés par le temps visé pour le tuer (10 secondes). Ses dégâts par seconde valent les points de vie d'un joueur de son niveau divisés par le temps visé pour tuer le joueur (60 secondes). Les monstres passifs frappent 2 fois moins fort. Ces valeurs sont dans le fichier de configuration.
+
 ## Combat et modes de jeu
 
 Le combat est en attaque automatique, comme dans Levelup RPG : au contact d'un monstre, le personnage frappe seul. Les compétences actives avec temps de recharge et la magie viendront après le prototype.
@@ -201,7 +203,7 @@ Le niveau du personnage est infini. La difficulté monte progressivement : chaqu
 - **XP gagnée** = XP de base du monstre × coefficient d'écart de niveau :
   - monstre plus fort : environ +5 % par niveau d'écart, plafonné vers +50 % ;
   - même niveau : XP normale ;
-  - monstre plus faible : environ −10 % par niveau d'écart, avec un minimum symbolique.
+  - monstre plus faible : environ −10 % par niveau d'écart, avec un minimum symbolique de 5 % de l'XP normale.
 - **Exemple** : un monstre niveau 30 rapporte un peu plus que la normale à un personnage niveau 28, et presque rien à un personnage niveau 50.
 
 ### Rythme cible et courbe d'XP
@@ -222,6 +224,7 @@ Soit environ 2 minutes au niveau 1, 5 minutes au niveau 20, 20 minutes au niveau
 | Fin de la zone 4 | 160 | 50 h | 17 |
 | Fin de la zone 5 | 200 | 80 h | 27 (environ 4 semaines) |
 
+- **XP de base d'un monstre de niveau L** = 10 × L (10 XP au niveau 1, 100 XP au niveau 10).
 - **XP requise pour un niveau** = temps cible × monstres tués par minute (environ 6, soit un toutes les 10 secondes) × XP de base d'un monstre de ce niveau.
 - **Donjons** : ils rapportent plus d'XP par minute que le farm en zone, pour récompenser le risque.
 - **Au-delà de 200** : la même formule continue, sans plafond.
@@ -378,7 +381,7 @@ Chaque zone compte 12 monstres et 4 sous-boss, répartis dans ses sous-zones. Le
 
 | Type | Où | Réapparition | Ce qu'il lâche |
 | --- | --- | --- | --- |
-| Monstre | Sous-zones | Rapide, quelques secondes (à régler) | Items, minerais, bois, peaux |
+| Monstre | Sous-zones | Rapide, environ 8 secondes (à régler) | Items, minerais, bois, peaux |
 | Sous-boss | Sous-zones, en monde ouvert | Environ 5 minutes | Items jusqu'à épique, ressources de familier |
 | Boss de donjon de zone | Fin du donjon de chaque zone | À chaque passage du donjon | Items jusqu'à mythique, pierres précieuses |
 | Boss de la Tour | Donjon mythique | À chaque passage | Items jusqu'à transcendant, pierres précieuses |

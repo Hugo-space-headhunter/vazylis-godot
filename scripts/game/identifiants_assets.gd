@@ -11,6 +11,14 @@ extends RefCounted
 const HEROS_HOMME := "character.heros_homme"
 const HEROS_FEMME := "character.heros_femme"
 
+## Monstres des Prés de Vazylis (voir aussi config/monstres.cfg).
+const COCHONNET_SUIE := "monster.cochonnet_suie"
+const CORBAC := "monster.corbac"
+const POMELIN := "monster.pomelin"
+
+## Arme de départ provisoire (épée et bouclier, sans modèle de bouclier pour l'instant).
+const EPEE_DEPART := "weapon.epee_depart"
+
 ## Objet de démonstration de l'étape 0 : un cristal qui tourne.
 const CRISTAL_TEST := "prop.cristal_test"
 

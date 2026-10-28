@@ -15,6 +15,7 @@ const ANIMATIONS_STANDARD: PackedStringArray = ["idle", "walk", "run", "attack",
 const COULEUR_REPLI_PAR_DEFAUT := Color(1.0, 0.35, 0.6)
 
 var _catalogue := ConfigFile.new()
+var _matieres_teintees := {}
 
 
 func _init() -> void:
@@ -68,9 +69,30 @@ func creer(id: String) -> ModeleAsset:
 		modele.scale = Vector3.ONE * float(reglage(id, "echelle", 1.0))
 		modele.rotation_degrees = reglage(id, "rotation_degres", Vector3.ZERO)
 		modele.position = reglage(id, "decalage", Vector3.ZERO)
+		_appliquer_teinte(id, modele)
 	conteneur.configurer(id, modele, provisoire, reglage(id, "animations", {}),
-		points_attache(id), _charger_bibliotheque(id))
+		points_attache(id), _charger_bibliotheque(id), reglage(id, "placements", {}))
 	return conteneur
+
+
+## Multiplie la couleur de toutes les matières du modèle (réglage « teinte »).
+## Les matières teintées sont partagées entre tous les exemplaires d'un même identifiant.
+func _appliquer_teinte(id: String, modele: Node3D) -> void:
+	var teinte: Color = reglage(id, "teinte", Color.WHITE)
+	if teinte == Color.WHITE:
+		return
+	var cache: Dictionary = _matieres_teintees.get_or_add(id, {})
+	for noeud in modele.find_children("*", "MeshInstance3D", true, false):
+		var instance := noeud as MeshInstance3D
+		for surface in instance.get_surface_override_material_count():
+			var origine := instance.get_active_material(surface) as BaseMaterial3D
+			if origine == null:
+				continue
+			if not cache.has(origine):
+				var copie := origine.duplicate() as BaseMaterial3D
+				copie.albedo_color *= teinte
+				cache[origine] = copie
+			instance.set_surface_override_material(surface, cache[origine])
 
 
 ## Bibliothèque d'animations partagée (réglage « bibliotheque_animations »), ou null.

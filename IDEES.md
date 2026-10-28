@@ -15,3 +15,11 @@ Les idées et améliorations hors de l'étape en cours sont notées ici, au lieu
 - Écran de création du personnage (homme ou femme, prénom) : remplacera le bouton provisoire Homme/Femme.
 - Caméra : en portrait, le personnage paraît petit ; envisager une caméra un peu plus proche en portrait. Empêcher la caméra de passer derrière les obstacles.
 - Bibliothèque d'animations : le jeu en garde 43 alors qu'il en utilise 6 ; ne garder que les utiles pour alléger le téléchargement.
+
+## Combat
+
+- Bouclier : l'arme de départ est « épée et bouclier », mais aucun modèle de bouclier n'est encore affiché (main gauche). Ses effets (10 % de blocage, défense) arrivent avec les affinités d'armes (étape 3).
+- Cochonnet de suie : pas de vrai cochon en CC0 chez Quaternius ; le modèle « Dog » teinté sert en attendant. Les yeux rouges demanderaient de retoucher la texture.
+- Épée : légèrement trop en avant pendant la marche avec l'arme sortie ; à affiner dans `placements` du catalogue si besoin.
+- Plusieurs monstres d'une même zone peuvent se chevaucher ; les écarter un peu les uns des autres.
+- Les étiquettes « nom niv. X » de tous les monstres sont toujours visibles ; ne les montrer que pour les monstres proches si l'écran devient chargé.

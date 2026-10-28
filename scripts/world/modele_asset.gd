@@ -13,20 +13,26 @@ var provisoire := false
 
 const NOM_BIBLIOTHEQUE := "catalogue"
 
+var _modele: Node3D
 var _lecteur: AnimationPlayer
 var _animations := {}
 var _points_attache := {}
+var _placements := {}
+var _transformation_de_base := Transform3D.IDENTITY
 var _attaches := {}
 var _animation_en_cours := ""
 
 
 func configurer(id: String, modele: Node3D, est_provisoire: bool, animations: Dictionary,
-		points_attache: Dictionary, bibliotheque: AnimationLibrary) -> void:
+		points_attache: Dictionary, bibliotheque: AnimationLibrary, placements: Dictionary = {}) -> void:
 	asset_id = id
 	provisoire = est_provisoire
 	name = id.replace(".", "_")
+	_modele = modele
 	_animations = animations
 	_points_attache = points_attache
+	_placements = placements
+	_transformation_de_base = modele.transform
 	add_child(modele)
 	if est_provisoire:
 		return
@@ -47,16 +53,24 @@ func a_animation(animation_standard: String) -> bool:
 
 
 ## Joue une animation standard en fondu. Sans effet si le modèle ne l'a pas.
-func jouer(animation_standard: String, fondu: float = 0.2, en_boucle: bool = true) -> void:
-	if animation_standard == _animation_en_cours:
+## « forcer » la relance même si elle est déjà en cours (pour enchaîner deux attaques).
+func jouer(animation_standard: String, fondu: float = 0.2, en_boucle: bool = true, forcer: bool = false) -> void:
+	if animation_standard == _animation_en_cours and not forcer:
 		return
 	var nom := _vrai_nom(animation_standard)
 	if nom.is_empty():
 		return
 	_animation_en_cours = animation_standard
-	if en_boucle:
-		_lecteur.get_animation(nom).loop_mode = Animation.LOOP_LINEAR
+	_lecteur.get_animation(nom).loop_mode = Animation.LOOP_LINEAR if en_boucle else Animation.LOOP_NONE
+	if forcer and _lecteur.current_animation == nom:
+		_lecteur.seek(0.0, true)
 	_lecteur.play(nom, fondu)
+
+
+## Durée d'une animation standard en secondes (0 si absente).
+func duree(animation_standard: String) -> float:
+	var nom := _vrai_nom(animation_standard)
+	return _lecteur.get_animation(nom).length if not nom.is_empty() else 0.0
 
 
 ## Animation standard en cours (« idle », « walk »…), ou "" si aucune.
@@ -86,6 +100,25 @@ func point_attache(nom: String) -> Node3D:
 	squelette.add_child(attache)
 	_attaches[nom] = attache
 	return attache
+
+
+## Pour un objet porté (arme…) : accroche l'objet au point d'attache d'un porteur,
+## avec la position prévue par le catalogue pour ce point (réglage « placements »).
+func accrocher_a(porteur: ModeleAsset, point: String) -> void:
+	var attache := porteur.point_attache(point)
+	if get_parent() != attache:
+		if get_parent() != null:
+			get_parent().remove_child(self)
+		attache.add_child(self)
+	if provisoire:
+		return
+	var placement: Dictionary = _placements.get(point, {})
+	if placement.is_empty():
+		_modele.transform = _transformation_de_base
+	else:
+		_modele.rotation_degrees = placement.get("rotation_degres", Vector3.ZERO)
+		_modele.position = placement.get("decalage", Vector3.ZERO)
+		_modele.scale = _transformation_de_base.basis.get_scale()
 
 
 func _vrai_nom(animation_standard: String) -> String:
