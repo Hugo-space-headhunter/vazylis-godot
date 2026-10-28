@@ -6,70 +6,136 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes"]
 
-var _raretes := ConfigFile.new()
-var _amelioration := ConfigFile.new()
-var _progression := ConfigFile.new()
+var _fichiers := {}
 
 
 ## Lit tous les fichiers de configuration du dossier indiqué.
 static func charger(dossier: String = DOSSIER_PAR_DEFAUT) -> ConfigJeu:
 	var config := ConfigJeu.new()
-	config._raretes = _lire(dossier.path_join("raretes.cfg"))
-	config._amelioration = _lire(dossier.path_join("amelioration.cfg"))
-	config._progression = _lire(dossier.path_join("progression.cfg"))
+	for nom in FICHIERS:
+		config._fichiers[nom] = _lire(dossier.path_join(nom + ".cfg"))
 	return config
 
 
 # --- Raretés ---
 
 func ids_raretes() -> PackedStringArray:
-	return PackedStringArray(_raretes.get_value("raretes", "ordre", []))
+	return PackedStringArray(_fichier("raretes").get_value("raretes", "ordre", []))
 
 
 func a_rarete(id: String) -> bool:
-	return id in ids_raretes() and _raretes.has_section(id)
+	return id in ids_raretes() and _fichier("raretes").has_section(id)
 
 
 func nom_rarete(id: String) -> String:
-	return str(_valeur(_raretes, id, "nom", id))
+	return str(_valeur("raretes", id, "nom", id))
 
 
 func multiplicateur_rarete(id: String) -> float:
-	return float(_valeur(_raretes, id, "multiplicateur", 1.0))
+	return _nombre("raretes", id, "multiplicateur", 1.0)
 
 
 func bonus_pourcent_rarete(id: String) -> int:
-	return int(_valeur(_raretes, id, "bonus_pourcent", 0))
+	return int(_valeur("raretes", id, "bonus_pourcent", 0))
 
 
 # --- Amélioration ---
 
 func palier_max_amelioration() -> int:
-	return int(_valeur(_amelioration, "amelioration", "palier_max", 10))
+	return int(_valeur("amelioration", "amelioration", "palier_max", 10))
 
 
 ## Chance (0 à 1) de réussir l'amélioration vers le palier indiqué (+1 à +10).
 func taux_reussite_amelioration(palier: int) -> float:
-	return float(_valeur(_amelioration, "reussite", "plus_%d" % palier, 0.0))
+	return _nombre("amelioration", "reussite", "plus_%d" % palier, 0.0)
 
 
 # --- Progression ---
 
 func temps_cible_base() -> float:
-	return float(_valeur(_progression, "temps_cible", "base_minutes", 0.0))
+	return _nombre("progression", "temps_cible", "base_minutes", 0.0)
 
 
 func temps_cible_coefficient() -> float:
-	return float(_valeur(_progression, "temps_cible", "coefficient", 0.0))
+	return _nombre("progression", "temps_cible", "coefficient", 0.0)
 
 
 func temps_cible_exposant() -> float:
-	return float(_valeur(_progression, "temps_cible", "exposant", 1.0))
+	return _nombre("progression", "temps_cible", "exposant", 1.0)
 
 
 func monstres_par_minute() -> float:
-	return float(_valeur(_progression, "farm", "monstres_par_minute", 0.0))
+	return _nombre("progression", "farm", "monstres_par_minute", 0.0)
+
+
+# --- Personnage ---
+
+func vitesse_marche() -> float:
+	return _nombre("personnage", "deplacement", "vitesse_marche", 1.8)
+
+
+func vitesse_course() -> float:
+	return _nombre("personnage", "deplacement", "vitesse_course", 4.5)
+
+
+func acceleration() -> float:
+	return _nombre("personnage", "deplacement", "acceleration", 18.0)
+
+
+func lissage_rotation() -> float:
+	return _nombre("personnage", "deplacement", "lissage_rotation", 12.0)
+
+
+func vitesse_reference_marche() -> float:
+	return _nombre("personnage", "animation", "vitesse_reference_marche", 1.8)
+
+
+func vitesse_reference_course() -> float:
+	return _nombre("personnage", "animation", "vitesse_reference_course", 4.5)
+
+
+func fondu_animation() -> float:
+	return _nombre("personnage", "animation", "fondu", 0.2)
+
+
+# --- Commandes ---
+
+func rayon_joystick() -> float:
+	return _nombre("commandes", "joystick", "rayon", 110.0)
+
+
+func zone_morte_joystick() -> float:
+	return _nombre("commandes", "joystick", "zone_morte", 0.15)
+
+
+func seuil_course_joystick() -> float:
+	return _nombre("commandes", "joystick", "seuil_course", 0.65)
+
+
+func distance_camera() -> float:
+	return _nombre("commandes", "camera", "distance", 6.5)
+
+
+func inclinaison_camera_degres() -> float:
+	return _nombre("commandes", "camera", "inclinaison_degres", 38.0)
+
+
+func hauteur_visee_camera() -> float:
+	return _nombre("commandes", "camera", "hauteur_visee", 1.1)
+
+
+func champ_vision_camera() -> float:
+	return _nombre("commandes", "camera", "champ_vision", 55.0)
+
+
+func lissage_suivi_camera() -> float:
+	return _nombre("commandes", "camera", "lissage_suivi", 8.0)
+
+
+func sensibilite_rotation_camera() -> float:
+	return _nombre("commandes", "camera", "sensibilite_rotation", 0.35)
 
 
 # --- Outils internes ---
@@ -82,8 +148,17 @@ static func _lire(chemin: String) -> ConfigFile:
 	return fichier
 
 
-static func _valeur(fichier: ConfigFile, section: String, cle: String, defaut: Variant) -> Variant:
-	if not fichier.has_section_key(section, cle):
-		push_error("Config : valeur manquante [%s] %s, valeur par défaut utilisée." % [section, cle])
+func _fichier(nom: String) -> ConfigFile:
+	return _fichiers.get(nom, ConfigFile.new())
+
+
+func _nombre(fichier: String, section: String, cle: String, defaut: float) -> float:
+	return float(_valeur(fichier, section, cle, defaut))
+
+
+func _valeur(fichier: String, section: String, cle: String, defaut: Variant) -> Variant:
+	var config := _fichier(fichier)
+	if not config.has_section_key(section, cle):
+		push_error("Config : valeur manquante dans %s.cfg [%s] %s, valeur par défaut utilisée." % [fichier, section, cle])
 		return defaut
-	return fichier.get_value(section, cle)
+	return config.get_value(section, cle)

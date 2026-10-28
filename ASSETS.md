@@ -10,8 +10,20 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 
 | Identifiant | Fichier | Source | Licence |
 | --- | --- | --- | --- |
+| `character.heros_homme` | `assets/models/character/heros_homme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
+| `character.heros_femme` | `assets/models/character/heros_femme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
 | `prop.cristal_test` | `assets/models/prop/cristal_test/cristal_test.glb` | Modèle provisoire généré par code (`tools/generer_cristal_test.gd`) | Original, propre au projet |
 | `prop.exemple_manquant` | aucun (volontairement absent) | Modèle provisoire automatique (boîte rose) | Original, propre au projet |
+
+## Animations
+
+| Nom | Fichier | Source | Licence |
+| --- | --- | --- | --- |
+| Universal Animation Library (version gratuite, 43 animations) | `assets/models/animation/bibliotheque_ual1/bibliotheque_ual1.glb` | Quaternius, https://quaternius.com — même squelette que les personnages de base | CC0 |
+
+## Décor du terrain de test
+
+Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn`), provisoires, propres au projet.
 
 ## Images
 

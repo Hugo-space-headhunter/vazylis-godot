@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/joueur.gd" id="1_joueur"]
+
+[sub_resource type="CapsuleShape3D" id="Forme_corps"]
+radius = 0.3
+height = 1.8
+
+[node name="Joueur" type="CharacterBody3D"]
+floor_snap_length = 0.3
+script = ExtResource("1_joueur")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Forme_corps")

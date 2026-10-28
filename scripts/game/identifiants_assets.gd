@@ -7,6 +7,10 @@ extends RefCounted
 ## Un test vérifie que chaque constante de ce fichier existe dans le catalogue :
 ## toute nouvelle constante doit donc avoir sa section dans le catalogue.
 
+## Personnages de base (même squelette, mêmes animations, même équipement).
+const HEROS_HOMME := "character.heros_homme"
+const HEROS_FEMME := "character.heros_femme"
+
 ## Objet de démonstration de l'étape 0 : un cristal qui tourne.
 const CRISTAL_TEST := "prop.cristal_test"
 

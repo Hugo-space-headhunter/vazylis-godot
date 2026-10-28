@@ -52,29 +52,38 @@ func points_attache(id: String) -> Dictionary:
 
 
 ## Crée le modèle 3D correspondant à l'identifiant, prêt à être ajouté à la scène.
-## Renvoie toujours un nœud : le vrai modèle, ou un modèle provisoire en cas de problème.
-func creer(id: String) -> Node3D:
-	var conteneur := Node3D.new()
-	conteneur.name = id.replace(".", "_")
-	conteneur.set_meta("asset_id", id)
-
+## Renvoie toujours un modèle : le vrai, ou un modèle provisoire en cas de problème.
+func creer(id: String) -> ModeleAsset:
+	var conteneur := ModeleAsset.new()
 	if not contient(id):
 		push_error("Catalogue : identifiant inconnu « %s », modèle provisoire affiché." % id)
-		conteneur.add_child(_modele_provisoire(id))
-		conteneur.set_meta("provisoire", true)
+		conteneur.configurer(id, _modele_provisoire(id), true, {}, {}, null)
 		return conteneur
 
 	var modele := _charger_modele(id)
-	if modele == null:
+	var provisoire := modele == null
+	if provisoire:
 		modele = _modele_provisoire(id)
-		conteneur.set_meta("provisoire", true)
 	else:
 		modele.scale = Vector3.ONE * float(reglage(id, "echelle", 1.0))
 		modele.rotation_degrees = reglage(id, "rotation_degres", Vector3.ZERO)
 		modele.position = reglage(id, "decalage", Vector3.ZERO)
-		conteneur.set_meta("provisoire", false)
-	conteneur.add_child(modele)
+	conteneur.configurer(id, modele, provisoire, reglage(id, "animations", {}),
+		points_attache(id), _charger_bibliotheque(id))
 	return conteneur
+
+
+## Bibliothèque d'animations partagée (réglage « bibliotheque_animations »), ou null.
+func _charger_bibliotheque(id: String) -> AnimationLibrary:
+	var chemin := str(reglage(id, "bibliotheque_animations", ""))
+	if chemin.is_empty():
+		return null
+	if ResourceLoader.exists(chemin):
+		var bibliotheque := load(chemin)
+		if bibliotheque is AnimationLibrary:
+			return bibliotheque
+	push_warning("Catalogue : bibliothèque d'animations introuvable pour « %s » (%s)." % [id, chemin])
+	return null
 
 
 func _charger_modele(id: String) -> Node3D:

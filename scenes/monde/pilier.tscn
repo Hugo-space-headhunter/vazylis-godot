@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="Materiau_ruine"]
+albedo_color = Color(0.68, 0.64, 0.58, 1)
+roughness = 1.0
+
+[sub_resource type="CylinderMesh" id="Maillage_pilier"]
+material = SubResource("Materiau_ruine")
+top_radius = 0.38
+bottom_radius = 0.45
+height = 3.0
+radial_segments = 6
+rings = 1
+
+[sub_resource type="BoxMesh" id="Maillage_socle"]
+material = SubResource("Materiau_ruine")
+size = Vector3(1.2, 0.3, 1.2)
+
+[sub_resource type="CylinderShape3D" id="Forme_pilier"]
+height = 3.0
+radius = 0.5
+
+[node name="Pilier" type="StaticBody3D"]
+
+[node name="Socle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("Maillage_socle")
+
+[node name="Fut" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+mesh = SubResource("Maillage_pilier")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("Forme_pilier")
