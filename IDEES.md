@@ -2,6 +2,13 @@
 
 Les idées et améliorations hors de l'étape en cours sont notées ici, au lieu d'être codées tout de suite.
 
+## Finition visuelle (à traiter plus tard, dans une passe dédiée)
+
+Décision de Hugo (29/10/2026) : les défauts de design, d'animation et de position par rapport au corps ne bloquent pas les étapes. On les note ici et on les corrige tous ensemble plus tard.
+
+- Armes mal tenues : la prise de toutes les armes est à revoir (épée et hache à deux mains, arc, dagues, épée et bouclier), en main, au repos et dans le dos.
+- Animations d'attaque propres à chaque type d'arme (voir aussi « Armes et statistiques » plus bas).
+
 ## Technique
 
 - Netteté et performances sur iPhone : l'écran de l'iPhone affiche 3 pixels par point. Si les images par seconde baissent avec les vraies scènes, réduire la résolution de rendu 3D (réglage « Échelle 3D »).
