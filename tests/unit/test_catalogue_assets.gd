@@ -74,3 +74,14 @@ func test_chaque_fichier_du_catalogue_se_charge() -> void:
 		var modele := CatalogueAssets.creer(id)
 		assert_false(modele.provisoire, "Le fichier de « %s » ne se charge pas" % id)
 		modele.free()
+
+
+func test_chaque_decor_des_zones_est_dans_le_catalogue() -> void:
+	for chemin in ["res://scenes/zones/vazylis.tscn", "res://scenes/zones/pres_de_vazylis.tscn"]:
+		var zone: Node = load(chemin).instantiate()
+		var decors := zone.find_children("*", "Node3D", true, false).filter(func(n: Node) -> bool: return n is Decor)
+		if chemin.ends_with("vazylis.tscn") and not chemin.contains("pres"):
+			assert_gt(decors.size(), 30, "Vazylis a son rempart et son village")
+		for decor: Decor in decors:
+			assert_true(CatalogueAssets.contient(decor.id_asset), "%s : « %s » manque dans le catalogue" % [chemin, decor.id_asset])
+		zone.free()

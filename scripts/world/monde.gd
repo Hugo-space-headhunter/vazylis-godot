@@ -1,5 +1,6 @@
 extends Node3D
-## Terrain de test : relie les commandes tactiles, le personnage, la caméra et l'interface.
+## Le monde : Vazylis au centre et les zones autour. Relie les commandes tactiles, le personnage,
+## la caméra et l'interface, et annonce le nom de la zone où l'on entre.
 
 const NOMS := {
 	IdentifiantsAssets.HEROS_HOMME: "Vazylien",
@@ -19,6 +20,11 @@ const NOMS := {
 @onready var _fenetre_sac: PanelContainer = $Interface/FenetreSac
 @onready var _vignettes: Vignettes = $Interface/Vignettes
 @onready var _annonces: VBoxContainer = $Interface/Annonces
+@onready var _bouton_afk: Button = $Interface/BoutonAFK
+@onready var _zones: Node3D = $Zones
+
+var _zone_actuelle: Zone
+var _verification_zone := 0.0
 
 
 func _ready() -> void:
@@ -50,7 +56,14 @@ func _ready() -> void:
 		_annonces.annoncer("Une sauvegarde en ligne plus récente existe : relance l'app pour la reprendre.",
 			Color(1, 0.7, 0.4)))
 	_bandeau.afficher_sauvegarde(Sauvegarde.etat)
-	$Reperes/Cristal.add_child(CatalogueAssets.creer(IdentifiantsAssets.CRISTAL_TEST))
+	$Zones/Vazylis/Cristal.add_child(CatalogueAssets.creer(IdentifiantsAssets.CRISTAL_TEST))
+	_joueur.definir_point_de_retour(($Zones/Vazylis/PointDeRetour as Node3D).global_position)
+	_bouton_afk.add_to_group(CommandesTactiles.GROUPE_UI)
+	_bouton_afk.toggled.connect(_joueur.activer_afk)
+	_joueur.afk_change.connect(_bouton_afk.set_pressed_no_signal)
+	_joueur.afk_change.connect(func(actif: bool) -> void:
+		_bouton_afk.modulate = _boutons_mode.COULEUR_ACTIF if actif else Color(1, 1, 1, 0.75))
+	_bouton_afk.modulate = Color(1, 1, 1, 0.75)
 	_reprendre_la_partie()
 
 
@@ -86,9 +99,29 @@ func _nouvelle_partie() -> void:
 	get_tree().reload_current_scene()
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	_joueur.joystick = _commandes.direction
 	_joueur.angle_camera = _camera.angle()
+	_verification_zone -= delta
+	if _verification_zone <= 0.0:
+		_verification_zone = 0.5
+		_surveiller_la_zone()
+
+
+## Annonce le nom de la zone quand on en change (la première zone qui contient le joueur gagne :
+## Vazylis passe avant les Prés qui l'entourent).
+func _surveiller_la_zone() -> void:
+	for enfant in _zones.get_children():
+		var zone := enfant as Zone
+		if zone != null and zone.contient(_joueur.global_position):
+			if zone != _zone_actuelle:
+				_zone_actuelle = zone
+				_annonces.annoncer(zone.titre(), Color(0.95, 0.92, 0.8))
+			return
+
+
+func zone_actuelle() -> Zone:
+	return _zone_actuelle
 
 
 func _changer_personnage(id: String) -> void:

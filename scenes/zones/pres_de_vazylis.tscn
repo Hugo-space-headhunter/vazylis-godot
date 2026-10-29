@@ -1,0 +1,172 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
+[ext_resource type="Script" path="res://scripts/world/zone_apparition.gd" id="2_r"]
+[ext_resource type="PackedScene" path="res://scenes/monde/rocher.tscn" id="3_r"]
+[ext_resource type="PackedScene" path="res://scenes/monde/pilier.tscn" id="4_r"]
+
+[sub_resource type="StandardMaterial3D" id="Materiau_herbe"]
+albedo_color = Color(0.4, 0.6, 0.32, 1)
+roughness = 1.0
+
+[sub_resource type="PlaneMesh" id="Maillage_sol"]
+material = SubResource("Materiau_herbe")
+size = Vector2(100, 100)
+
+[sub_resource type="BoxShape3D" id="Forme_sol"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxShape3D" id="Forme_bordure_x"]
+size = Vector3(100, 6, 1)
+
+[sub_resource type="BoxShape3D" id="Forme_bordure_z"]
+size = Vector3(1, 6, 100)
+
+[node name="PresDeVazylis" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)
+script = ExtResource("1_r")
+nom = "Les Prés de Vazylis"
+niveaux = "1–10"
+taille = Vector2(100, 100)
+
+[node name="Sol" type="StaticBody3D" parent="."]
+
+[node name="Maillage" type="MeshInstance3D" parent="Sol"]
+mesh = SubResource("Maillage_sol")
+
+[node name="Collision" type="CollisionShape3D" parent="Sol"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("Forme_sol")
+
+[node name="Bordures" type="StaticBody3D" parent="."]
+
+[node name="Nord" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -50.5)
+shape = SubResource("Forme_bordure_x")
+
+[node name="Sud" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 50.5)
+shape = SubResource("Forme_bordure_x")
+
+[node name="Ouest" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5, 3, 0)
+shape = SubResource("Forme_bordure_z")
+
+[node name="Est" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.5, 3, 0)
+shape = SubResource("Forme_bordure_z")
+
+[node name="Monstres" type="Node3D" parent="."]
+
+[node name="Cochonnets" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 7)
+script = ExtResource("2_r")
+monstre_id = "monstre.cochonnet_suie"
+nombre = 5
+rayon = 4.0
+
+[node name="CochonnetsSud" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 35)
+script = ExtResource("2_r")
+monstre_id = "monstre.cochonnet_suie"
+nombre = 4
+rayon = 4.0
+
+[node name="Corbacs" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -4)
+script = ExtResource("2_r")
+monstre_id = "monstre.corbac"
+nombre = 4
+rayon = 4.0
+
+[node name="CorbacsOuest" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -5)
+script = ExtResource("2_r")
+monstre_id = "monstre.corbac"
+nombre = 3
+rayon = 3.5
+
+[node name="Pomelins" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -17)
+script = ExtResource("2_r")
+monstre_id = "monstre.pomelin"
+nombre = 4
+rayon = 3.5
+
+[node name="PomelinRoyal" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -33)
+script = ExtResource("2_r")
+monstre_id = "monstre.pomelin_royal"
+nombre = 1
+rayon = 1.5
+
+[node name="Reperes" type="Node3D" parent="."]
+
+[node name="Rocher1" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-1.3002, 0, 0.0471, 0, 1.3010, 0, -0.0471, 0, -1.3002, 4.000, 0.000, 9.000)
+
+[node name="Rocher2" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(0.3965, 0, -1.0138, 0, 1.0886, 0, 1.0138, 0, 0.3965, -15.000, 0.000, 15.000)
+
+[node name="Rocher3" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.6128, 0, 1.2853, 0, 1.4239, 0, -1.2853, 0, -0.6128, 18.000, 0.000, 19.000)
+
+[node name="Rocher4" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-1.1190, 0, 0.0993, 0, 1.1234, 0, -0.0993, 0, -1.1190, -22.000, 0.000, 31.000)
+
+[node name="Rocher5" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.9083, 0, 0.6148, 0, 1.0968, 0, -0.6148, 0, -0.9083, 22.000, 0.000, 5.000)
+
+[node name="Rocher6" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(0.6781, 0, 1.1888, 0, 1.3686, 0, -1.1888, 0, 0.6781, -12.000, 0.000, -1.000)
+
+[node name="Rocher7" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(1.1128, 0, -0.8820, 0, 1.4199, 0, 0.8820, 0, 1.1128, 2.000, 0.000, -8.000)
+
+[node name="Rocher8" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.7328, 0, -0.8255, 0, 1.1038, 0, 0.8255, 0, -0.7328, -26.000, 0.000, -15.000)
+
+[node name="Rocher9" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.8493, 0, 0.3783, 0, 0.9298, 0, -0.3783, 0, -0.8493, 20.000, 0.000, -15.000)
+
+[node name="Rocher10" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.1446, 0, -1.0570, 0, 1.0668, 0, 1.0570, 0, -0.1446, -14.000, 0.000, -27.000)
+
+[node name="Rocher11" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.4350, 0, 1.6255, 0, 1.6827, 0, -1.6255, 0, -0.4350, 24.000, 0.000, -31.000)
+
+[node name="Rocher12" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.9021, 0, 1.4182, 0, 1.6809, 0, -1.4182, 0, -0.9021, 0.000, 0.000, -41.000)
+
+[node name="Rocher13" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-1.0975, 0, -1.0004, 0, 1.4850, 0, 1.0004, 0, -1.0975, -30.000, 0.000, 7.000)
+
+[node name="Rocher14" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.6679, 0, -0.6907, 0, 0.9608, 0, 0.6907, 0, -0.6679, 30.000, 0.000, 29.000)
+
+[node name="Rocher15" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.2409, 0, -1.0044, 0, 1.0329, 0, 1.0044, 0, -0.2409, -6.000, 0.000, 45.000)
+
+[node name="Rocher16" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(-0.7668, 0, 0.5037, 0, 0.9174, 0, -0.5037, 0, -0.7668, 26.000, 0.000, 47.000)
+
+[node name="Rocher17" parent="Reperes" instance=ExtResource("3_r")]
+transform = Transform3D(1.0555, 0, 0.4057, 0, 1.1308, 0, -0.4057, 0, 1.0555, -24.000, 0.000, 49.000)
+
+[node name="Pilier1" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.8842, 0, -0.4670, 0, 1.0000, 0, 0.4670, 0, 0.8842, 3.000, 0.000, -28.000)
+
+[node name="Pilier2" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.9934, 0, -0.1145, 0, 1.0000, 0, 0.1145, 0, 0.9934, 13.000, 0.000, -28.000)
+
+[node name="Pilier3" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.9393, 0, 0.3430, 0, 1.0000, 0, -0.3430, 0, 0.9393, 2.000, 0.000, -37.000)
+
+[node name="Pilier4" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.8783, 0, 0.4781, 0, 1.0000, 0, -0.4781, 0, 0.8783, 14.000, 0.000, -37.000)
+
+[node name="Pilier5" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.9970, 0, -0.0770, 0, 1.0000, 0, 0.0770, 0, 0.9970, -3.000, 0.000, 1.000)
+
+[node name="Pilier6" parent="Reperes" instance=ExtResource("4_r")]
+transform = Transform3D(0.9241, 0, -0.3821, 0, 1.0000, 0, 0.3821, 0, 0.9241, 3.000, 0.000, 1.000)

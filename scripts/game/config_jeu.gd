@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin", "ressources"]
 
 var _fichiers := {}
 
@@ -166,6 +166,16 @@ func butin(section: String, cle: String) -> float:
 	return _nombre("butin", section, cle, 0.0)
 
 
+# --- Ressources ---
+
+func ids_ressources() -> PackedStringArray:
+	return _fichier("ressources").get_sections()
+
+
+func ressource(id: String) -> Dictionary:
+	return _section("ressources", id)
+
+
 # --- Monstres ---
 
 func ids_monstres() -> PackedStringArray:
@@ -211,6 +221,18 @@ func fondu_animation() -> float:
 
 func rayon_joystick() -> float:
 	return _nombre("commandes", "joystick", "rayon", 110.0)
+
+
+func rayon_afk() -> float:
+	return _nombre("commandes", "afk", "rayon", 14.0)
+
+
+func poussee_afk() -> float:
+	return _nombre("commandes", "afk", "poussee", 1.0)
+
+
+func part_portee_afk() -> float:
+	return _nombre("commandes", "afk", "part_de_la_portee", 0.8)
 
 
 func zone_morte_joystick() -> float:

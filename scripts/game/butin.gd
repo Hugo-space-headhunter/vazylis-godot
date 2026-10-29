@@ -2,12 +2,14 @@ class_name Butin
 extends RefCounted
 ## Tirage du butin des monstres et création des objets, avec la garantie anti-malchance.
 
-## Raretés tirées sur un monstre (une chance indépendante par rareté, butin.cfg [monstre]).
+## Raretés tirées sur un monstre (une chance indépendante par rareté, butin.cfg [monstre], [champion], [sous_boss]).
 const RARETES_MONSTRE: PackedStringArray = ["standard", "argente", "dore", "epique"]
 
 ## Monstres tués depuis le dernier doré (ou mieux) et depuis le dernier épique (ou mieux).
 var monstres_sans_dore := 0
 var monstres_sans_epique := 0
+## Pour chaque sous-boss : victoires depuis son dernier épique (ou mieux).
+var victoires_sans_epique := {}
 
 var _config: ConfigJeu
 
@@ -18,10 +20,39 @@ func _init(config: ConfigJeu) -> void:
 
 ## Objets lâchés par un monstre de ce niveau (souvent aucun, parfois plusieurs).
 func tirer_monstre(niveau: int, zone: int, hasard: RandomNumberGenerator) -> Array[Objet]:
+	return tirer(Combat.RANG_NORMAL, niveau, zone, hasard, "")["objets"]
+
+
+## Tout le butin d'un monstre selon son rang (« normal », « champion », « sous_boss ») :
+## {"objets": Array[Objet], "ressources": {identifiant: quantité}}.
+## « sous_boss_id » sert à la garantie d'épique propre à chaque sous-boss.
+func tirer(rang: String, niveau: int, zone: int, hasard: RandomNumberGenerator, ressource: String,
+		sous_boss_id: String = "") -> Dictionary:
+	var section := "monstre" if rang == Combat.RANG_NORMAL else rang
 	var raretes: Array[String] = []
 	for rarete in RARETES_MONSTRE:
-		if hasard.randf() < _config.butin("monstre", rarete):
+		if hasard.randf() < _config.butin(section, rarete):
 			raretes.append(rarete)
+	if rang == Combat.RANG_SOUS_BOSS:
+		var victoires := int(victoires_sans_epique.get(sous_boss_id, 0)) + 1
+		if not _contient_au_moins(raretes, "epique") and victoires >= int(_config.butin("garantie", "epique_sous_boss_apres")):
+			raretes.append("epique")
+		victoires_sans_epique[sous_boss_id] = 0 if _contient_au_moins(raretes, "epique") else victoires
+	else:
+		_compter_les_monstres(raretes)
+	var objets: Array[Objet] = []
+	for rarete in raretes:
+		objets.append(creer_objet(tirer_famille(zone, hasard), niveau, rarete, hasard))
+	var ressources := {}
+	if not ressource.is_empty() and hasard.randf() < _config.butin(section, "ressources"):
+		ressources[ressource] = hasard.randi_range(int(_config.butin(section, "ressources_min")), int(_config.butin(section, "ressources_max")))
+	if rang == Combat.RANG_SOUS_BOSS and hasard.randf() < _config.butin("sous_boss", "familier"):
+		ressources["ressource.lueur_familier"] = hasard.randi_range(int(_config.butin("sous_boss", "familier_min")), int(_config.butin("sous_boss", "familier_max")))
+	return {"objets": objets, "ressources": ressources}
+
+
+## Garantie anti-malchance des monstres (ordinaires et champions).
+func _compter_les_monstres(raretes: Array[String]) -> void:
 	monstres_sans_dore += 1
 	monstres_sans_epique += 1
 	if not _contient_au_moins(raretes, "epique") and monstres_sans_epique >= int(_config.butin("garantie", "epique_apres")):
@@ -32,10 +63,6 @@ func tirer_monstre(niveau: int, zone: int, hasard: RandomNumberGenerator) -> Arr
 		monstres_sans_dore = 0
 	if _contient_au_moins(raretes, "epique"):
 		monstres_sans_epique = 0
-	var objets: Array[Objet] = []
-	for rarete in raretes:
-		objets.append(creer_objet(tirer_famille(zone, hasard), niveau, rarete, hasard))
-	return objets
 
 
 ## Famille d'objet tirée au hasard parmi celles de la zone.

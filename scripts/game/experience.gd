@@ -31,9 +31,9 @@ static func coefficient_ecart(niveau_joueur: int, niveau_monstre: int, config: C
 	return 1.0
 
 
-## XP gagnée en tuant un monstre (au moins 1).
-static func xp_gagnee(niveau_joueur: int, niveau_monstre: int, config: ConfigJeu) -> int:
-	var brut := xp_base_monstre(niveau_monstre, config) * coefficient_ecart(niveau_joueur, niveau_monstre, config)
+## XP gagnée en tuant un monstre (au moins 1). « multiplicateur » : 5 pour un champion, 6 pour un sous-boss.
+static func xp_gagnee(niveau_joueur: int, niveau_monstre: int, config: ConfigJeu, multiplicateur: float = 1.0) -> int:
+	var brut := xp_base_monstre(niveau_monstre, config) * coefficient_ecart(niveau_joueur, niveau_monstre, config) * multiplicateur
 	return maxi(1, roundi(brut))
 
 

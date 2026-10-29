@@ -1,5 +1,5 @@
 extends PanelContainer
-## Fenêtre du sac à dos : l'équipement porté, les cases du sac, l'or, et la fiche de l'objet touché.
+## Fenêtre du sac à dos : l'équipement porté, les cases du sac, l'or, les ressources et la fiche de l'objet touché.
 ## On s'équipe en faisant glisser un objet du sac vers le personnage (ou avec le bouton « Équiper »),
 ## on retire un objet en le faisant glisser vers le sac (ou avec « Retirer »).
 ## En bas : le recyclage automatique (rareté et types d'objets à recycler dès qu'ils tombent).
@@ -16,6 +16,7 @@ var _apercu: ApercuPersonnage
 var _equipement: GridContainer
 var _grille: GridContainer
 var _or: Label
+var _ressources: HBoxContainer
 var _fiche: FicheObjet
 var _action: Button
 var _recycler: Button
@@ -48,6 +49,10 @@ func _ready() -> void:
 	_or = _texte("", 22, Color(1, 0.85, 0.4))
 	entete.add_child(_or)
 	contenu.add_child(entete)
+	# Les ressources (fer, chêne, cuir…) sont rangées à part : elles ne prennent pas de case.
+	_ressources = HBoxContainer.new()
+	_ressources.add_theme_constant_override("separation", 18)
+	contenu.add_child(_ressources)
 
 	# En paysage : équipement, sac et fiche côte à côte ; en portrait, les uns sous les autres.
 	_disposition = BoxContainer.new()
@@ -281,6 +286,7 @@ func _rafraichir() -> void:
 	var config := Config.jeu
 	var femme := _joueur.personnage == IdentifiantsAssets.HEROS_FEMME
 	_or.text = "%d or" % _joueur.inventaire.or_possede
+	_afficher_ressources()
 	for i in _cases_sac.size():
 		_remplir_case(_cases_sac[i], _joueur.inventaire.objet(i), _choix == {"lieu": "sac", "cle": i}, "", false, femme)
 	for emplacement: String in _cases_equipement:
@@ -305,6 +311,18 @@ func _rafraichir() -> void:
 	if _action.text == "Équiper":
 		_action.disabled = false
 	_fiche.afficher(objet, porte)
+
+
+func _afficher_ressources() -> void:
+	for enfant in _ressources.get_children():
+		enfant.queue_free()
+	for id in Config.jeu.ids_ressources():
+		var ressource := Config.jeu.ressource(id)
+		var ligne := HBoxContainer.new()
+		ligne.add_theme_constant_override("separation", 4)
+		ligne.add_child(_texte("●", 22, ressource.get("couleur", Color.WHITE)))
+		ligne.add_child(_texte("%s %d" % [ressource.get("nom", id), _joueur.inventaire.quantite(id)], 20, Color(0.9, 0.9, 0.9)))
+		_ressources.add_child(ligne)
 
 
 func _remplir_case(case_objet: CaseObjet, objet: Objet, choisie: bool, nom_si_vide: String, bloquee: bool, femme: bool) -> void:

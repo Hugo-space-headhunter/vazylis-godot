@@ -18,6 +18,10 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Boucles d'oreilles : pas encore visibles (trop petites pour le prototype).
 - Vêtements et armures (demande de Hugo, 29/10/2026) : retravailler tout le design et les textures des tenues, et la façon dont ils « vivent » selon les mouvements du personnage (marche, course, attaque) : tissus et capes qui flottent et suivent le mouvement, pièces qui bougent avec le corps, sans traverser la peau ni les autres pièces.
 - Pistes techniques : IK des deux mains dans Godot (TwoBoneIK3D), os ou simulation de tissu pour les capes et les pans de vêtements (SpringBoneSimulator3D de Godot), animations dédiées (faites dans Blender, ou d'autres sources d'animations, à valider avec Hugo pour la licence), effets d'impact (secousse de caméra, ralenti de quelques images, poussière).
+- Vazylis (étape 6.1) : le rempart et le village viennent du pack KayKit « donjon » en attendant le Medieval Village Pack (maisons, puits, marché) ; ajouter des arbres et des fleurs quand l'Ultimate Stylized Nature sera là.
+- Pomelin Royal : pour l'instant un Pomelin plus gros et teinté ; lui faire sa couronne de feuilles noires (accessoire sur le point « tête »).
+- Aura des champions et des sous-boss : anneau et étincelles simples, à embellir (halo, pulsation plus riche).
+- Ressources dans le sac : un petit rond de couleur pour l'instant ; leur dessiner de vraies icônes.
 
 ## Technique
 

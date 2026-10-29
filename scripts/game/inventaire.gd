@@ -6,6 +6,8 @@ signal change
 
 var cases: Array[Objet] = []
 var or_possede := 0
+## Ressources (rangées à part, sans prendre de case) : {"ressource.fer": 12, …}
+var ressources := {}
 
 var _config: ConfigJeu
 
@@ -47,6 +49,18 @@ func retirer(case_numero: int) -> Objet:
 		cases[case_numero] = null
 		change.emit()
 	return retire
+
+
+func ajouter_ressources(gains: Dictionary) -> void:
+	if gains.is_empty():
+		return
+	for id: String in gains:
+		ressources[id] = int(ressources.get(id, 0)) + int(gains[id])
+	change.emit()
+
+
+func quantite(id_ressource: String) -> int:
+	return int(ressources.get(id_ressource, 0))
 
 
 ## Échange le contenu de deux cases (pour ranger le sac).

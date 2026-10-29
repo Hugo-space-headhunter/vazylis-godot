@@ -106,23 +106,49 @@ static func joueur_moyen(niveau: int, config: ConfigJeu) -> Dictionary:
 	}
 
 
-## Points de vie d'un monstre : le joueur « moyen » de son niveau le tue en environ 10 secondes.
-static func pv_monstre(niveau: int, config: ConfigJeu) -> float:
+## Rang d'un monstre : un monstre ordinaire, un champion (1 sur 200) ou un sous-boss.
+const RANG_NORMAL := "normal"
+const RANG_CHAMPION := "champion"
+const RANG_SOUS_BOSS := "sous_boss"
+
+
+## Points de vie d'un monstre : le joueur « moyen » de son niveau le tue en environ 10 secondes
+## (1 minute pour un sous-boss ; un champion a 5 fois plus de vie).
+static func pv_monstre(niveau: int, config: ConfigJeu, rang: String = RANG_NORMAL) -> float:
 	var moyen := joueur_moyen(niveau, config)
-	return dps(niveau, moyen["statistiques"], moyen["arme"], config, moyen["degats_arme"]) \
-		* config.combat("calibrage", "secondes_pour_tuer_un_monstre")
+	var secondes := config.combat("calibrage", "secondes_pour_tuer_un_monstre")
+	if rang == RANG_SOUS_BOSS:
+		secondes = config.combat("sous_boss", "secondes_pour_tuer")
+	elif rang == RANG_CHAMPION:
+		secondes *= config.combat("champion", "vie")
+	return dps(niveau, moyen["statistiques"], moyen["arme"], config, moyen["degats_arme"]) * secondes
+
+
+## XP d'un monstre selon son rang (un champion en donne 5 fois plus, un sous-boss 6 fois plus).
+static func multiplicateur_xp(rang: String, config: ConfigJeu) -> float:
+	if rang == RANG_SOUS_BOSS:
+		return config.combat("sous_boss", "xp")
+	if rang == RANG_CHAMPION:
+		return config.combat("champion", "xp")
+	return 1.0
 
 
 ## Dégâts bruts d'une attaque de monstre (avant la défense du joueur) : il tue le joueur
-## « moyen » de son niveau, défense comprise, en environ 60 secondes.
+## « moyen » de son niveau, défense comprise, en environ 60 secondes
+## (20 secondes pour un sous-boss ; un champion frappe 2 fois plus fort).
 static func degats_monstre(niveau_monstre: int, niveau_joueur: int, passif: bool,
-		intervalle_attaque: float, config: ConfigJeu) -> float:
+		intervalle_attaque: float, config: ConfigJeu, rang: String = RANG_NORMAL) -> float:
 	var moyen := joueur_moyen(niveau_monstre, config)
 	var stats: Statistiques = moyen["statistiques"]
 	var defense := defense_joueur(niveau_monstre, stats, moyen["arme"], config, moyen["armure"])
 	var protection := 1.0 - reduction(defense, niveau_monstre, config)
-	var dps_monstre := pv_joueur(niveau_monstre, stats, config) / config.combat("calibrage", "secondes_pour_etre_tue") / protection
+	var secondes := config.combat("calibrage", "secondes_pour_etre_tue")
+	if rang == RANG_SOUS_BOSS:
+		secondes = config.combat("sous_boss", "secondes_pour_etre_tue")
+	var dps_monstre := pv_joueur(niveau_monstre, stats, config) / secondes / protection
 	var degats := dps_monstre * intervalle_attaque
+	if rang == RANG_CHAMPION:
+		degats *= config.combat("champion", "degats")
 	if passif:
 		degats *= config.combat("calibrage", "multiplicateur_passifs")
 	var ecart := niveau_monstre - niveau_joueur - int(config.combat("calibrage", "ecart_sans_bonus"))

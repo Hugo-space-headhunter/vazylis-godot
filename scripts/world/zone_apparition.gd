@@ -2,6 +2,7 @@ class_name ZoneApparition
 extends Node3D
 ## Fait apparaître des monstres d'un type autour de ce point, et les fait réapparaître
 ## après leur mort (délai « reapparition » de config/monstres.cfg).
+## Un monstre sur 200 (combat.cfg [champion]) apparaît en version champion.
 ## À régler dans l'éditeur : identifiant du monstre, nombre et rayon.
 
 const SCENE_MONSTRE := preload("res://scenes/monstres/monstre.tscn")
@@ -29,7 +30,8 @@ func _faire_apparaitre() -> void:
 	var angle := _hasard.randf() * TAU
 	var point := global_position + Vector3(cos(angle), 0, sin(angle)) * sqrt(_hasard.randf()) * rayon
 	var monstre: Monstre = SCENE_MONSTRE.instantiate()
-	monstre.initialiser(monstre_id, niveau, point, joueur)
+	var champion := _hasard.randf() < 1.0 / maxf(1.0, Config.jeu.combat("champion", "un_sur"))
+	monstre.initialiser(monstre_id, niveau, point, joueur, champion)
 	monstre.mort.connect(_sur_mort)
 	get_parent().add_child(monstre)
 

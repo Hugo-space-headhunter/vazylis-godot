@@ -19,6 +19,8 @@ signal mort
 signal retour
 ## Quelque chose qui doit être sauvegardé a changé (niveau, points, sac, équipement…).
 signal partie_change
+## Le mode AFK est activé ou désactivé.
+signal afk_change(actif: bool)
 
 const GROUPE := "joueur"
 ## Altitude en dessous de laquelle le personnage, tombé du terrain, revient au départ.
@@ -56,6 +58,8 @@ var pv := 1.0
 var pv_max := 1.0
 var mana := 0.0
 var mana_max := 0.0
+## Mode AFK : le personnage cible et enchaîne seul les monstres autour de son point d'activation.
+var afk := false
 
 var _modele: ModeleAsset
 var _armes := {}
@@ -67,6 +71,7 @@ var _recharge_attaque := 0.0
 var _verrou_animation := 0.0
 var _coup_en_attente := -1.0
 var _cible: Monstre
+var _point_afk := Vector3.ZERO
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -86,6 +91,23 @@ func _ready() -> void:
 	_recalculer(true)
 	_surveiller_la_partie()
 	_annoncer.call_deferred()
+
+
+## Endroit où le personnage revient après sa mort (Vazylis).
+func definir_point_de_retour(point: Vector3) -> void:
+	_depart = point
+
+
+## Active ou coupe le mode AFK. Il sort les armes et vise les monstres autour de l'endroit
+## où il est activé. Toucher le joystick reprend la main : le mode AFK reprend là où on lâche.
+func activer_afk(actif: bool) -> void:
+	if afk == actif:
+		return
+	afk = actif
+	_point_afk = global_position
+	if afk and mode != Mode.COMBAT:
+		changer_mode(Mode.COMBAT)
+	afk_change.emit(afk)
 
 
 func niveau() -> int:
@@ -218,6 +240,8 @@ func _appliquer_arme() -> void:
 ## Mode combat (armes sorties, attaque automatique) ou déplacement (armes rangées dans le dos).
 func changer_mode(nouveau: Mode) -> void:
 	mode = nouveau
+	if nouveau == Mode.DEPLACEMENT:
+		activer_afk(false)
 	_cible = null
 	_coup_en_attente = -1.0
 	_ranger_armes()
@@ -254,6 +278,14 @@ func _physics_process(delta: float) -> void:
 	var poussee := joystick.length() if _vivant else 0.0
 	_allure = Deplacement.allure(poussee, config)
 	var direction := Deplacement.direction_au_sol(joystick, angle_camera) if _allure != Deplacement.Allure.ARRET else Vector3.ZERO
+	if afk and _vivant:
+		if _allure != Deplacement.Allure.ARRET:
+			_point_afk = global_position
+		else:
+			direction = _direction_afk()
+			if direction != Vector3.ZERO:
+				poussee = config.poussee_afk()
+				_allure = Deplacement.allure(poussee, config)
 
 	var horizontale := Vector3(velocity.x, 0.0, velocity.z)
 	horizontale = horizontale.move_toward(direction * Deplacement.vitesse(poussee, config), config.acceleration() * delta)
@@ -322,9 +354,27 @@ func _toucher(cible: Monstre) -> void:
 	var niveau_cible := cible.niveau
 	var position_cible := cible.global_position
 	if cible.recevoir_coup(coup["degats"], coup["critique"]):
-		gagner_xp(Experience.xp_gagnee(experience.niveau, niveau_cible, Config.jeu))
-		for objet in butin.tirer_monstre(niveau_cible, ZONE, _hasard):
+		var multiplicateur := Combat.multiplicateur_xp(cible.rang, Config.jeu)
+		gagner_xp(Experience.xp_gagnee(experience.niveau, niveau_cible, Config.jeu, multiplicateur))
+		var gains := butin.tirer(cible.rang, niveau_cible, ZONE, _hasard, cible.ressource, cible.id_monstre)
+		for objet: Objet in gains["objets"]:
 			recevoir_objet(objet, position_cible)
+		recevoir_ressources(gains["ressources"])
+
+
+## Des ressources sont gagnées : elles vont dans le sac, sans prendre de case.
+func recevoir_ressources(gains: Dictionary) -> void:
+	if gains.is_empty():
+		return
+	inventaire.ajouter_ressources(gains)
+	if not is_inside_tree():
+		return
+	var hauteur := 2.2
+	for id: String in gains:
+		var ressource := Config.jeu.ressource(id)
+		ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * hauteur,
+			"+%d %s" % [gains[id], ressource.get("nom", id)], ressource.get("couleur", Color.WHITE), 34, 1.1, 0.5)
+		hauteur += 0.3
 
 
 ## Un objet est gagné : il va dans le sac, ou il est recyclé (filtres du recyclage automatique,
@@ -377,6 +427,7 @@ func exporter_partie() -> Dictionary:
 	partie.recyclage_auto = recyclage_auto
 	partie.monstres_sans_dore = butin.monstres_sans_dore
 	partie.monstres_sans_epique = butin.monstres_sans_epique
+	partie.victoires_sans_epique = butin.victoires_sans_epique
 	return partie.vers_dictionnaire()
 
 
@@ -389,12 +440,14 @@ func importer_partie(partie: Partie) -> void:
 	statistiques.annuler()
 	inventaire.cases = partie.inventaire.cases
 	inventaire.or_possede = partie.inventaire.or_possede
+	inventaire.ressources = partie.inventaire.ressources
 	inventaire.change.emit()
 	recyclage_auto.actif = partie.recyclage_auto.actif
 	recyclage_auto.rarete_limite = partie.recyclage_auto.rarete_limite
 	recyclage_auto.types = partie.recyclage_auto.types
 	butin.monstres_sans_dore = partie.monstres_sans_dore
 	butin.monstres_sans_epique = partie.monstres_sans_epique
+	butin.victoires_sans_epique = partie.victoires_sans_epique
 	equipement.objets = partie.equipement.objets
 	if equipement.arme() == null:
 		equipement.objets["arme"] = butin.creer_objet(Config.jeu.objet_depart(), 1, "standard", _hasard)
@@ -411,6 +464,42 @@ func _surveiller_la_partie() -> void:
 	var signaler := func(_a = null, _b = null, _c = null) -> void: partie_change.emit()
 	for source: Signal in [xp_change, equipement_change, inventaire.change, statistiques.change, recyclage_auto.change]:
 		source.connect(signaler)
+
+
+## Mode AFK : direction vers le monstre le plus proche du personnage (dans le rayon autour du point
+## d'activation, hors sous-boss), ou vers le point d'activation s'il n'y en a pas. Zéro quand il est
+## arrivé (assez près pour frapper, ou revenu à son point).
+func _direction_afk() -> Vector3:
+	if _verrou_animation > 0.0 or _coup_en_attente >= 0.0:
+		return Vector3.ZERO
+	var rayon := Config.jeu.rayon_afk()
+	var cible: Monstre = null
+	var meilleure := INF
+	for noeud in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		var monstre := noeud as Monstre
+		if not monstre.est_vivant() or monstre.rang == Combat.RANG_SOUS_BOSS:
+			continue
+		if _distance_sol(monstre.global_position, _point_afk) > rayon:
+			continue
+		var distance := _distance_sol(monstre.global_position, global_position)
+		if distance < meilleure:
+			cible = monstre
+			meilleure = distance
+	var arret := float(arme.get("portee", 1.6)) * Config.jeu.part_portee_afk()
+	var destination := _point_afk
+	if cible != null:
+		destination = cible.global_position
+	else:
+		arret = 0.5
+	var vers := destination - global_position
+	vers.y = 0.0
+	if vers.length() <= arret:
+		return Vector3.ZERO
+	return vers.normalized()
+
+
+func _distance_sol(a: Vector3, b: Vector3) -> float:
+	return Vector2(a.x - b.x, a.z - b.z).length()
 
 
 func _monstre_a_portee() -> Monstre:
@@ -477,6 +566,7 @@ func _sur_niveau_gagne(nouveau_niveau: int) -> void:
 
 func _mourir() -> void:
 	_vivant = false
+	activer_afk(false)
 	_coup_en_attente = -1.0
 	_modele.jouer("die", 0.1, false)
 	mort.emit()

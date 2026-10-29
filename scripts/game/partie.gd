@@ -17,6 +17,7 @@ var equipement := Equipement.new()
 var recyclage_auto := RecyclageAuto.new()
 var monstres_sans_dore := 0
 var monstres_sans_epique := 0
+var victoires_sans_epique := {}
 ## Moment de la sauvegarde (secondes depuis 1970), pour garder la plus récente.
 var sauvegarde_le := 0.0
 
@@ -32,10 +33,11 @@ func vers_dictionnaire() -> Dictionary:
 		"niveau": niveau,
 		"xp": xp,
 		"statistiques": {"valeurs": statistiques.valeurs, "points_libres": statistiques.points_libres},
-		"sac": {"cases": cases, "or": inventaire.or_possede},
+		"sac": {"cases": cases, "or": inventaire.or_possede, "ressources": inventaire.ressources},
 		"equipement": equipement.vers_dictionnaire(),
 		"recyclage_auto": recyclage_auto.vers_dictionnaire(),
-		"garantie": {"monstres_sans_dore": monstres_sans_dore, "monstres_sans_epique": monstres_sans_epique},
+		"garantie": {"monstres_sans_dore": monstres_sans_dore, "monstres_sans_epique": monstres_sans_epique,
+			"victoires_sans_epique": victoires_sans_epique},
 	}
 
 
@@ -61,6 +63,10 @@ static func depuis_dictionnaire(donnees: Variant, config: ConfigJeu) -> Partie:
 	for i in mini(cases.size(), partie.inventaire.nombre_cases()):
 		partie.inventaire.cases[i] = _objet_valide(cases[i], config)
 	partie.inventaire.or_possede = int(sac.get("or", 0))
+	var ressources: Dictionary = sac.get("ressources", {})
+	for id: String in ressources:
+		if id in config.ids_ressources():
+			partie.inventaire.ressources[id] = int(ressources[id])
 
 	var equipement: Dictionary = donnees.get("equipement", {})
 	for emplacement: String in equipement:
@@ -72,6 +78,9 @@ static func depuis_dictionnaire(donnees: Variant, config: ConfigJeu) -> Partie:
 	var garantie: Dictionary = donnees.get("garantie", {})
 	partie.monstres_sans_dore = int(garantie.get("monstres_sans_dore", 0))
 	partie.monstres_sans_epique = int(garantie.get("monstres_sans_epique", 0))
+	var victoires: Dictionary = garantie.get("victoires_sans_epique", {})
+	for id: String in victoires:
+		partie.victoires_sans_epique[id] = int(victoires[id])
 	return partie
 
 

@@ -40,6 +40,13 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 
 Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn`), provisoires, propres au projet.
 
+## Décors
+
+| Nom | Dossier | Source | Licence |
+| --- | --- | --- | --- |
+| Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis (16 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
+| Rochers et piliers des Prés | `scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
+
 ## Images
 
 | Nom | Fichier | Source | Licence |

@@ -162,6 +162,7 @@ Le combat est en attaque automatique, comme dans Levelup RPG : au contact d'un m
 - **Mode déplacement** (bouton « pied ») : armes rangées, on se déplace sans engager les monstres.
 - **Mode combat** (bouton « arme ») : armes sorties, le personnage attaque automatiquement les monstres qu'il approche ou sur lesquels il passe.
 - **Mode AFK** (bouton à part, activé ou désactivé) : différent du mode combat, le personnage cible lui-même les monstres de la zone et les enchaîne sans intervention.
+  - *Décidé à l'étape 6* : il enchaîne les monstres dans un rayon de 14 m autour de l'endroit où on l'active, n'attaque jamais un sous-boss de lui-même, revient à son point quand il n'y a plus personne, et se coupe à la mort ou en repassant en mode déplacement. Toucher le joystick reprend la main : le mode AFK repart de l'endroit où on lâche.
 - **Soin** : mode de récupération des points de vie à préciser (potions, temps de recharge).
 
 ## Interface et commandes

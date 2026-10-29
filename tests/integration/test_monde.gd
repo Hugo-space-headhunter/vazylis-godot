@@ -1,7 +1,7 @@
 extends GutTest
-## Terrain de test : on simule des doigts sur l'écran et on vérifie que le personnage réagit.
+## Le monde : on simule des doigts sur l'écran et on vérifie que le personnage réagit.
 
-const SCENE := "res://scenes/monde/terrain_test.tscn"
+const SCENE := "res://scenes/monde/monde.tscn"
 
 var terrain: Node3D
 var joueur: Joueur
@@ -160,10 +160,11 @@ func test_sac_plein_l_objet_est_recycle() -> void:
 	while not joueur.inventaire.est_plein():
 		joueur.recevoir_objet(joueur.butin.creer_objet("objet.boucle_os", 1, "standard", hasard))
 	var or_avant := joueur.inventaire.or_possede
+	var annonces := terrain.get_node("Interface/Annonces").get_child_count()
 	watch_signals(joueur)
 	joueur.recevoir_objet(joueur.butin.creer_objet("objet.lame_guet", 10, "dore", hasard))
 	assert_gt(joueur.inventaire.or_possede, or_avant)
-	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), 1, "Un message prévient")
+	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), annonces + 1, "Un message prévient")
 
 
 func test_equiper_et_retirer_depuis_la_fenetre_du_sac() -> void:
@@ -218,12 +219,13 @@ func test_recyclage_manuel_et_automatique() -> void:
 	await wait_physics_frames(2)
 	var hasard := RandomNumberGenerator.new()
 	# À la main : le bouton Recycler rapporte de l'or et vide la case.
+	var annonces := terrain.get_node("Interface/Annonces").get_child_count()
 	fenetre.choisir("sac", 0)
 	assert_true(fenetre._recycler.visible)
 	fenetre._sur_recycler()
 	assert_null(joueur.inventaire.objet(0))
 	assert_gt(joueur.inventaire.or_possede, 0)
-	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), 1)
+	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), annonces + 1)
 
 	# Automatique : « sous Doré » recycle un argenté qui tombe, garde un doré.
 	fenetre._filtre_rarete.select(2)
@@ -239,3 +241,47 @@ func test_recyclage_manuel_et_automatique() -> void:
 	# Recycler le sac : les armes standard de départ partent, le doré reste.
 	fenetre._sur_recycler_le_sac()
 	assert_eq(joueur.inventaire.nombre_objets(), 1)
+
+
+func test_on_part_de_vazylis_entouree_des_pres() -> void:
+	await wait_physics_frames(40)
+	assert_eq(terrain.zone_actuelle().nom, "Vazylis")
+	var pres: Zone = terrain.get_node("Zones/PresDeVazylis")
+	assert_true(pres.contient(Vector3(0, 0, -40)))
+	assert_eq(pres.titre(), "Les Prés de Vazylis  (niv. 1–10)")
+	joueur.global_position = Vector3(-9, 0, -20)
+	await wait_physics_frames(40)
+	assert_eq(terrain.zone_actuelle(), pres, "On annonce les Prés en sortant de la ville")
+
+
+func test_les_monstres_des_pres_et_le_pomelin_royal_apparaissent() -> void:
+	await wait_physics_frames(5)
+	var noms := {}
+	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		noms[monstre.id_monstre] = true
+		assert_gt(monstre.global_position.length(), 12.5, "Aucun monstre dans Vazylis")
+	for id in ["monstre.cochonnet_suie", "monstre.corbac", "monstre.pomelin", "monstre.pomelin_royal"]:
+		assert_true(noms.has(id), "%s manque" % id)
+
+
+func test_le_bouton_afk_active_et_coupe_le_mode_afk() -> void:
+	var bouton: Button = terrain.get_node("Interface/BoutonAFK")
+	assert_true(bouton.is_in_group(CommandesTactiles.GROUPE_UI))
+	bouton.button_pressed = true
+	assert_true(joueur.afk)
+	assert_eq(joueur.mode, Joueur.Mode.COMBAT)
+	terrain.get_node("Interface/BoutonsMode/Pied").pressed.emit()
+	assert_false(joueur.afk)
+	assert_false(bouton.button_pressed, "Le bouton suit l'état du mode AFK")
+
+
+func test_le_sac_affiche_les_ressources() -> void:
+	joueur.recevoir_ressources({"ressource.fer": 4})
+	terrain.get_node("Interface/BoutonSac").pressed.emit()
+	await wait_physics_frames(2)
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreSac")
+	var textes := []
+	for ligne in fenetre._ressources.get_children():
+		textes.append((ligne.get_child(1) as Label).text)
+	assert_has(textes, "Fer 4")
+	assert_has(textes, "Cuir 0")

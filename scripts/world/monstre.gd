@@ -3,11 +3,14 @@ extends CharacterBody3D
 ## Un monstre : il se promène autour de son point d'apparition, poursuit et mord le joueur
 ## (tout de suite s'il est agressif, seulement après avoir été frappé s'il est passif),
 ## et rentre chez lui si on l'entraîne trop loin.
+## Un monstre peut être un champion (plus gros, aura dorée) ou un sous-boss (qui peut invoquer des renforts).
 
 signal mort(monstre: Monstre)
 
 const GROUPE := "monstres"
 const HAUTEUR_INFOS := 0.95
+const COULEUR_CHAMPION := Color(1.0, 0.8, 0.25)
+const COULEUR_SOUS_BOSS := Color(0.85, 0.55, 1.0)
 
 enum Etat { ERRANCE, POURSUITE, RETOUR, MORT }
 
@@ -17,6 +20,10 @@ var niveau := 1
 var pv_max := 1.0
 var pv := 1.0
 var etat := Etat.ERRANCE
+## Combat.RANG_NORMAL, RANG_CHAMPION ou RANG_SOUS_BOSS.
+var rang := Combat.RANG_NORMAL
+## Ressource lâchée (section de config/ressources.cfg), ou "".
+var ressource := ""
 
 var _definition := {}
 var _passif := true
@@ -29,19 +36,31 @@ var _destination := Vector3.ZERO
 var _pause_errance := 0.0
 var _recharge_attaque := 0.0
 var _verrou_animation := 0.0
+var _hauteur_infos := HAUTEUR_INFOS
+var _invocation := {}
+var _recharge_invocation := 0.0
+var _invoques: Array[Monstre] = []
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
 ## À appeler avant d'ajouter le monstre à la scène.
-func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur) -> void:
+## « champion » : ce monstre apparaît en version champion (ignoré pour un sous-boss).
+func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur, champion: bool = false) -> void:
 	var config := Config.jeu
 	id_monstre = id
 	_definition = config.monstre(id)
 	nom = str(_definition.get("nom", id))
 	niveau = un_niveau
 	_passif = str(_definition.get("comportement", "passif")) == "passif"
-	pv_max = Combat.pv_monstre(niveau, config)
+	ressource = str(_definition.get("ressource", ""))
+	if bool(_definition.get("sous_boss", false)):
+		rang = Combat.RANG_SOUS_BOSS
+		_invocation = _definition.get("invocation", {})
+		_recharge_invocation = float(_invocation.get("intervalle", 0.0))
+	elif champion:
+		rang = Combat.RANG_CHAMPION
+	pv_max = Combat.pv_monstre(niveau, config, rang)
 	pv = pv_max
 	_point_apparition = point
 	_destination = point
@@ -56,6 +75,13 @@ func _ready() -> void:
 	_modele.rotation.y = _hasard.randf() * TAU
 	add_child(_modele)
 	_modele.jouer("idle", 0.0)
+	if rang == Combat.RANG_CHAMPION:
+		_modele.scale *= Config.jeu.combat("champion", "echelle")
+		$Collision.scale *= Config.jeu.combat("champion", "echelle")
+	var boite := Transform3D(_modele.transform.basis, Vector3.ZERO) * _modele.boite_englobante()
+	_hauteur_infos = maxf(HAUTEUR_INFOS, boite.end.y + 0.25)
+	if rang != Combat.RANG_NORMAL:
+		_ajouter_aura(boite)
 
 	_etiquette = Label3D.new()
 	_etiquette.text = "%s  niv. %d" % [nom, niveau]
@@ -63,12 +89,20 @@ func _ready() -> void:
 	_etiquette.outline_size = 10
 	_etiquette.pixel_size = 0.005
 	_etiquette.modulate = Color(1, 1, 1) if _passif else Color(1, 0.6, 0.35)
+	if rang == Combat.RANG_CHAMPION:
+		_etiquette.text = "Champion · " + _etiquette.text
+		_etiquette.modulate = COULEUR_CHAMPION
+	elif rang == Combat.RANG_SOUS_BOSS:
+		_etiquette.modulate = COULEUR_SOUS_BOSS
+		_etiquette.font_size = 52
 	_etiquette.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_etiquette.position.y = HAUTEUR_INFOS + 0.12
+	_etiquette.position.y = _hauteur_infos + 0.12
 	add_child(_etiquette)
 
 	_barre = BarreVie3D.new()
-	_barre.position.y = HAUTEUR_INFOS
+	_barre.position.y = _hauteur_infos
+	if rang != Combat.RANG_NORMAL:
+		_barre.scale = Vector3.ONE * 1.6
 	add_child(_barre)
 
 
@@ -84,7 +118,7 @@ func recevoir_coup(degats: int, critique: bool) -> bool:
 	_barre.visible = true
 	_barre.regler(pv / pv_max)
 	var couleur := ChiffreFlottant.COULEUR_CRITIQUE if critique else ChiffreFlottant.COULEUR_DEGATS
-	ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * (HAUTEUR_INFOS + 0.3),
+	ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * (_hauteur_infos + 0.3),
 		str(degats) + ("!" if critique else ""), couleur, 84 if critique else 60)
 	if pv <= 0.0:
 		_mourir()
@@ -123,9 +157,11 @@ func _physics_process(delta: float) -> void:
 			else:
 				_tourner_vers(_joueur.global_position, 1.0)
 				_attaquer()
+			_invoquer(delta)
 		Etat.RETOUR:
 			pv = pv_max
 			_barre.visible = false
+			_renvoyer_les_invoques()
 			cible = _point_apparition
 			vitesse = float(_definition.get("vitesse_course", 2.0))
 			if _distance_sol(_point_apparition) < 0.5:
@@ -163,7 +199,93 @@ func _attaquer() -> void:
 	var intervalle := float(_definition.get("intervalle_attaque", 1.5))
 	_recharge_attaque = intervalle
 	_jouer_une_fois("attack")
-	_joueur.recevoir_degats(Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu), niveau)
+	_joueur.recevoir_degats(Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu, rang), niveau)
+
+
+## Un sous-boss qui invoque appelle des renforts à intervalle régulier pendant le combat.
+func _invoquer(delta: float) -> void:
+	if _invocation.is_empty():
+		return
+	_recharge_invocation -= delta
+	if _recharge_invocation > 0.0:
+		return
+	_recharge_invocation = float(_invocation.get("intervalle", 12.0))
+	_invoques = _invoques.filter(func(m: Monstre) -> bool: return is_instance_valid(m) and m.est_vivant())
+	var id := str(_invocation.get("monstre", ""))
+	var definition := Config.jeu.monstre(id)
+	var scene: PackedScene = load(scene_file_path)
+	var place := int(_invocation.get("maximum", 4)) - _invoques.size()
+	for i in mini(int(_invocation.get("nombre", 1)), place):
+		var angle := _hasard.randf() * TAU
+		var point := global_position + Vector3(cos(angle), 0, sin(angle)) * 1.8
+		var invoque: Monstre = scene.instantiate()
+		var niveau_invoque := _hasard.randi_range(int(definition.get("niveau_min", 1)), int(definition.get("niveau_max", 1)))
+		invoque.initialiser(id, niveau_invoque, point, _joueur)
+		invoque.etat = Etat.POURSUITE
+		get_parent().add_child(invoque)
+		_invoques.append(invoque)
+	if place > 0:
+		_jouer_une_fois("attack")
+
+
+## Les renforts disparaissent quand le sous-boss abandonne le combat.
+func _renvoyer_les_invoques() -> void:
+	for invoque in _invoques:
+		if is_instance_valid(invoque) and invoque.est_vivant():
+			invoque.queue_free()
+	_invoques.clear()
+	_recharge_invocation = float(_invocation.get("intervalle", 0.0))
+
+
+## Aura des champions (dorée) et des sous-boss (violette) : un anneau lumineux au sol et des étincelles.
+func _ajouter_aura(boite: AABB) -> void:
+	var couleur := COULEUR_CHAMPION if rang == Combat.RANG_CHAMPION else COULEUR_SOUS_BOSS
+	var rayon := maxf(boite.size.x, boite.size.z) * 0.6 + 0.2
+	var disque := PlaneMesh.new()
+	disque.size = Vector2(rayon * 2.0, rayon * 2.0)
+	var matiere := StandardMaterial3D.new()
+	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	matiere.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	matiere.albedo_color = Color(couleur, 0.7)
+	matiere.albedo_texture = _anneau()
+	disque.material = matiere
+	var cercle := MeshInstance3D.new()
+	cercle.name = "Aura"
+	cercle.mesh = disque
+	cercle.position.y = 0.03
+	cercle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(cercle)
+	var pulsation := cercle.create_tween().set_loops()
+	pulsation.tween_property(cercle, "scale", Vector3.ONE * 1.12, 0.8).set_trans(Tween.TRANS_SINE)
+	pulsation.tween_property(cercle, "scale", Vector3.ONE, 0.8).set_trans(Tween.TRANS_SINE)
+	var particules := ApparenceRarete.ajouter_etincelles(self, "dore", boite, 14)
+	if particules != null:
+		var degrade := particules.color_ramp
+		for i in degrade.get_point_count():
+			degrade.set_color(i, Color(couleur, degrade.get_color(i).a))
+
+
+static var _texture_anneau: Texture2D
+
+
+## Anneau lumineux (transparent au centre et sur le bord).
+static func _anneau() -> Texture2D:
+	if _texture_anneau == null:
+		var degrade := Gradient.new()
+		degrade.set_color(0, Color(1, 1, 1, 0))
+		degrade.add_point(0.55, Color(1, 1, 1, 0.15))
+		degrade.add_point(0.82, Color(1, 1, 1, 1))
+		degrade.set_color(degrade.get_point_count() - 1, Color(1, 1, 1, 0))
+		var texture := GradientTexture2D.new()
+		texture.gradient = degrade
+		texture.fill = GradientTexture2D.FILL_RADIAL
+		texture.fill_from = Vector2(0.5, 0.5)
+		texture.fill_to = Vector2(1.0, 0.5)
+		texture.width = 128
+		texture.height = 128
+		_texture_anneau = texture
+	return _texture_anneau
 
 
 func _mourir() -> void:
