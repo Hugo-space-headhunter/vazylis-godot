@@ -53,8 +53,8 @@ func test_plusieurs_niveaux_d_un_coup() -> void:
 	assert_eq(experience.xp, 5)
 
 
-func test_environ_12_monstres_pour_le_niveau_2() -> void:
-	# 2,08 minutes × 6 monstres par minute ≈ 12,5 monstres de niveau 1.
+func test_environ_4_monstres_pour_le_niveau_2() -> void:
+	# 0,58 minute × 6 monstres par minute ≈ 3,5 monstres de niveau 1.
 	var experience := Experience.new(config)
 	var monstres := ceili(float(experience.xp_pour_niveau_suivant()) / Experience.xp_gagnee(1, 1, config))
-	assert_eq(monstres, 13)
+	assert_eq(monstres, 4)

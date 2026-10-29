@@ -211,18 +211,18 @@ Le niveau du personnage est infini. La difficulté monte progressivement : chaqu
 Référence : environ 3 heures de jeu par soirée. Objectif : niveau 200 en environ 4 semaines, avec une montée rapide au début puis de plus en plus longue. Le temps cible pour passer un niveau L, en minutes :
 
 ```
-t(L) = 2 + 0,084 × L^1,2
+t(L) = 0,5 + 0,084 × L^1,2
 ```
 
-Soit environ 2 minutes au niveau 1, 5 minutes au niveau 20, 20 minutes au niveau 100 et 50 minutes au niveau 200.
+Soit environ 35 secondes au niveau 1 (4 monstres), 3,5 minutes au niveau 20, 22 minutes au niveau 100 et 49 minutes au niveau 200. Le temps fixe de 0,5 minute (2 minutes à l'origine) a été réduit le 29 octobre 2026 pour accélérer surtout les premiers niveaux.
 
 | Repère | Niveau | Temps de jeu cumulé (environ) | Soirées de 3 h |
 | --- | --- | --- | --- |
-| Fin de la zone 1 | 40 | 3 h 30 | 1 à 2 |
-| Fin de la zone 2 | 80 | 12 h 30 | 4 |
-| Fin de la zone 3 | 120 | 28 h | 9 |
-| Fin de la zone 4 | 160 | 50 h | 17 |
-| Fin de la zone 5 | 200 | 80 h | 27 (environ 4 semaines) |
+| Fin de la zone 1 | 40 | 2 h 30 | 1 |
+| Fin de la zone 2 | 80 | 10 h 30 | 3 à 4 |
+| Fin de la zone 3 | 120 | 25 h | 8 à 9 |
+| Fin de la zone 4 | 160 | 47 h | 15 à 16 |
+| Fin de la zone 5 | 200 | 75 h | 25 (environ 4 semaines) |
 
 - **XP de base d'un monstre de niveau L** = 10 × L (10 XP au niveau 1, 100 XP au niveau 10).
 - **XP requise pour un niveau** = temps cible × monstres tués par minute (environ 6, soit un toutes les 10 secondes) × XP de base d'un monstre de ce niveau.

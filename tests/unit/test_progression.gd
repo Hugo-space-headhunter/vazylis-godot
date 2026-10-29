@@ -9,11 +9,11 @@ func before_all() -> void:
 
 
 func test_temps_cible_aux_reperes_du_game_design() -> void:
-	# « environ 2 minutes au niveau 1, 5 minutes au niveau 20, 20 au niveau 100, 50 au niveau 200 »
-	assert_almost_eq(Progression.minutes_cibles(1, config), 2.084, 0.001)
-	assert_almost_eq(Progression.minutes_cibles(20, config), 5.0, 0.2)
-	assert_almost_eq(Progression.minutes_cibles(100, config), 23.1, 0.1)
-	assert_almost_eq(Progression.minutes_cibles(200, config), 50.0, 1.0)
+	# « environ 35 secondes au niveau 1, 3,5 minutes au niveau 20, 22 au niveau 100, 49 au niveau 200 »
+	assert_almost_eq(Progression.minutes_cibles(1, config), 0.584, 0.001)
+	assert_almost_eq(Progression.minutes_cibles(20, config), 3.56, 0.05)
+	assert_almost_eq(Progression.minutes_cibles(100, config), 21.6, 0.1)
+	assert_almost_eq(Progression.minutes_cibles(200, config), 49.0, 0.1)
 
 
 func test_temps_cible_augmente_a_chaque_niveau() -> void:
@@ -22,8 +22,8 @@ func test_temps_cible_augmente_a_chaque_niveau() -> void:
 
 
 func test_temps_cumule_suit_le_tableau_des_reperes() -> void:
-	# Tableau « Rythme cible » : 3 h 30 au niveau 40, 12 h 30 au 80, 28 h au 120, 50 h au 160, 80 h au 200.
-	var reperes := {40: 3.5, 80: 12.5, 120: 28.0, 160: 50.0, 200: 80.0}
+	# Tableau « Rythme cible » : 2 h 30 au niveau 40, 10 h 30 au 80, 25 h au 120, 47 h au 160, 75 h au 200.
+	var reperes := {40: 2.5, 80: 10.5, 120: 25.0, 160: 47.0, 200: 75.0}
 	for niveau: int in reperes:
 		var heures := Progression.minutes_cumulees(niveau, config) / 60.0
 		assert_almost_eq(heures, float(reperes[niveau]), float(reperes[niveau]) * 0.1,
@@ -31,10 +31,10 @@ func test_temps_cumule_suit_le_tableau_des_reperes() -> void:
 
 
 func test_xp_requise() -> void:
-	# Niveau 20 : 5,06 min × 6 monstres/min × 10 XP ≈ 304 XP.
+	# Niveau 20 : 3,56 min × 6 monstres/min × 10 XP ≈ 214 XP.
 	var attendu := roundi(Progression.minutes_cibles(20, config) * 6.0 * 10.0)
 	assert_eq(Progression.xp_requise(20, 10.0, config), attendu)
-	assert_almost_eq(float(Progression.xp_requise(20, 10.0, config)), 304.0, 2.0)
+	assert_almost_eq(float(Progression.xp_requise(20, 10.0, config)), 214.0, 2.0)
 
 
 func test_xp_requise_continue_apres_200() -> void:
