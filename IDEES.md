@@ -6,8 +6,13 @@ Les idées et améliorations hors de l'étape en cours sont notées ici, au lieu
 
 Décision de Hugo (29/10/2026) : les défauts de design, d'animation et de position par rapport au corps ne bloquent pas les étapes. On les note ici et on les corrige tous ensemble plus tard.
 
+Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément sur le visuel du personnage et du butin pour l'effet « farm and loot », et, à terme, pour une course au personnage le plus stylé et le plus fort entre joueurs. Le rendu doit être réaliste, fluide et attrayant.
+
 - Armes mal tenues : la prise de toutes les armes est à revoir (épée et hache à deux mains, arc, dagues, épée et bouclier), en main, au repos et dans le dos.
+- Armes à deux mains (épée, hache) : tenues en permanence à deux mains. Au repos, traînées au sol comme une couette très lourde, les deux bras vers l'arrière sur le côté. Attaques lourdes, comme si l'arme pesait une tonne (esprit « guerrier à grande épée », sans rien copier d'un jeu existant).
+- Arc : une vraie animation où une main tire la corde.
 - Animations d'attaque propres à chaque type d'arme (voir aussi « Armes et statistiques » plus bas).
+- Pistes techniques : IK des deux mains dans Godot (TwoBoneIK3D), animations dédiées (faites dans Blender, ou d'autres sources d'animations, à valider avec Hugo pour la licence), effets d'impact (secousse de caméra, ralenti de quelques images, poussière).
 
 ## Technique
 
