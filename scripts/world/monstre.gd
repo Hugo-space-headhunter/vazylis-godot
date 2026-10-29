@@ -4,6 +4,8 @@ extends CharacterBody3D
 ## (tout de suite s'il est agressif, seulement après avoir été frappé s'il est passif),
 ## et rentre chez lui si on l'entraîne trop loin.
 ## Un monstre peut être un champion (plus gros, aura dorée) ou un sous-boss (qui peut invoquer des renforts).
+## Comportements réglés dans config/monstres.cfg : immobile (plante), recul après chaque coup (gobelin
+## chapardeur), attaque à distance (gobelin chaman) et attaque de zone annoncée au sol (Gueule-Fleur).
 
 signal mort(monstre: Monstre)
 
@@ -11,6 +13,7 @@ const GROUPE := "monstres"
 const HAUTEUR_INFOS := 0.95
 const COULEUR_CHAMPION := Color(1.0, 0.8, 0.25)
 const COULEUR_SOUS_BOSS := Color(0.85, 0.55, 1.0)
+const COULEUR_ZONE := Color(1.0, 0.25, 0.2)
 
 enum Etat { ERRANCE, POURSUITE, RETOUR, MORT }
 
@@ -40,6 +43,11 @@ var _hauteur_infos := HAUTEUR_INFOS
 var _invocation := {}
 var _recharge_invocation := 0.0
 var _invoques: Array[Monstre] = []
+var _immobile := false
+var _recul_restant := 0.0
+var _attaque_zone := {}
+var _recharge_zone := 0.0
+var _zone_en_cours := false
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -54,6 +62,9 @@ func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur, cha
 	niveau = un_niveau
 	_passif = str(_definition.get("comportement", "passif")) == "passif"
 	ressource = str(_definition.get("ressource", ""))
+	_immobile = str(_definition.get("deplacement", "normal")) == "immobile"
+	_attaque_zone = _definition.get("attaque_zone", {})
+	_recharge_zone = float(_attaque_zone.get("intervalle", 0.0)) / 2.0
 	if bool(_definition.get("sous_boss", false)):
 		rang = Combat.RANG_SOUS_BOSS
 		_invocation = _definition.get("invocation", {})
@@ -144,20 +155,22 @@ func _physics_process(delta: float) -> void:
 	var cible := global_position
 	match etat:
 		Etat.ERRANCE:
-			cible = _errer(delta)
-			vitesse = float(_definition.get("vitesse_marche", 1.0))
+			if not _immobile:
+				cible = _errer(delta)
+				vitesse = float(_definition.get("vitesse_marche", 1.0))
 			if not _passif and _joueur_visible(float(_definition.get("rayon_detection", 0.0))):
 				etat = Etat.POURSUITE
 		Etat.POURSUITE:
-			if not _joueur_vivant() or _distance_sol(_point_apparition) > float(_definition.get("rayon_laisse", 12.0)):
+			var laisse := float(_definition.get("rayon_laisse", 12.0))
+			if not _joueur_vivant() or _distance_sol(_point_apparition) > laisse \
+					or (_immobile and _distance_sol(_joueur.global_position) > laisse):
 				etat = Etat.RETOUR
-			elif _distance_sol(_joueur.global_position) > float(_definition.get("portee_attaque", 1.1)):
-				cible = _joueur.global_position
-				vitesse = float(_definition.get("vitesse_course", 2.0))
 			else:
-				_tourner_vers(_joueur.global_position, 1.0)
-				_attaquer()
-			_invoquer(delta)
+				var choix := _manoeuvrer()
+				cible = choix[0]
+				vitesse = choix[1]
+				_invoquer(delta)
+				_attaquer_en_zone(delta)
 		Etat.RETOUR:
 			pv = pv_max
 			_barre.visible = false
@@ -175,10 +188,37 @@ func _physics_process(delta: float) -> void:
 	velocity.x = direction.x * vitesse
 	velocity.z = direction.z * vitesse
 	move_and_slide()
+	if _recul_restant > 0.0:
+		_recul_restant -= vitesse * delta
 	if vitesse > 0.0:
 		_tourner_vers(global_position + direction, 1.0 - exp(-10.0 * delta))
 	if _verrou_animation <= 0.0:
 		_modele.jouer("walk" if vitesse > 0.0 else "idle", 0.15)
+
+
+## Où aller pendant le combat, et à quelle vitesse : [point visé, vitesse].
+func _manoeuvrer() -> Array:
+	var distance := _distance_sol(_joueur.global_position)
+	var loin_du_joueur := global_position - _joueur.global_position
+	loin_du_joueur.y = 0.0
+	loin_du_joueur = loin_du_joueur.normalized() * 2.0
+	var course := float(_definition.get("vitesse_course", 2.0))
+	if _recul_restant > 0.0:
+		return [global_position + loin_du_joueur, course]
+	var portee := float(_definition.get("portee_attaque", 1.1))
+	if _immobile:
+		_tourner_vers(_joueur.global_position, 1.0)
+		if distance <= portee:
+			_attaquer()
+		return [global_position, 0.0]
+	var distance_tir := float(_definition.get("distance_tir", 0.0))
+	if distance_tir > 0.0 and distance < distance_tir * 0.5 and _recharge_attaque > 0.0:
+		return [global_position + loin_du_joueur, float(_definition.get("vitesse_marche", 1.0))]
+	if distance > portee:
+		return [_joueur.global_position, course]
+	_tourner_vers(_joueur.global_position, 1.0)
+	_attaquer()
+	return [global_position, 0.0]
 
 
 func _errer(delta: float) -> Vector3:
@@ -199,7 +239,62 @@ func _attaquer() -> void:
 	var intervalle := float(_definition.get("intervalle_attaque", 1.5))
 	_recharge_attaque = intervalle
 	_jouer_une_fois("attack")
-	_joueur.recevoir_degats(Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu, rang), niveau)
+	var degats := Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu, rang)
+	if float(_definition.get("distance_tir", 0.0)) > 0.0:
+		var couleur: Color = _definition.get("couleur_tir", Color(0.5, 1.0, 0.4))
+		var joueur := _joueur
+		var niveau_tireur := niveau
+		BouleMagique.lancer(get_parent(), global_position + Vector3.UP * _hauteur_infos * 0.7, _joueur, couleur,
+			func() -> void:
+				if is_instance_valid(joueur):
+					joueur.recevoir_degats(degats, niveau_tireur))
+		return
+	_joueur.recevoir_degats(degats, niveau)
+	_recul_restant = float(_definition.get("recul", 0.0))
+
+
+## Attaque de zone (Gueule-Fleur) : un cercle rouge grandit au sol pendant le préavis ;
+## si le joueur est encore dedans à la fin, il est frappé. Il a le temps de s'écarter.
+func _attaquer_en_zone(delta: float) -> void:
+	if _attaque_zone.is_empty() or _zone_en_cours:
+		return
+	_recharge_zone -= delta
+	var rayon := float(_attaque_zone.get("rayon", 4.0))
+	if _recharge_zone > 0.0 or _distance_sol(_joueur.global_position) > rayon * 1.5:
+		return
+	_recharge_zone = float(_attaque_zone.get("intervalle", 8.0))
+	_zone_en_cours = true
+	var preavis := float(_attaque_zone.get("preavis", 1.2))
+	var disque := PlaneMesh.new()
+	disque.size = Vector2(rayon * 2.0, rayon * 2.0)
+	var matiere := StandardMaterial3D.new()
+	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	matiere.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	matiere.albedo_color = Color(COULEUR_ZONE, 0.9)
+	matiere.albedo_texture = _anneau()
+	disque.material = matiere
+	var cercle := MeshInstance3D.new()
+	cercle.name = "AttaqueDeZone"
+	cercle.mesh = disque
+	cercle.position.y = 0.05
+	cercle.scale = Vector3.ONE * 0.15
+	cercle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(cercle)
+	var animation := cercle.create_tween()
+	animation.tween_property(cercle, "scale", Vector3.ONE, preavis)
+	animation.tween_callback(_frapper_en_zone.bind(cercle, rayon))
+
+
+func _frapper_en_zone(cercle: Node3D, rayon: float) -> void:
+	_zone_en_cours = false
+	cercle.queue_free()
+	if not est_vivant() or not _joueur_vivant() or _distance_sol(_joueur.global_position) > rayon:
+		return
+	_jouer_une_fois("attack")
+	var degats := Combat.degats_monstre(niveau, _joueur.niveau(), _passif, float(_definition.get("intervalle_attaque", 1.5)),
+		Config.jeu, rang) * float(_attaque_zone.get("multiplicateur", 2.0))
+	_joueur.recevoir_degats(degats, niveau)
 
 
 ## Un sous-boss qui invoque appelle des renforts à intervalle régulier pendant le combat.

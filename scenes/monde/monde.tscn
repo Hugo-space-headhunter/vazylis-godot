@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/compteur_fps.tscn" id="6_fps"]
 [ext_resource type="PackedScene" path="res://scenes/zones/vazylis.tscn" id="7_vazylis"]
 [ext_resource type="PackedScene" path="res://scenes/zones/pres_de_vazylis.tscn" id="8_pres"]
+[ext_resource type="PackedScene" path="res://scenes/zones/bois_des_lucioles.tscn" id="9_bois"]
 [ext_resource type="Script" path="res://scripts/ui/boutons_mode.gd" id="10_modes"]
 [ext_resource type="PackedScene" path="res://scenes/ui/bandeau.tscn" id="11_bandeau"]
 [ext_resource type="Script" path="res://scripts/ui/fenetre_statistiques.gd" id="12_fenetre"]
@@ -44,6 +45,8 @@ directional_shadow_max_distance = 25.0
 [node name="Vazylis" parent="Zones" instance=ExtResource("7_vazylis")]
 
 [node name="PresDeVazylis" parent="Zones" instance=ExtResource("8_pres")]
+
+[node name="BoisDesLucioles" parent="Zones" instance=ExtResource("9_bois")]
 
 [node name="Joueur" parent="." instance=ExtResource("2_joueur")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)

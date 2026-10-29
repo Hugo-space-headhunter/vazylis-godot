@@ -259,8 +259,8 @@ func test_les_monstres_des_pres_et_le_pomelin_royal_apparaissent() -> void:
 	var noms := {}
 	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
 		noms[monstre.id_monstre] = true
-		assert_gt(monstre.global_position.length(), 12.5, "Aucun monstre dans Vazylis")
-	for id in ["monstre.cochonnet_suie", "monstre.corbac", "monstre.pomelin", "monstre.pomelin_royal"]:
+		assert_gt(monstre.global_position.length(), 18.0, "Aucun monstre dans Vazylis")
+	for id in Config.jeu.ids_monstres():
 		assert_true(noms.has(id), "%s manque" % id)
 
 
@@ -285,3 +285,15 @@ func test_le_sac_affiche_les_ressources() -> void:
 		textes.append((ligne.get_child(1) as Label).text)
 	assert_has(textes, "Fer 4")
 	assert_has(textes, "Cuir 0")
+
+
+func test_le_bois_des_lucioles_est_au_nord_et_plus_sombre() -> void:
+	var bois: Zone = terrain.get_node("Zones/BoisDesLucioles")
+	assert_eq(bois.titre(), "Le Bois des Lucioles  (niv. 11–20)")
+	var lumiere_depart: float = terrain.get_node("Soleil").light_energy
+	joueur.global_position = Vector3(0, 0.1, -90)
+	await wait_until(func(): return terrain.zone_actuelle() == bois, 2.0)
+	assert_eq(terrain.zone_actuelle(), bois)
+	await wait_seconds(1.7)
+	assert_lt(terrain.get_node("Soleil").light_energy, lumiere_depart, "La lumière baisse dans le Bois")
+	assert_gt(terrain.get_node("Zones/BoisDesLucioles/Lucioles").get_child_count(), 5, "Des essaims de lucioles")

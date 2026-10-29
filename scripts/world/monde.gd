@@ -25,6 +25,9 @@ const NOMS := {
 
 var _zone_actuelle: Zone
 var _verification_zone := 0.0
+var _ciel_depart := Color.WHITE
+var _ambiance_depart := 1.0
+var _soleil_depart := 1.0
 
 
 func _ready() -> void:
@@ -64,6 +67,12 @@ func _ready() -> void:
 	_joueur.afk_change.connect(func(actif: bool) -> void:
 		_bouton_afk.modulate = _boutons_mode.COULEUR_ACTIF if actif else Color(1, 1, 1, 0.75))
 	_bouton_afk.modulate = Color(1, 1, 1, 0.75)
+	# Une copie, pour que les changements d'ambiance ne modifient pas la scène d'origine.
+	$Environnement.environment = ($Environnement.environment as Environment).duplicate()
+	var environnement: Environment = $Environnement.environment
+	_ciel_depart = environnement.background_color
+	_ambiance_depart = environnement.ambient_light_energy
+	_soleil_depart = ($Soleil as DirectionalLight3D).light_energy
 	_reprendre_la_partie()
 
 
@@ -117,7 +126,18 @@ func _surveiller_la_zone() -> void:
 			if zone != _zone_actuelle:
 				_zone_actuelle = zone
 				_annonces.annoncer(zone.titre(), Color(0.95, 0.92, 0.8))
+				_changer_d_ambiance(zone)
 			return
+
+
+## Le ciel et la lumière changent doucement selon la zone (le Bois des Lucioles est plus sombre).
+func _changer_d_ambiance(zone: Zone) -> void:
+	var environnement: Environment = $Environnement.environment
+	var ciel := zone.couleur_ciel if zone.couleur_ciel.a > 0.0 else _ciel_depart
+	var transition := create_tween().set_parallel()
+	transition.tween_property(environnement, "background_color", ciel, 1.5)
+	transition.tween_property(environnement, "ambient_light_energy", _ambiance_depart * zone.lumiere, 1.5)
+	transition.tween_property($Soleil, "light_energy", _soleil_depart * zone.lumiere, 1.5)
 
 
 func zone_actuelle() -> Zone:

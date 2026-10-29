@@ -22,6 +22,10 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Pomelin Royal : pour l'instant un Pomelin plus gros et teinté ; lui faire sa couronne de feuilles noires (accessoire sur le point « tête »).
 - Aura des champions et des sous-boss : anneau et étincelles simples, à embellir (halo, pulsation plus riche).
 - Ressources dans le sac : un petit rond de couleur pour l'instant ; leur dessiner de vraies icônes.
+- Bois des Lucioles (étape 6.2) : le pack Ultimate Stylized Nature n'est arrivé qu'en partie (Google Drive l'a coupé en plusieurs morceaux) ; il manque les pins, les « arbres normaux », les palmiers et les champignons. Les récupérer (autres morceaux du téléchargement) pour varier la forêt et ajouter les champignons géants de la Vallée claire.
+- Maisons de Vazylis : fenêtres sans vitres ni volets, pas encore d'intérieur ; ajouter un puits, un marché couvert, une forge (étape 7).
+- Gueule-Fleur : l'attaque de zone est un cercle rouge ; plus tard, de vraies lianes qui jaillissent du sol.
+- Gobelin chaman : sa boule verte est une simple sphère lumineuse ; lui donner une traînée et une animation d'incantation.
 
 ## Technique
 

@@ -121,3 +121,54 @@ func test_mourir_ramene_au_point_de_retour_et_coupe_l_afk() -> void:
 	await wait_until(func(): return joueur.est_vivant(), 5.0)
 	assert_almost_eq(joueur.global_position.x, 2.0, 0.3)
 	assert_almost_eq(joueur.global_position.z, 7.0, 0.3)
+
+
+func test_la_ronce_gueule_ne_bouge_pas_et_fouette_a_portee() -> void:
+	var ronce := _monstre("monstre.ronce_gueule", 14, Vector3(0, 0, -2.2))
+	await wait_physics_frames(60)
+	assert_eq(ronce.etat, Monstre.Etat.POURSUITE, "Le joueur est à portée")
+	assert_lt(joueur.pv, joueur.pv_max, "Elle fouette à 2,2 m")
+	assert_almost_eq(ronce.global_position.z, -2.2, 0.05, "Elle ne bouge pas")
+	joueur.global_position = Vector3(0, 0, 4)
+	joueur.pv = joueur.pv_max
+	await wait_physics_frames(120)
+	assert_eq(joueur.pv, joueur.pv_max, "Hors de portée, elle ne peut rien")
+	assert_almost_eq(ronce.global_position.z, -2.2, 0.05)
+
+
+func test_le_gobelin_chapardeur_frappe_puis_recule() -> void:
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	var gobelin := _monstre("monstre.gobelin_chapardeur", 11, Vector3(0, 0, -4))
+	await wait_until(func(): return joueur.pv < joueur.pv_max, 5.0)
+	assert_lt(joueur.pv, joueur.pv_max, "Il a frappé")
+	await wait_physics_frames(25)
+	assert_gt(Vector2(gobelin.global_position.x, gobelin.global_position.z).length(), 1.8, "Puis il recule")
+
+
+func test_le_gobelin_chaman_lance_des_boules_a_distance() -> void:
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	var chaman := _monstre("monstre.gobelin_chaman", 17, Vector3(0, 0, -6))
+	await wait_until(func(): return not arene.find_children("*", "BouleMagique", true, false).is_empty(), 4.0)
+	assert_false(arene.find_children("*", "BouleMagique", true, false).is_empty(), "Une boule est lancée")
+	await wait_until(func(): return joueur.pv < joueur.pv_max, 3.0)
+	assert_lt(joueur.pv, joueur.pv_max, "La boule touche")
+	assert_gt(Vector2(chaman.global_position.x, chaman.global_position.z).length(), 3.0, "Il reste à distance")
+
+
+func test_la_gueule_fleur_annonce_son_attaque_de_zone() -> void:
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	var fleur := _monstre("monstre.gueule_fleur", 20, Vector3(0, 0, -3.8))
+	assert_eq(fleur.rang, Combat.RANG_SOUS_BOSS)
+	await wait_until(func(): return fleur.has_node("AttaqueDeZone"), 8.0)
+	assert_true(fleur.has_node("AttaqueDeZone"), "Un cercle rouge annonce l'attaque")
+	# Le joueur s'écarte du cercle (et de la morsure) avant la fin du préavis : il n'est pas touché.
+	joueur.global_position = Vector3(0, 0, 6)
+	await wait_physics_frames(2)
+	joueur.pv = joueur.pv_max
+	await wait_until(func(): return not fleur.has_node("AttaqueDeZone"), 3.0)
+	await wait_physics_frames(2)
+	assert_eq(joueur.pv, joueur.pv_max, "S'écarter évite l'attaque de zone")
+	assert_almost_eq(fleur.global_position.z, -3.8, 0.05, "Ancrée au sol")

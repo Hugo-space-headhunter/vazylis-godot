@@ -4,24 +4,23 @@
 [ext_resource type="Script" path="res://scripts/world/decor.gd" id="2_r"]
 
 [sub_resource type="StandardMaterial3D" id="Materiau_paves"]
-albedo_color = Color(0.66, 0.62, 0.55, 1)
+albedo_color = Color(0.6, 0.57, 0.5, 1)
 roughness = 1.0
 
 [sub_resource type="CylinderMesh" id="Maillage_place"]
 material = SubResource("Materiau_paves")
-top_radius = 12.2
-bottom_radius = 12.2
+top_radius = 17.7
+bottom_radius = 17.7
 height = 0.04
-radial_segments = 32
+radial_segments = 40
 rings = 1
 
 [node name="Vazylis" type="Node3D"]
 script = ExtResource("1_r")
 nom = "Vazylis"
-rayon = 12.5
+rayon = 18.0
 
 [node name="Place" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("Maillage_place")
 
 [node name="PointDeRetour" type="Marker3D" parent="."]
@@ -33,228 +32,360 @@ transform = Transform3D(1.6000, 0, 0.0000, 0, 1.6000, 0, -0.0000, 0, 1.6000, 0.0
 [node name="Rempart" type="Node3D" parent="."]
 
 [node name="Mur1" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9239, 0, -0.3827, 0, 1.0000, 0, 0.3827, 0, 0.9239, 4.401, 0.000, -10.625)
+transform = Transform3D(0.9659, 0, -0.2588, 0, 1.0000, 0, 0.2588, 0, 0.9659, 4.400, 0.000, -16.421)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Torche1" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9239, 0, -0.3827, 0, 1.0000, 0, 0.3827, 0, 0.9239, 4.257, 2.000, -10.278)
+transform = Transform3D(0.9659, 0, -0.2588, 0, 1.0000, 0, 0.2588, 0, 0.9659, 4.303, 2.000, -16.059)
 script = ExtResource("2_r")
 id_asset = "prop.torche_murale"
+projette_ombre = false
 
 [node name="Mur2" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.7934, 0, -0.6088, 0, 1.0000, 0, 0.6088, 0, 0.7934, 7.001, 0.000, -9.124)
+transform = Transform3D(0.9063, 0, -0.4226, 0, 1.0000, 0, 0.4226, 0, 0.9063, 7.185, 0.000, -15.407)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
-
-[node name="Banniere2" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.7934, 0, -0.6088, 0, 1.0000, 0, 0.6088, 0, 0.7934, 7.001, 0.000, -9.124)
-script = ExtResource("2_r")
-id_asset = "prop.banniere_soleil"
 
 [node name="Mur3" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.6088, 0, -0.7934, 0, 1.0000, 0, 0.7934, 0, 0.6088, 9.124, 0.000, -7.001)
+transform = Transform3D(0.8192, 0, -0.5736, 0, 1.0000, 0, 0.5736, 0, 0.8192, 9.751, 0.000, -13.926)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Torche3" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.6088, 0, -0.7934, 0, 1.0000, 0, 0.7934, 0, 0.6088, 8.826, 2.000, -6.772)
+[node name="Banniere3" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.8192, 0, -0.5736, 0, 1.0000, 0, 0.5736, 0, 0.8192, 9.751, 0.000, -13.926)
 script = ExtResource("2_r")
-id_asset = "prop.torche_murale"
+id_asset = "prop.banniere_soleil"
+projette_ombre = false
 
 [node name="Mur4" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.3827, 0, -0.9239, 0, 1.0000, 0, 0.9239, 0, 0.3827, 10.625, 0.000, -4.401)
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1.0000, 0, 0.7071, 0, 0.7071, 12.021, 0.000, -12.021)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Banniere4" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.3827, 0, -0.9239, 0, 1.0000, 0, 0.9239, 0, 0.3827, 10.625, 0.000, -4.401)
-script = ExtResource("2_r")
-id_asset = "prop.banniere_lumiere"
-
-[node name="Mur5" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.3827, 0, -0.9239, 0, 1.0000, 0, 0.9239, 0, -0.3827, 10.625, 0.000, 4.401)
-script = ExtResource("2_r")
-id_asset = "prop.mur_rempart"
-obstacle = Vector3(3.1, 3, 0.75)
-
-[node name="Torche5" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.3827, 0, -0.9239, 0, 1.0000, 0, 0.9239, 0, -0.3827, 10.278, 2.000, 4.257)
+[node name="Torche4" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1.0000, 0, 0.7071, 0, 0.7071, 11.756, 2.000, -11.756)
 script = ExtResource("2_r")
 id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur5" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.5736, 0, -0.8192, 0, 1.0000, 0, 0.8192, 0, 0.5736, 13.926, 0.000, -9.751)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Mur6" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.6088, 0, -0.7934, 0, 1.0000, 0, 0.7934, 0, -0.6088, 9.124, 0.000, 7.001)
+transform = Transform3D(0.4226, 0, -0.9063, 0, 1.0000, 0, 0.9063, 0, 0.4226, 15.407, 0.000, -7.185)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Banniere6" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.6088, 0, -0.7934, 0, 1.0000, 0, 0.7934, 0, -0.6088, 9.124, 0.000, 7.001)
+transform = Transform3D(0.4226, 0, -0.9063, 0, 1.0000, 0, 0.9063, 0, 0.4226, 15.407, 0.000, -7.185)
 script = ExtResource("2_r")
-id_asset = "prop.banniere_soleil"
+id_asset = "prop.banniere_lumiere"
+projette_ombre = false
 
 [node name="Mur7" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.7934, 0, -0.6088, 0, 1.0000, 0, 0.6088, 0, -0.7934, 7.001, 0.000, 9.124)
+transform = Transform3D(0.2588, 0, -0.9659, 0, 1.0000, 0, 0.9659, 0, 0.2588, 16.421, 0.000, -4.400)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Torche7" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.7934, 0, -0.6088, 0, 1.0000, 0, 0.6088, 0, -0.7934, 6.772, 2.000, 8.826)
+transform = Transform3D(0.2588, 0, -0.9659, 0, 1.0000, 0, 0.9659, 0, 0.2588, 16.059, 2.000, -4.303)
 script = ExtResource("2_r")
 id_asset = "prop.torche_murale"
+projette_ombre = false
 
 [node name="Mur8" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9239, 0, -0.3827, 0, 1.0000, 0, 0.3827, 0, -0.9239, 4.401, 0.000, 10.625)
+transform = Transform3D(-0.2588, 0, -0.9659, 0, 1.0000, 0, 0.9659, 0, -0.2588, 16.421, 0.000, 4.400)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
-
-[node name="Banniere8" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9239, 0, -0.3827, 0, 1.0000, 0, 0.3827, 0, -0.9239, 4.401, 0.000, 10.625)
-script = ExtResource("2_r")
-id_asset = "prop.banniere_lumiere"
 
 [node name="Mur9" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9239, 0, 0.3827, 0, 1.0000, 0, -0.3827, 0, -0.9239, -4.401, 0.000, 10.625)
+transform = Transform3D(-0.4226, 0, -0.9063, 0, 1.0000, 0, 0.9063, 0, -0.4226, 15.407, 0.000, 7.185)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Torche9" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9239, 0, 0.3827, 0, 1.0000, 0, -0.3827, 0, -0.9239, -4.257, 2.000, 10.278)
-script = ExtResource("2_r")
-id_asset = "prop.torche_murale"
-
-[node name="Mur10" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.7934, 0, 0.6088, 0, 1.0000, 0, -0.6088, 0, -0.7934, -7.001, 0.000, 9.124)
-script = ExtResource("2_r")
-id_asset = "prop.mur_rempart"
-obstacle = Vector3(3.1, 3, 0.75)
-
-[node name="Banniere10" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.7934, 0, 0.6088, 0, 1.0000, 0, -0.6088, 0, -0.7934, -7.001, 0.000, 9.124)
+[node name="Banniere9" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.4226, 0, -0.9063, 0, 1.0000, 0, 0.9063, 0, -0.4226, 15.407, 0.000, 7.185)
 script = ExtResource("2_r")
 id_asset = "prop.banniere_soleil"
+projette_ombre = false
 
-[node name="Mur11" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.6088, 0, 0.7934, 0, 1.0000, 0, -0.7934, 0, -0.6088, -9.124, 0.000, 7.001)
+[node name="Mur10" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.5736, 0, -0.8192, 0, 1.0000, 0, 0.8192, 0, -0.5736, 13.926, 0.000, 9.751)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Torche11" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.6088, 0, 0.7934, 0, 1.0000, 0, -0.7934, 0, -0.6088, -8.826, 2.000, 6.772)
+[node name="Torche10" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.5736, 0, -0.8192, 0, 1.0000, 0, 0.8192, 0, -0.5736, 13.618, 2.000, 9.536)
 script = ExtResource("2_r")
 id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur11" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.7071, 0, -0.7071, 0, 1.0000, 0, 0.7071, 0, -0.7071, 12.021, 0.000, 12.021)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Mur12" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.3827, 0, 0.9239, 0, 1.0000, 0, -0.9239, 0, -0.3827, -10.625, 0.000, 4.401)
+transform = Transform3D(-0.8192, 0, -0.5736, 0, 1.0000, 0, 0.5736, 0, -0.8192, 9.751, 0.000, 13.926)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Banniere12" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.3827, 0, 0.9239, 0, 1.0000, 0, -0.9239, 0, -0.3827, -10.625, 0.000, 4.401)
+transform = Transform3D(-0.8192, 0, -0.5736, 0, 1.0000, 0, 0.5736, 0, -0.8192, 9.751, 0.000, 13.926)
 script = ExtResource("2_r")
 id_asset = "prop.banniere_lumiere"
+projette_ombre = false
 
 [node name="Mur13" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.3827, 0, 0.9239, 0, 1.0000, 0, -0.9239, 0, 0.3827, -10.625, 0.000, -4.401)
+transform = Transform3D(-0.9063, 0, -0.4226, 0, 1.0000, 0, 0.4226, 0, -0.9063, 7.185, 0.000, 15.407)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
 [node name="Torche13" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.3827, 0, 0.9239, 0, 1.0000, 0, -0.9239, 0, 0.3827, -10.278, 2.000, -4.257)
+transform = Transform3D(-0.9063, 0, -0.4226, 0, 1.0000, 0, 0.4226, 0, -0.9063, 7.026, 2.000, 15.067)
 script = ExtResource("2_r")
 id_asset = "prop.torche_murale"
+projette_ombre = false
 
 [node name="Mur14" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.6088, 0, 0.7934, 0, 1.0000, 0, -0.7934, 0, 0.6088, -9.124, 0.000, -7.001)
+transform = Transform3D(-0.9659, 0, -0.2588, 0, 1.0000, 0, 0.2588, 0, -0.9659, 4.400, 0.000, 16.421)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
-
-[node name="Banniere14" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.6088, 0, 0.7934, 0, 1.0000, 0, -0.7934, 0, 0.6088, -9.124, 0.000, -7.001)
-script = ExtResource("2_r")
-id_asset = "prop.banniere_soleil"
 
 [node name="Mur15" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.7934, 0, 0.6088, 0, 1.0000, 0, -0.6088, 0, 0.7934, -7.001, 0.000, -9.124)
+transform = Transform3D(-0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, -0.9659, -4.400, 0.000, 16.421)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Torche15" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.7934, 0, 0.6088, 0, 1.0000, 0, -0.6088, 0, 0.7934, -6.772, 2.000, -8.826)
+[node name="Banniere15" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, -0.9659, -4.400, 0.000, 16.421)
 script = ExtResource("2_r")
-id_asset = "prop.torche_murale"
+id_asset = "prop.banniere_soleil"
+projette_ombre = false
 
 [node name="Mur16" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9239, 0, 0.3827, 0, 1.0000, 0, -0.3827, 0, 0.9239, -4.401, 0.000, -10.625)
+transform = Transform3D(-0.9063, 0, 0.4226, 0, 1.0000, 0, -0.4226, 0, -0.9063, -7.185, 0.000, 15.407)
 script = ExtResource("2_r")
 id_asset = "prop.mur_rempart"
 obstacle = Vector3(3.1, 3, 0.75)
 
-[node name="Banniere16" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9239, 0, 0.3827, 0, 1.0000, 0, -0.3827, 0, 0.9239, -4.401, 0.000, -10.625)
+[node name="Torche16" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.9063, 0, 0.4226, 0, 1.0000, 0, -0.4226, 0, -0.9063, -7.026, 2.000, 15.067)
+script = ExtResource("2_r")
+id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur17" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.8192, 0, 0.5736, 0, 1.0000, 0, -0.5736, 0, -0.8192, -9.751, 0.000, 13.926)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Mur18" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, -0.7071, -12.021, 0.000, 12.021)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Banniere18" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, -0.7071, -12.021, 0.000, 12.021)
 script = ExtResource("2_r")
 id_asset = "prop.banniere_lumiere"
+projette_ombre = false
+
+[node name="Mur19" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.5736, 0, 0.8192, 0, 1.0000, 0, -0.8192, 0, -0.5736, -13.926, 0.000, 9.751)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Torche19" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.5736, 0, 0.8192, 0, 1.0000, 0, -0.8192, 0, -0.5736, -13.618, 2.000, 9.536)
+script = ExtResource("2_r")
+id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur20" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.4226, 0, 0.9063, 0, 1.0000, 0, -0.9063, 0, -0.4226, -15.407, 0.000, 7.185)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Mur21" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, -0.2588, -16.421, 0.000, 4.400)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Banniere21" type="Node3D" parent="Rempart"]
+transform = Transform3D(-0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, -0.2588, -16.421, 0.000, 4.400)
+script = ExtResource("2_r")
+id_asset = "prop.banniere_soleil"
+projette_ombre = false
+
+[node name="Mur22" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, 0.2588, -16.421, 0.000, -4.400)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Torche22" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, 0.2588, -16.059, 2.000, -4.303)
+script = ExtResource("2_r")
+id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur23" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.4226, 0, 0.9063, 0, 1.0000, 0, -0.9063, 0, 0.4226, -15.407, 0.000, -7.185)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Mur24" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.5736, 0, 0.8192, 0, 1.0000, 0, -0.8192, 0, 0.5736, -13.926, 0.000, -9.751)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Banniere24" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.5736, 0, 0.8192, 0, 1.0000, 0, -0.8192, 0, 0.5736, -13.926, 0.000, -9.751)
+script = ExtResource("2_r")
+id_asset = "prop.banniere_lumiere"
+projette_ombre = false
+
+[node name="Mur25" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, 0.7071, -12.021, 0.000, -12.021)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Torche25" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, 0.7071, -11.756, 2.000, -11.756)
+script = ExtResource("2_r")
+id_asset = "prop.torche_murale"
+projette_ombre = false
+
+[node name="Mur26" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.8192, 0, 0.5736, 0, 1.0000, 0, -0.5736, 0, 0.8192, -9.751, 0.000, -13.926)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Mur27" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.9063, 0, 0.4226, 0, 1.0000, 0, -0.4226, 0, 0.9063, -7.185, 0.000, -15.407)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Banniere27" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.9063, 0, 0.4226, 0, 1.0000, 0, -0.4226, 0, 0.9063, -7.185, 0.000, -15.407)
+script = ExtResource("2_r")
+id_asset = "prop.banniere_soleil"
+projette_ombre = false
+
+[node name="Mur28" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, 0.9659, -4.400, 0.000, -16.421)
+script = ExtResource("2_r")
+id_asset = "prop.mur_rempart"
+obstacle = Vector3(3.1, 3, 0.75)
+
+[node name="Torche28" type="Node3D" parent="Rempart"]
+transform = Transform3D(0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, 0.9659, -4.303, 2.000, -16.059)
+script = ExtResource("2_r")
+id_asset = "prop.torche_murale"
+projette_ombre = false
 
 [node name="PilierNordGauche" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, 0.9659, -2.976, 0.000, -11.108)
+transform = Transform3D(0.9848, 0, 0.1736, 0, 1.0000, 0, -0.1736, 0, 0.9848, -2.952, 0.000, -16.742)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierNordDroite" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.9659, 0, -0.2588, 0, 1.0000, 0, 0.2588, 0, 0.9659, 2.976, 0.000, -11.108)
+transform = Transform3D(0.9848, 0, -0.1736, 0, 1.0000, 0, 0.1736, 0, 0.9848, 2.952, 0.000, -16.742)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierEstGauche" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.2588, 0, -0.9659, 0, 1.0000, 0, 0.9659, 0, 0.2588, 11.108, 0.000, -2.976)
+transform = Transform3D(0.1736, 0, -0.9848, 0, 1.0000, 0, 0.9848, 0, 0.1736, 16.742, 0.000, -2.952)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierEstDroite" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.2588, 0, -0.9659, 0, 1.0000, 0, 0.9659, 0, -0.2588, 11.108, 0.000, 2.976)
+transform = Transform3D(-0.1736, 0, -0.9848, 0, 1.0000, 0, 0.9848, 0, -0.1736, 16.742, 0.000, 2.952)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierSudGauche" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9659, 0, -0.2588, 0, 1.0000, 0, 0.2588, 0, -0.9659, 2.976, 0.000, 11.108)
+transform = Transform3D(-0.9848, 0, -0.1736, 0, 1.0000, 0, 0.1736, 0, -0.9848, 2.952, 0.000, 16.742)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierSudDroite" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.9659, 0, 0.2588, 0, 1.0000, 0, -0.2588, 0, -0.9659, -2.976, 0.000, 11.108)
+transform = Transform3D(-0.9848, 0, 0.1736, 0, 1.0000, 0, -0.1736, 0, -0.9848, -2.952, 0.000, 16.742)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierOuestGauche" type="Node3D" parent="Rempart"]
-transform = Transform3D(-0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, -0.2588, -11.108, 0.000, 2.976)
+transform = Transform3D(-0.1736, 0, 0.9848, 0, 1.0000, 0, -0.9848, 0, -0.1736, -16.742, 0.000, 2.952)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
 
 [node name="PilierOuestDroite" type="Node3D" parent="Rempart"]
-transform = Transform3D(0.2588, 0, 0.9659, 0, 1.0000, 0, -0.9659, 0, 0.2588, -11.108, 0.000, -2.976)
+transform = Transform3D(0.1736, 0, 0.9848, 0, 1.0000, 0, -0.9848, 0, 0.1736, -16.742, 0.000, -2.952)
 script = ExtResource("2_r")
 id_asset = "prop.pilier_rempart"
 obstacle = Vector3(1.7, 3, 1.3)
+
+[node name="Maisons" type="Node3D" parent="."]
+
+[node name="Maison1" type="Node3D" parent="Maisons"]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1.0000, 0, 0.7071, 0, 0.7071, 7.778, 0.000, -7.778)
+script = ExtResource("2_r")
+id_asset = "prop.maison_colombages"
+obstacle = Vector3(4.4, 3, 4.4)
+
+[node name="Maison2" type="Node3D" parent="Maisons"]
+transform = Transform3D(-0.7071, 0, -0.7071, 0, 1.0000, 0, 0.7071, 0, -0.7071, 7.778, 0.000, 7.778)
+script = ExtResource("2_r")
+id_asset = "prop.maison_pierre"
+obstacle = Vector3(6.4, 3, 4.4)
+
+[node name="Maison3" type="Node3D" parent="Maisons"]
+transform = Transform3D(-0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, -0.7071, -7.778, 0.000, 7.778)
+script = ExtResource("2_r")
+id_asset = "prop.maison_colombages"
+obstacle = Vector3(4.4, 3, 4.4)
+
+[node name="Maison4" type="Node3D" parent="Maisons"]
+transform = Transform3D(0.7071, 0, 0.7071, 0, 1.0000, 0, -0.7071, 0, 0.7071, -7.778, 0.000, -7.778)
+script = ExtResource("2_r")
+id_asset = "prop.maison_pierre"
+obstacle = Vector3(6.4, 3, 4.4)
 
 [node name="Village" type="Node3D" parent="."]
 
@@ -263,122 +394,281 @@ transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 2.2
 script = ExtResource("2_r")
 id_asset = "prop.colonne"
 obstacle = Vector3(0.7, 1.4, 0.7)
+projette_ombre = false
 
 [node name="Brasero1" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 2.263, 1.400, -2.263)
 script = ExtResource("2_r")
 id_asset = "prop.torche"
+projette_ombre = false
 
 [node name="Colonne2" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 2.263, 0.000, 2.263)
 script = ExtResource("2_r")
 id_asset = "prop.colonne"
 obstacle = Vector3(0.7, 1.4, 0.7)
+projette_ombre = false
 
 [node name="Brasero2" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 2.263, 1.400, 2.263)
 script = ExtResource("2_r")
 id_asset = "prop.torche"
+projette_ombre = false
 
 [node name="Colonne3" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.263, 0.000, 2.263)
 script = ExtResource("2_r")
 id_asset = "prop.colonne"
 obstacle = Vector3(0.7, 1.4, 0.7)
+projette_ombre = false
 
 [node name="Brasero3" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.263, 1.400, 2.263)
 script = ExtResource("2_r")
 id_asset = "prop.torche"
+projette_ombre = false
 
 [node name="Colonne4" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.263, 0.000, -2.263)
 script = ExtResource("2_r")
 id_asset = "prop.colonne"
 obstacle = Vector3(0.7, 1.4, 0.7)
+projette_ombre = false
 
 [node name="Brasero4" type="Node3D" parent="Village"]
 transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.263, 1.400, -2.263)
 script = ExtResource("2_r")
 id_asset = "prop.torche"
+projette_ombre = false
 
 [node name="Table1" type="Node3D" parent="Village"]
-transform = Transform3D(0.9553, 0, 0.2955, 0, 1.0000, 0, -0.2955, 0, 0.9553, -6.500, 0.000, -4.000)
+transform = Transform3D(0.9553, 0, 0.2955, 0, 1.0000, 0, -0.2955, 0, 0.9553, 2.223, 0.000, -6.108)
 script = ExtResource("2_r")
 id_asset = "prop.table"
 obstacle = Vector3(1, 0.9, 1)
+projette_ombre = false
 
 [node name="Tabouret1" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -5.600, 0.000, -3.300)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 1.452, 0.000, -5.822)
 script = ExtResource("2_r")
 id_asset = "prop.tabouret"
+projette_ombre = false
 
 [node name="Tabouret2" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -7.300, 0.000, -4.800)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 3.156, 0.000, -6.471)
 script = ExtResource("2_r")
 id_asset = "prop.tabouret"
+projette_ombre = false
 
 [node name="Table2" type="Node3D" parent="Village"]
-transform = Transform3D(0.9211, 0, -0.3894, 0, 1.0000, 0, 0.3894, 0, 0.9211, 6.800, 0.000, 3.800)
+transform = Transform3D(0.9211, 0, -0.3894, 0, 1.0000, 0, 0.3894, 0, 0.9211, -2.223, 0.000, 6.108)
 script = ExtResource("2_r")
 id_asset = "prop.table"
 obstacle = Vector3(1, 0.9, 1)
+projette_ombre = false
 
 [node name="Tabouret3" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 6.000, 0.000, 4.700)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -3.314, 0.000, 6.504)
 script = ExtResource("2_r")
 id_asset = "prop.tabouret"
+projette_ombre = false
 
 [node name="Tonneau1" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -8.600, 0.000, 2.200)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 12.296, 0.000, -6.265)
 script = ExtResource("2_r")
 id_asset = "prop.tonneau"
 obstacle = Vector3(0.8, 0.9, 0.8)
+projette_ombre = false
 
 [node name="Tonneaux1" type="Node3D" parent="Village"]
-transform = Transform3D(0.6216, 0, 0.7833, 0, 1.0000, 0, -0.7833, 0, 0.6216, -8.000, 0.000, 3.600)
+transform = Transform3D(0.6216, 0, 0.7833, 0, 1.0000, 0, -0.7833, 0, 0.6216, 7.100, 0.000, -12.298)
 script = ExtResource("2_r")
 id_asset = "prop.tonneaux"
 obstacle = Vector3(0.9, 0.9, 0.5)
+projette_ombre = false
 
 [node name="Fut1" type="Node3D" parent="Village"]
-transform = Transform3D(0.3624, 0, 0.9320, 0, 1.0000, 0, -0.9320, 0, 0.3624, 8.300, 0.000, -3.000)
+transform = Transform3D(0.3624, 0, 0.9320, 0, 1.0000, 0, -0.9320, 0, 0.3624, 6.573, 0.000, 12.361)
 script = ExtResource("2_r")
 id_asset = "prop.fut"
 obstacle = Vector3(1.6, 0.9, 0.9)
+projette_ombre = false
 
 [node name="Caisses1" type="Node3D" parent="Village"]
-transform = Transform3D(0.9801, 0, 0.1987, 0, 1.0000, 0, -0.1987, 0, 0.9801, 4.000, 0.000, -8.800)
+transform = Transform3D(0.9801, 0, 0.1987, 0, 1.0000, 0, -0.1987, 0, 0.9801, 12.626, 0.000, 6.713)
 script = ExtResource("2_r")
 id_asset = "prop.caisses"
 obstacle = Vector3(1, 1, 1.1)
+projette_ombre = false
 
 [node name="CaissesHautes1" type="Node3D" parent="Village"]
-transform = Transform3D(0.8776, 0, -0.4794, 0, 1.0000, 0, 0.4794, 0, 0.8776, 5.600, 0.000, -8.000)
+transform = Transform3D(0.8776, 0, -0.4794, 0, 1.0000, 0, 0.4794, 0, 0.8776, -12.384, 0.000, 7.150)
 script = ExtResource("2_r")
 id_asset = "prop.caisses_hautes"
 obstacle = Vector3(1.4, 1.3, 1.4)
+projette_ombre = false
 
 [node name="Coffre1" type="Node3D" parent="Village"]
-transform = Transform3D(-0.9875, 0, -0.1577, 0, 1.0000, 0, 0.1577, 0, -0.9875, -4.200, 0.000, 8.600)
+transform = Transform3D(-0.9875, 0, -0.1577, 0, 1.0000, 0, 0.1577, 0, -0.9875, -12.124, 0.000, -7.000)
 script = ExtResource("2_r")
 id_asset = "prop.coffre"
 obstacle = Vector3(1, 0.6, 0.75)
+projette_ombre = false
 
 [node name="Tonneau2" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.800, 0.000, 9.200)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -7.100, 0.000, -12.298)
 script = ExtResource("2_r")
 id_asset = "prop.tonneau"
 obstacle = Vector3(0.8, 0.9, 0.8)
+projette_ombre = false
 
-[node name="Caisses2" type="Node3D" parent="Village"]
-transform = Transform3D(0.7648, 0, 0.6442, 0, 1.0000, 0, -0.6442, 0, 0.7648, 8.900, 0.000, 1.000)
+[node name="Chariot1" type="Node3D" parent="Village"]
+transform = Transform3D(-0.3233, 0, 0.9463, 0, 1.0000, 0, -0.9463, 0, -0.3233, 7.417, 0.000, -2.997)
 script = ExtResource("2_r")
-id_asset = "prop.caisses"
-obstacle = Vector3(1, 1, 1.1)
+id_asset = "prop.chariot"
+obstacle = Vector3(1.6, 1.2, 3.2)
 
 [node name="Tonneau3" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -3.800, 0.000, -8.900)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, 2.565, 0.000, 7.048)
 script = ExtResource("2_r")
 id_asset = "prop.tonneau"
 obstacle = Vector3(0.8, 0.9, 0.8)
+projette_ombre = false
+
+[node name="Nature" type="Node3D" parent="."]
+
+[node name="Arbre1" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7418, 0, -0.3633, 0, 0.8260, 0, 0.3633, 0, 0.7418, 4.993, 0.000, -13.720)
+script = ExtResource("2_r")
+id_asset = "prop.bouleau_1"
+obstacle = Vector3(0.7, 3, 0.7)
+
+[node name="Arbre2" type="Node3D" parent="Nature"]
+transform = Transform3D(0.8210, 0, -0.1559, 0, 0.8357, 0, 0.1559, 0, 0.8210, 13.720, 0.000, 4.993)
+script = ExtResource("2_r")
+id_asset = "prop.bouleau_2"
+obstacle = Vector3(0.7, 3, 0.7)
+
+[node name="Arbre3" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9115, 0, 0.2067, 0, 0.9347, 0, -0.2067, 0, -0.9115, -4.993, 0.000, 13.720)
+script = ExtResource("2_r")
+id_asset = "prop.bouleau_3"
+obstacle = Vector3(0.7, 3, 0.7)
+
+[node name="Arbre4" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.5396, 0, 0.6903, 0, 0.8762, 0, -0.6903, 0, -0.5396, -13.720, 0.000, -4.993)
+script = ExtResource("2_r")
+id_asset = "prop.bouleau_1"
+obstacle = Vector3(0.7, 3, 0.7)
+
+[node name="Fleurs1" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.6532, 0, -0.7572, 0, 1.0000, 0, 0.7572, 0, -0.6532, 7.125, 0.000, 3.075)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs2" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9930, 0, 0.1185, 0, 1.0000, 0, -0.1185, 0, 0.9930, 3.284, 0.000, -7.263)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_2"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs3" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.3610, 0, -0.9326, 0, 1.0000, 0, 0.9326, 0, -0.3610, -7.375, 0.000, 3.459)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_3"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs4" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9926, 0, 0.1213, 0, 1.0000, 0, -0.1213, 0, 0.9926, 4.823, 0.000, -6.317)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs5" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.5489, 0, 0.8359, 0, 1.0000, 0, -0.8359, 0, -0.5489, -3.402, 0.000, -7.026)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_2"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs6" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6559, 0, -0.7549, 0, 1.0000, 0, 0.7549, 0, 0.6559, -3.456, 0.000, -6.674)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_3"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs7" type="Node3D" parent="Nature"]
+transform = Transform3D(0.3382, 0, 0.9411, 0, 1.0000, 0, -0.9411, 0, 0.3382, -6.770, 0.000, -4.464)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs8" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9963, 0, 0.0858, 0, 1.0000, 0, -0.0858, 0, 0.9963, 6.033, 0.000, -5.374)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_2"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs9" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9500, 0, 0.3122, 0, 1.0000, 0, -0.3122, 0, -0.9500, 7.119, 0.000, 3.961)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_3"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs10" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.6817, 0, 0.7316, 0, 1.0000, 0, -0.7316, 0, -0.6817, -3.326, 0.000, -7.655)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs11" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.2261, 0, -0.9741, 0, 1.0000, 0, 0.9741, 0, -0.2261, 6.216, 0.000, 4.874)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_2"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs12" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9704, 0, -0.2415, 0, 1.0000, 0, 0.2415, 0, -0.9704, -4.887, 0.000, 5.691)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_3"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs13" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.6270, 0, -0.7790, 0, 1.0000, 0, 0.7790, 0, -0.6270, 3.448, 0.000, -6.679)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs14" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.6437, 0, -0.7653, 0, 1.0000, 0, 0.7653, 0, -0.6437, 6.891, 0.000, -4.883)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_2"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs15" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6718, 0, 0.7407, 0, 1.0000, 0, -0.7407, 0, 0.6718, -5.032, 0.000, 6.417)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_3"
+distance_affichage = 30.0
+projette_ombre = false
+
+[node name="Fleurs16" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7258, 0, 0.6879, 0, 1.0000, 0, -0.6879, 0, 0.7258, -6.893, 0.000, -3.601)
+script = ExtResource("2_r")
+id_asset = "prop.fleurs_1"
+distance_affichage = 30.0
+projette_ombre = false

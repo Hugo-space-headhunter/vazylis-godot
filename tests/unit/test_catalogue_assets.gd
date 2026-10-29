@@ -77,7 +77,7 @@ func test_chaque_fichier_du_catalogue_se_charge() -> void:
 
 
 func test_chaque_decor_des_zones_est_dans_le_catalogue() -> void:
-	for chemin in ["res://scenes/zones/vazylis.tscn", "res://scenes/zones/pres_de_vazylis.tscn"]:
+	for chemin in ["res://scenes/zones/vazylis.tscn", "res://scenes/zones/pres_de_vazylis.tscn", "res://scenes/zones/bois_des_lucioles.tscn"]:
 		var zone: Node = load(chemin).instantiate()
 		var decors := zone.find_children("*", "Node3D", true, false).filter(func(n: Node) -> bool: return n is Decor)
 		if chemin.ends_with("vazylis.tscn") and not chemin.contains("pres"):

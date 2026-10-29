@@ -15,6 +15,11 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | `monster.cochonnet_suie` | `assets/models/monster/cochonnet_suie/` | Quaternius, Ultimate Monsters (« Dog »), https://quaternius.com — teinté et réduit dans le catalogue | CC0 |
 | `monster.corbac` | `assets/models/monster/corbac/` | Quaternius, Ultimate Monsters (« Pigeon ») — teinté et réduit dans le catalogue | CC0 |
 | `monster.pomelin` | `assets/models/monster/pomelin/` | Quaternius, Ultimate Monsters (« GreenBlob ») — teinté et réduit dans le catalogue | CC0 |
+| `monster.pomelin_royal` | `assets/models/monster/pomelin/` (même modèle) | Quaternius, Ultimate Monsters (« GreenBlob ») — plus gros et teinté | CC0 |
+| `monster.gobelin_chapardeur` | `assets/models/monster/gobelin_chapardeur/` | Quaternius, Ultimate Monsters (« Monkroose »), copié depuis l'ancien projet | CC0 |
+| `monster.ronce_gueule` | `assets/models/monster/ronce_gueule/` | Quaternius, Ultimate Monsters (« Mushnub ») — teinté vert | CC0 |
+| `monster.gobelin_chaman` | `assets/models/monster/gobelin_chaman/` | Quaternius, Ultimate Monsters (« Tribal ») | CC0 |
+| `monster.gueule_fleur` | `assets/models/monster/gueule_fleur/` | Quaternius, Ultimate Monsters (« Mushnub_Evolved ») — teinté pourpre | CC0 |
 | `weapon.epee_depart` | `assets/models/weapon/epee_depart/` | Polyy, 3D Fantasy Weapons Pack, version « low » (« Knight's Longsword »), https://polyy.ai — accord de Hugo le 29/10/2026 | CC0, aucun crédit exigé |
 | `weapon.dague` | `assets/models/weapon/dague/` | Polyy, 3D Fantasy Weapons Pack (low), « Rogue's Dagger », https://polyy.ai | CC0, aucun crédit exigé |
 | `weapon.claymore` | `assets/models/weapon/claymore/` | Polyy, 3D Fantasy Weapons Pack (low), « Highland Claymore » | CC0, aucun crédit exigé |
@@ -45,6 +50,8 @@ Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scene
 | Nom | Dossier | Source | Licence |
 | --- | --- | --- | --- |
 | Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis (16 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
+| Maisons à colombages et de pierre, chariot, barrière de Vazylis | `assets/models/prop/maisons_village/` (textures partagées, réduites à 512 px) | Medieval Village Pack, Quaternius (https://quaternius.com/), pièces assemblées et fusionnées par `tools/assembler_maison.gd` | CC0 |
+| Bouleaux, érables, arbres morts, buissons, fleurs, herbe | `assets/models/prop/nature/` (textures réduites à 512 px, feuilles en découpe) | Ultimate Stylized Nature, Quaternius (https://quaternius.com/) | CC0 |
 | Rochers et piliers des Prés | `scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
 
 ## Images
