@@ -17,8 +17,8 @@ signal retour
 const GROUPE := "joueur"
 ## Altitude en dessous de laquelle le personnage, tombé du terrain, revient au départ.
 const ALTITUDE_CHUTE := -20.0
-## Part de l'animation d'attaque à laquelle le coup touche (0,4 = un peu avant le milieu).
-const MOMENT_DU_COUP := 0.4
+## Position des armes en main quand on n'attaque pas (voir « placements » du catalogue).
+const VARIANTE_REPOS := "repos"
 const POINTS_ATTACHE := {"modele_main_droite": "main_droite", "modele_main_gauche": "main_gauche"}
 
 enum Mode { DEPLACEMENT, COMBAT }
@@ -175,6 +175,8 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and _verrou_animation <= 0.0:
 		_tourner_vers(global_position + direction, 1.0 - exp(-config.lissage_rotation() * delta))
 	if _verrou_animation <= 0.0:
+		if mode == Mode.COMBAT:
+			_varier_armes(VARIANTE_REPOS)
 		_modele.jouer(Deplacement.animation(_allure), config.fondu_animation())
 		_modele.regler_vitesse_animation(Deplacement.vitesse_animation(_allure, horizontale.length(), config))
 
@@ -196,10 +198,11 @@ func _combattre(delta: float) -> void:
 	var animation := str(arme.get("animation", "attack"))
 	var duree := _modele.duree(animation)
 	var vitesse := maxf(1.0, duree / intervalle)
+	_varier_armes("")
 	_modele.jouer(animation, 0.08, false, true)
 	_modele.regler_vitesse_animation(vitesse)
 	_verrou_animation = duree / vitesse
-	_coup_en_attente = _verrou_animation * MOMENT_DU_COUP
+	_coup_en_attente = _verrou_animation * float(arme.get("moment_du_coup", 0.4))
 
 
 func _frapper() -> void:
@@ -246,7 +249,15 @@ func _ranger_armes() -> void:
 	if _modele == null:
 		return
 	for point: String in _armes:
-		_armes[point].accrocher_a(_modele, point if mode == Mode.COMBAT else "dos")
+		if mode == Mode.COMBAT:
+			_armes[point].accrocher_a(_modele, point, VARIANTE_REPOS)
+		else:
+			_armes[point].accrocher_a(_modele, "dos")
+
+
+func _varier_armes(variante: String) -> void:
+	for objet: ModeleAsset in _armes.values():
+		objet.varier(variante)
 
 
 ## Recalcule vie, mana et défense après un changement de niveau, de statistiques ou d'arme.

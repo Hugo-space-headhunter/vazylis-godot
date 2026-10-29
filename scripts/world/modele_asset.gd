@@ -12,6 +12,8 @@ var asset_id := ""
 var provisoire := false
 
 const NOM_BIBLIOTHEQUE := "catalogue"
+## Durée du passage d'une position d'objet porté à une autre (repos ↔ attaque).
+const DUREE_CHANGEMENT_POSITION := 0.12
 
 var _modele: Node3D
 var _lecteur: AnimationPlayer
@@ -21,10 +23,14 @@ var _placements := {}
 var _transformation_de_base := Transform3D.IDENTITY
 var _attaches := {}
 var _animation_en_cours := ""
+var _bibliotheques: PackedStringArray = []
+var _point_porte := ""
+var _variante := ""
+var _transition: Tween
 
 
 func configurer(id: String, modele: Node3D, est_provisoire: bool, animations: Dictionary,
-		points_attache: Dictionary, bibliotheque: AnimationLibrary, placements: Dictionary = {}) -> void:
+		points_attache: Dictionary, bibliotheques: Array, placements: Dictionary = {}) -> void:
 	asset_id = id
 	provisoire = est_provisoire
 	name = id.replace(".", "_")
@@ -39,12 +45,15 @@ func configurer(id: String, modele: Node3D, est_provisoire: bool, animations: Di
 	var lecteurs := modele.find_children("*", "AnimationPlayer", true, false)
 	if not lecteurs.is_empty():
 		_lecteur = lecteurs[0]
-	elif bibliotheque != null:
+	elif not bibliotheques.is_empty():
 		_lecteur = AnimationPlayer.new()
 		_lecteur.name = "LecteurAnimations"
 		modele.add_child(_lecteur)
-	if _lecteur != null and bibliotheque != null:
-		_lecteur.add_animation_library(NOM_BIBLIOTHEQUE, bibliotheque)
+	if _lecteur != null:
+		for i in bibliotheques.size():
+			var nom := NOM_BIBLIOTHEQUE + ("" if i == 0 else str(i + 1))
+			_lecteur.add_animation_library(nom, bibliotheques[i])
+			_bibliotheques.append(nom)
 
 
 ## Vrai si l'animation standard existe pour ce modèle.
@@ -104,21 +113,42 @@ func point_attache(nom: String) -> Node3D:
 
 ## Pour un objet porté (arme…) : accroche l'objet au point d'attache d'un porteur,
 ## avec la position prévue par le catalogue pour ce point (réglage « placements »).
-func accrocher_a(porteur: ModeleAsset, point: String) -> void:
+## « variante » choisit une position particulière, par exemple « repos » : le catalogue
+## la cherche sous « point:variante », sinon sous « point », sinon la position de base.
+func accrocher_a(porteur: ModeleAsset, point: String, variante: String = "") -> void:
 	var attache := porteur.point_attache(point)
-	if get_parent() != attache:
+	var change_de_point := get_parent() != attache
+	if change_de_point:
 		if get_parent() != null:
 			get_parent().remove_child(self)
 		attache.add_child(self)
+	_point_porte = point
+	_appliquer_position(variante, 0.0 if change_de_point else DUREE_CHANGEMENT_POSITION)
+
+
+## Change de position sur le même point d'attache, en douceur (repos ↔ attaque).
+func varier(variante: String) -> void:
+	if variante != _variante:
+		_appliquer_position(variante, DUREE_CHANGEMENT_POSITION)
+
+
+func _appliquer_position(variante: String, duree: float) -> void:
+	_variante = variante
 	if provisoire:
 		return
-	var placement: Dictionary = _placements.get(point, {})
-	if placement.is_empty():
-		_modele.transform = _transformation_de_base
-	else:
-		_modele.rotation_degrees = placement.get("rotation_degres", Vector3.ZERO)
-		_modele.position = placement.get("decalage", Vector3.ZERO)
-		_modele.scale = _transformation_de_base.basis.get_scale()
+	var cible := _transformation_de_base
+	var placement: Dictionary = _placements.get(_point_porte + ":" + variante, _placements.get(_point_porte, {}))
+	if not placement.is_empty():
+		var rotation_cible: Vector3 = placement.get("rotation_degres", Vector3.ZERO)
+		cible = Transform3D(Basis.from_euler(rotation_cible * PI / 180.0).scaled(_transformation_de_base.basis.get_scale()),
+			placement.get("decalage", Vector3.ZERO))
+	if _transition != null:
+		_transition.kill()
+	if duree <= 0.0:
+		_modele.transform = cible
+		return
+	_transition = create_tween()
+	_transition.tween_property(_modele, "transform", cible, duree)
 
 
 func _vrai_nom(animation_standard: String) -> String:
@@ -127,8 +157,9 @@ func _vrai_nom(animation_standard: String) -> String:
 	var nom := str(_animations.get(animation_standard, animation_standard))
 	if _lecteur.has_animation(nom):
 		return nom
-	if _lecteur.has_animation(NOM_BIBLIOTHEQUE + "/" + nom):
-		return NOM_BIBLIOTHEQUE + "/" + nom
+	for bibliotheque in _bibliotheques:
+		if _lecteur.has_animation(bibliotheque + "/" + nom):
+			return bibliotheque + "/" + nom
 	return ""
 
 

@@ -58,7 +58,7 @@ func creer(id: String) -> ModeleAsset:
 	var conteneur := ModeleAsset.new()
 	if not contient(id):
 		push_error("Catalogue : identifiant inconnu « %s », modèle provisoire affiché." % id)
-		conteneur.configurer(id, _modele_provisoire(id), true, {}, {}, null)
+		conteneur.configurer(id, _modele_provisoire(id), true, {}, {}, [])
 		return conteneur
 
 	var modele := _charger_modele(id)
@@ -71,7 +71,7 @@ func creer(id: String) -> ModeleAsset:
 		modele.position = reglage(id, "decalage", Vector3.ZERO)
 		_appliquer_teinte(id, modele)
 	conteneur.configurer(id, modele, provisoire, reglage(id, "animations", {}),
-		points_attache(id), _charger_bibliotheque(id), reglage(id, "placements", {}))
+		points_attache(id), _charger_bibliotheques(id), reglage(id, "placements", {}))
 	return conteneur
 
 
@@ -95,17 +95,15 @@ func _appliquer_teinte(id: String, modele: Node3D) -> void:
 			instance.set_surface_override_material(surface, cache[origine])
 
 
-## Bibliothèque d'animations partagée (réglage « bibliotheque_animations »), ou null.
-func _charger_bibliotheque(id: String) -> AnimationLibrary:
-	var chemin := str(reglage(id, "bibliotheque_animations", ""))
-	if chemin.is_empty():
-		return null
-	if ResourceLoader.exists(chemin):
-		var bibliotheque := load(chemin)
-		if bibliotheque is AnimationLibrary:
-			return bibliotheque
-	push_warning("Catalogue : bibliothèque d'animations introuvable pour « %s » (%s)." % [id, chemin])
-	return null
+## Bibliothèques d'animations partagées (réglage « bibliotheques_animations », une liste).
+func _charger_bibliotheques(id: String) -> Array:
+	var bibliotheques := []
+	for chemin in reglage(id, "bibliotheques_animations", []):
+		if ResourceLoader.exists(chemin) and load(chemin) is AnimationLibrary:
+			bibliotheques.append(load(chemin))
+		else:
+			push_warning("Catalogue : bibliothèque d'animations introuvable pour « %s » (%s)." % [id, chemin])
+	return bibliotheques
 
 
 func _charger_modele(id: String) -> Node3D:

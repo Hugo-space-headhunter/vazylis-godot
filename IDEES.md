@@ -26,8 +26,10 @@ Les idées et améliorations hors de l'étape en cours sont notées ici, au lieu
 ## Armes et statistiques
 
 - Arc et bouclier : modèles provisoires faits par code ; les remplacer par de vrais modèles (aucun arc ni bouclier seul en CC0 dans les packs actuels ; chercher chez KayKit Adventurers ou Quaternius).
-- L'arc est tenu à l'horizontale au repos (l'animation de repos est faite pour une épée) ; trouver des animations de tir à l'arc.
-- Dagues : une même animation d'attaque à l'épée sert pour toutes les armes de mêlée ; chercher des animations propres aux dagues et aux armes à deux mains.
 - Hache : sa particularité (ignorer 15 % de la défense) n'a pas encore d'effet, car les monstres n'ont pas de défense.
 - Poids du jeu : les armes Polyy pèsent environ 3 Mo chacune (textures en 2048 px) ; réduire leurs textures pour accélérer le chargement sur l'iPhone.
-- Outil `tools/calculer_prise.gd` : il calcule la prise en main d'une nouvelle arme ; à utiliser pour les armes créées par Hugo.
+- Outils `tools/calculer_prise.gd` et `tools/calculer_prise_pose.gd` : ils calculent la prise en main d'une nouvelle arme (au repos ou à un moment d'une animation) ; à utiliser pour les armes créées par Hugo.
+- Tir à l'arc : la main droite ne tire pas la corde (l'animation est un sort lancé d'une main) ; chercher une vraie animation de tir à l'arc.
+- Dagues et épée et bouclier : une même animation d'attaque à l'épée ; chercher des animations propres aux dagues.
+- Coup à deux mains : l'animation « TreeChopping » commence arme levée, ce qui fait un petit saut au début du coup ; une animation d'armement serait plus fluide.
+- Main gauche sur le manche : pendant le coup à deux mains, la main gauche est proche du manche grâce à l'animation ; on pourrait la coller exactement au manche avec l'IK de Godot (TwoBoneIK3D).

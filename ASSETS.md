@@ -30,6 +30,7 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | Nom | Fichier | Source | Licence |
 | --- | --- | --- | --- |
 | Universal Animation Library (version gratuite, 43 animations) | `assets/models/animation/bibliotheque_ual1/bibliotheque_ual1.glb` | Quaternius, https://quaternius.com — même squelette que les personnages de base | CC0 |
+| Universal Animation Library 2 (version gratuite, 43 animations, dont le coup à deux mains « TreeChopping ») | `assets/models/animation/bibliotheque_ual2/bibliotheque_ual2.glb` | Quaternius, https://quaternius.com — même squelette | CC0 |
 
 ## Décor du terrain de test
 

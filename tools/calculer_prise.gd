@@ -49,7 +49,7 @@ func _init() -> void:
 	quit(0)
 
 
-func _sommets(chemin: String) -> PackedVector3Array:
+static func _sommets(chemin: String) -> PackedVector3Array:
 	var racine: Node3D = load(chemin).instantiate()
 	var points := PackedVector3Array()
 	for noeud in racine.find_children("*", "MeshInstance3D", true, false):
@@ -62,7 +62,7 @@ func _sommets(chemin: String) -> PackedVector3Array:
 	return points
 
 
-func _transformation_relative(racine: Node3D, noeud: Node3D) -> Transform3D:
+static func _transformation_relative(racine: Node3D, noeud: Node3D) -> Transform3D:
 	var transformation := Transform3D.IDENTITY
 	var courant: Node = noeud
 	while courant != null and courant != racine:
@@ -73,7 +73,7 @@ func _transformation_relative(racine: Node3D, noeud: Node3D) -> Transform3D:
 
 
 ## Axe principal, axe secondaire, poignée et longueur de l'arme.
-func _analyser(points: PackedVector3Array, type_prise: String, axe_impose: Vector3) -> Dictionary:
+static func _analyser(points: PackedVector3Array, type_prise: String, axe_impose: Vector3) -> Dictionary:
 	var centre := Vector3.ZERO
 	for p in points:
 		centre += p
@@ -128,7 +128,7 @@ func _analyser(points: PackedVector3Array, type_prise: String, axe_impose: Vecto
 
 
 ## Direction où les points s'étalent le plus (en ignorant la direction « sauf »).
-func _axe_principal(points: PackedVector3Array, centre: Vector3, sauf: Vector3) -> Vector3:
+static func _axe_principal(points: PackedVector3Array, centre: Vector3, sauf: Vector3) -> Vector3:
 	var axe := Vector3(0.577, 0.577, 0.577)
 	if sauf != Vector3.ZERO:
 		axe = (axe - sauf * axe.dot(sauf)).normalized()
@@ -167,7 +167,7 @@ func _prise_dos(squelette: Skeleton3D, forme: Dictionary, echelle: float) -> Tra
 	return _placer(forme, echelle, pointe.normalized(), a_plat.normalized(), poignee)
 
 
-func _placer(forme: Dictionary, echelle: float, pointe: Vector3, secondaire: Vector3, point_poignee: Vector3) -> Transform3D:
+static func _placer(forme: Dictionary, echelle: float, pointe: Vector3, secondaire: Vector3, point_poignee: Vector3) -> Transform3D:
 	var u: Vector3 = forme["vers_pointe"]
 	var g: Vector3 = (forme["secondaire"] - u * forme["secondaire"].dot(u)).normalized()
 	var modele := Basis(u, g, u.cross(g))
@@ -178,5 +178,5 @@ func _placer(forme: Dictionary, echelle: float, pointe: Vector3, secondaire: Vec
 	return Transform3D(rotation, origine)
 
 
-func _v(v: Vector3) -> String:
+static func _v(v: Vector3) -> String:
 	return "Vector3(%.3f, %.3f, %.3f)" % [v.x, v.y, v.z]
