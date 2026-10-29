@@ -131,3 +131,14 @@ func test_le_bouclier_bloque_parfois() -> void:
 			touches += 1
 		joueur.pv = joueur.pv_max
 	assert_between(touches, 320, 390, "Environ 90 % des coups passent")
+
+
+func test_un_monstre_tue_lache_son_butin_dans_le_sac() -> void:
+	joueur.butin.monstres_sans_dore = 10000
+	var avant := joueur.inventaire.nombre_objets()
+	var cochonnet := _monstre("monstre.cochonnet_suie", 2, Vector3(0, 0, 1.0))
+	joueur.changer_mode(Joueur.Mode.COMBAT)
+	await wait_until(func(): return not cochonnet.est_vivant(), 20.0)
+	assert_gt(joueur.inventaire.nombre_objets(), avant, "La garantie donne au moins un doré")
+	var dernier := joueur.inventaire.objet(joueur.inventaire.nombre_objets() - 1)
+	assert_eq(dernier.niveau, 2, "L'objet a le niveau du monstre")

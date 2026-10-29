@@ -151,6 +151,24 @@ func _appliquer_position(variante: String, duree: float) -> void:
 	_transition.tween_property(_modele, "transform", cible, duree)
 
 
+## Boîte qui englobe tous les maillages du modèle, dans le repère de ce nœud.
+func boite_englobante() -> AABB:
+	var boite := AABB()
+	var premiere := true
+	for noeud in find_children("*", "MeshInstance3D", true, false):
+		var instance := noeud as MeshInstance3D
+		var transformation := Transform3D.IDENTITY
+		var courant: Node = instance
+		while courant != null and courant != self:
+			if courant is Node3D:
+				transformation = (courant as Node3D).transform * transformation
+			courant = courant.get_parent()
+		var morceau := transformation * instance.get_aabb()
+		boite = morceau if premiere else boite.merge(morceau)
+		premiere = false
+	return boite
+
+
 func _vrai_nom(animation_standard: String) -> String:
 	if _lecteur == null:
 		return ""

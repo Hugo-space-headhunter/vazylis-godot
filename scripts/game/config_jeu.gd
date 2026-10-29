@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin"]
 
 var _fichiers := {}
 
@@ -39,6 +39,10 @@ func multiplicateur_rarete(id: String) -> float:
 
 func bonus_pourcent_rarete(id: String) -> int:
 	return int(_valeur("raretes", id, "bonus_pourcent", 0))
+
+
+func couleur_rarete(id: String) -> Color:
+	return _valeur("raretes", id, "couleur", Color.WHITE)
 
 
 # --- Amélioration ---
@@ -126,6 +130,31 @@ func ids_armes() -> PackedStringArray:
 ## Toutes les valeurs d'un type d'arme de armes.cfg (nom, vitesse, affinite…).
 func arme(id: String) -> Dictionary:
 	return _section("armes", id)
+
+
+# --- Objets et butin ---
+
+## Familles d'objets de objets.cfg (sections « objet.… »).
+func ids_familles_objets() -> PackedStringArray:
+	var ids := PackedStringArray()
+	for section in _fichier("objets").get_sections():
+		if section.begins_with("objet."):
+			ids.append(section)
+	return ids
+
+
+func famille_objet(id: String) -> Dictionary:
+	return _section("objets", id)
+
+
+## Réglage de la génération des objets (section [generation] de objets.cfg).
+func generation_objets(cle: String) -> Variant:
+	return _valeur("objets", "generation", cle, null)
+
+
+## Valeur de butin.cfg, par exemple butin("monstre", "dore").
+func butin(section: String, cle: String) -> float:
+	return _nombre("butin", section, cle, 0.0)
 
 
 # --- Monstres ---

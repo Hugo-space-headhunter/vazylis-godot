@@ -65,3 +65,12 @@ func test_un_fichier_manquant_donne_un_modele_provisoire() -> void:
 
 func test_animation_sans_correspondance_garde_le_nom_standard() -> void:
 	assert_eq(CatalogueAssets.nom_animation(IdentifiantsAssets.CRISTAL_TEST, "idle"), "idle")
+
+
+func test_chaque_fichier_du_catalogue_se_charge() -> void:
+	for id in CatalogueAssets.identifiants():
+		if id == IdentifiantsAssets.EXEMPLE_MANQUANT:
+			continue
+		var modele := CatalogueAssets.creer(id)
+		assert_false(modele.provisoire, "Le fichier de « %s » ne se charge pas" % id)
+		modele.free()

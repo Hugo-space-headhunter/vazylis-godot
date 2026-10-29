@@ -133,3 +133,39 @@ func test_le_bouton_arme_fait_defiler_les_cinq_armes() -> void:
 	assert_eq(vues.size(), 5)
 	assert_eq(joueur.id_arme, Config.jeu.arme_depart(), "On revient à l'arme de départ")
 	assert_eq(bouton.text, "Épée et bouclier")
+
+
+func test_le_sac_contient_une_arme_de_chaque_type_au_depart() -> void:
+	assert_eq(joueur.inventaire.nombre_objets(), 5)
+	var types := {}
+	for i in 5:
+		types[joueur.inventaire.objet(i).type_arme] = true
+	assert_eq(types.size(), 5)
+
+
+func test_bouton_butin_et_fenetre_du_sac() -> void:
+	var bouton_butin: Button = terrain.get_node("Interface/OutilsTest/Butin")
+	var bouton_sac: Button = terrain.get_node("Interface/BoutonSac")
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreSac")
+	bouton_butin.pressed.emit()
+	assert_eq(joueur.inventaire.nombre_objets(), 11, "Un objet de chaque rareté en plus")
+	bouton_sac.pressed.emit()
+	assert_true(fenetre.visible)
+	fenetre._choisir(10)
+	var fiche: FicheObjet = fenetre._fiche
+	await wait_physics_frames(1)
+	assert_gt(fiche.get_child_count(), 3, "La fiche montre l'objet touché")
+	assert_eq((fiche.get_child(0) as Label).text, joueur.inventaire.objet(10).nom)
+	fenetre.fermer_fenetre()
+	assert_false(fenetre.visible)
+
+
+func test_sac_plein_l_objet_est_recycle() -> void:
+	var hasard := RandomNumberGenerator.new()
+	while not joueur.inventaire.est_plein():
+		joueur.recevoir_objet(joueur.butin.creer_objet("objet.boucle_os", 1, "standard", hasard))
+	var or_avant := joueur.inventaire.or_possede
+	watch_signals(joueur)
+	joueur.recevoir_objet(joueur.butin.creer_objet("objet.lame_guet", 10, "dore", hasard))
+	assert_gt(joueur.inventaire.or_possede, or_avant)
+	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), 1, "Un message prévient")

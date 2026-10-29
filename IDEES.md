@@ -39,9 +39,16 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 
 - Arc et bouclier : modèles provisoires faits par code ; les remplacer par de vrais modèles (aucun arc ni bouclier seul en CC0 dans les packs actuels ; chercher chez KayKit Adventurers ou Quaternius).
 - Hache : sa particularité (ignorer 15 % de la défense) n'a pas encore d'effet, car les monstres n'ont pas de défense.
-- Poids du jeu : les armes Polyy pèsent environ 3 Mo chacune (textures en 2048 px) ; réduire leurs textures pour accélérer le chargement sur l'iPhone.
+- Poids du jeu : 19 Mo après la partie 4.1 (textures des tenues réduites à 512 px, textures des armes limitées à 512 px à l'import). À surveiller à chaque nouvel asset ; les textures sont exportées deux fois (PC et mobile), on pourrait n'exporter que le format mobile.
 - Outils `tools/calculer_prise.gd` et `tools/calculer_prise_pose.gd` : ils calculent la prise en main d'une nouvelle arme (au repos ou à un moment d'une animation) ; à utiliser pour les armes créées par Hugo.
 - Tir à l'arc : la main droite ne tire pas la corde (l'animation est un sort lancé d'une main) ; chercher une vraie animation de tir à l'arc.
 - Dagues et épée et bouclier : une même animation d'attaque à l'épée ; chercher des animations propres aux dagues.
 - Coup à deux mains : l'animation « TreeChopping » commence arme levée, ce qui fait un petit saut au début du coup ; une animation d'armement serait plus fluide.
 - Main gauche sur le manche : pendant le coup à deux mains, la main gauche est proche du manche grâce à l'animation ; on pourrait la coller exactement au manche avec l'IK de Godot (TwoBoneIK3D).
+
+## Butin et sac
+
+- Butin de test : le bouton « Test : butin » fait tomber 6 objets d'un coup ; leurs noms se chevauchent (normal, en jeu ils tombent un par un).
+- Vignettes : les objets fins (dagues, épée) paraissent petits dans leur case ; cadrer la vignette sur l'arme en diagonale.
+- Agrandir le sac (au-delà de 40 cases) : à décider plus tard (question ouverte du game design).
+- Trier le sac (par rareté, par type, par niveau).

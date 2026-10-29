@@ -22,6 +22,10 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | `weapon.bouclier` | `assets/models/weapon/bouclier/bouclier.glb` | Modèle provisoire généré par code (`tools/generer_armes_provisoires.gd`) | Original, propre au projet |
 | `weapon.arc` | `assets/models/weapon/arc/arc.glb` | Modèle provisoire généré par code (`tools/generer_armes_provisoires.gd`) | Original, propre au projet |
 | `projectile.fleche` | `assets/models/projectile/fleche/fleche.glb` | Modèle provisoire généré par code (`tools/generer_armes_provisoires.gd`) | Original, propre au projet |
+| `armor.paysan_*_h`, `armor.paysan_*_f` (plastron, gants, bottes, ceinture) | `assets/models/armor/tenue_paysan/` | Quaternius, Modular Character Outfits - Fantasy (version gratuite), tenue « Peasant », https://quaternius.com — textures réduites à 512 px | CC0 |
+| `armor.rodeur_*_h`, `armor.rodeur_*_f` (casque, plastron, épaulière, gants, bottes, ceinture) | `assets/models/armor/tenue_rodeur/` | Quaternius, Modular Character Outfits - Fantasy (version gratuite), tenue « Ranger » — textures réduites à 512 px | CC0 |
+| `armor.cape_voyage` | `assets/models/armor/cape_voyage/cape_voyage.glb` | Modèle provisoire généré par code (`tools/generer_objets_provisoires.gd`) | Original, propre au projet |
+| `jewel.amulette_lucioles`, `jewel.boucle_os` | `assets/models/jewel/` | Modèles provisoires générés par code (`tools/generer_objets_provisoires.gd`) | Original, propre au projet |
 | `prop.cristal_test` | `assets/models/prop/cristal_test/cristal_test.glb` | Modèle provisoire généré par code (`tools/generer_cristal_test.gd`) | Original, propre au projet |
 | `prop.exemple_manquant` | aucun (volontairement absent) | Modèle provisoire automatique (boîte rose) | Original, propre au projet |
 
@@ -42,6 +46,8 @@ Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scene
 | --- | --- | --- | --- |
 | Icône provisoire de Vazylis (rempart doré) | `icon.svg`, `assets/icones/*.png` | Dessin original généré par code (`tools/generer_icones.gd`) | Original, propre au projet |
 | Icône des statistiques (quatre losanges) | `assets/icones/ui/statistiques.svg` | Dessin original | Original, propre au projet |
+| Icône du sac à dos | `assets/icones/ui/sac.svg` | Dessin original | Original, propre au projet |
+| Vignettes des objets dans le sac | (fabriquées pendant le jeu) | Rendu automatique des modèles 3D (`scripts/ui/vignettes.gd`) | — |
 
 ## Outils (hors assets du jeu)
 

@@ -1,12 +1,14 @@
 extends VBoxContainer
-## Boutons de test provisoires (en haut à droite) : homme ou femme, type d'arme, +1 niveau.
+## Boutons de test provisoires (en haut à droite) : homme ou femme, type d'arme, +1 niveau, butin.
 ## Ils disparaîtront avec l'écran de création du personnage et le butin.
 
 signal arme_choisie(id: String)
 signal niveau_demande
+signal butin_demande
 
 @onready var _arme: Button = $Arme
 @onready var _niveau: Button = $Niveau
+@onready var _butin: Button = $Butin
 
 var _armes: PackedStringArray
 var _actuelle := ""
@@ -18,6 +20,7 @@ func _ready() -> void:
 	_armes = Config.jeu.ids_armes()
 	_arme.pressed.connect(_arme_suivante)
 	_niveau.pressed.connect(niveau_demande.emit)
+	_butin.pressed.connect(butin_demande.emit)
 
 
 func afficher_arme(id: String) -> void:

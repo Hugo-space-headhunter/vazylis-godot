@@ -125,7 +125,7 @@ Chaque arme a une **statistique d'affinité** qui augmente ses dégâts de 0,3 %
 - **Bloquer un coup** (épée et bouclier) : le coup est entièrement annulé. **Défense augmentée** : le bouclier apporte 2 de défense par niveau.
 - **Mana** = 5 × Intelligence, sans base (la magie viendra plus tard).
 - **Points de statistiques** : 0 au niveau 1, puis 4 à chaque niveau gagné ; les points non dépensés se gardent.
-- **Calibrage des monstres** : il est fait sur un joueur « moyen », qui met 1 point dans chaque statistique à chaque niveau et porte une épée et bouclier standard de son niveau. Un build réfléchi tue donc plus vite que ce joueur moyen.
+- **Calibrage des monstres** : il est fait sur un joueur « moyen », qui met 1 point dans chaque statistique à chaque niveau et porte une épée et bouclier standard de son niveau (à partir de l'étape 4 : un équipement complet standard de son niveau, de qualité moyenne). Un build réfléchi tue donc plus vite que ce joueur moyen.
 - **Nom du personnage** : « Vazylien » ou « Vazylienne » en attendant l'écran de création.
 
 ## Formules de combat (valeurs de départ)
@@ -268,6 +268,32 @@ Paire de dagues, épée à deux mains, hache à deux mains, arc, épée et boucl
 
 Le niveau d'un item suit celui du monstre ou du donjon qui le donne, sans limite. Sa puissance vaut **niveau × multiplicateur de rareté**, plus le bonus d'amélioration (+1 à +10). Un transcendant niveau 50 (puissance 125) surpasse donc un standard niveau 80 (80), puis se fait dépasser par un épique niveau 110 (192). Les multiplicateurs seront ajustés en jouant.
 
+### Ce que donne un objet (décidé à l'étape 4)
+
+Chaque valeur d'un objet est tirée entre 70 % et 100 % de son maximum : la moyenne de ces tirages est la **qualité** de l'objet.
+
+- **Armes** : les dégâts de la formule de combat, (10 + 3 × niveau) × rareté × multiplicateur du type d'arme.
+- **Armures** : de l'armure, égale à la puissance de l'objet multipliée par la part de son emplacement (plastron 1 ; casque 0,6 ; bottes 0,5 ; gants et ceinture 0,4 ; cape 0,3).
+- **Statistiques** : chaque arme ou pièce d'armure donne 1 ou 2 statistiques (Force, Agilité, Vitalité, Intelligence), d'environ 0,3 × sa puissance chacune. Les bijoux n'ont pas d'armure mais donnent 2 ou 3 statistiques d'environ 0,5 × leur puissance.
+- **Bonus en %** : leur nombre dépend de la rareté (0 à 5, voir le tableau des raretés). Ils sont tirés parmi la vitesse d'attaque, la chance de critique, les dégâts critiques, la vie et les dégâts.
+
+### Les objets de la zone 1 (décidé à l'étape 4)
+
+Style rustique vazylien. Les noms sont originaux.
+
+| Emplacement | Objets |
+| --- | --- |
+| Armes | Dagues de braconnier, Arc de chasseur, Lame du Guet (épée à deux mains), Hache de bûcheron, Épée et écu de milicien |
+| Casque | Capuche de rôdeur |
+| Plastron | Tunique de paysan, Brigandine de rôdeur |
+| Gants | Manches de paysan, Brassards de rôdeur |
+| Bottes | Bottes de paysan, Bottes de rôdeur |
+| Ceinture | Ceinture de paysan, Ceinturon de rôdeur |
+| Cape | Cape de voyage |
+| Bijoux | Amulette des lucioles (collier), Boucle d'oreille en os |
+
+Le personnage commence avec une Épée et écu de milicien standard de niveau 1.
+
 ### Apparence des items
 
 Tout l'équipement porté est visible sur le personnage, homme ou femme.
@@ -371,7 +397,7 @@ Un échec fait perdre les matériaux utilisés, jamais le niveau d'amélioration
 
 ### Recyclage
 
-Les items inutiles se recyclent en matériaux et en or. Un **recyclage automatique** réglable par filtres (par exemple « tout ce qui est en fer », « tout ce qui est sous le rang doré ») évite que le mode AFK remplisse l'inventaire.
+Les items inutiles se recyclent en matériaux et en or. Un objet recyclé rapporte 2 × sa puissance en or (décidé à l'étape 4) ; les matériaux arriveront avec la forge (étape 7). Le recyclage automatique filtre d'abord par rareté et par type d'objet (armes, armures, bijoux) ; le filtre par matériau viendra avec les matériaux. Un **recyclage automatique** réglable par filtres (par exemple « tout ce qui est en fer », « tout ce qui est sous le rang doré ») évite que le mode AFK remplisse l'inventaire.
 
 ## Familier, étendard et accessoire de taille
 
@@ -743,11 +769,11 @@ Le prototype se construit en 12 étapes. Chacune se termine par une version joua
 
 - [x] Nom du jeu : Vazylis : Le Dernier Rempart (validé).
 - [ ] Bestiaire : valider les 5 zones proposées, puis définir Trazake et les monstres exclusifs de la Tour.
-- [ ] Le catalogue d'items : familles d'armes et d'armures, statistiques de base par type d'arme.
+- [x] Le catalogue d'items de la zone 1 et ce que donne un objet (décidé à l'étape 4, voir « Équipement »). Les zones 2 à 5 restent à définir.
 - [ ] Le nombre de bonus en % par rareté (0 à 5) est-il validé ?
 - [ ] Le soin : potions, bouton avec temps de recharge, régénération ?
-- [ ] La taille du sac à dos, et peut-on l'agrandir ?
-- [ ] L'or tombe-t-il aussi sur les monstres, ou seulement via le recyclage ?
+- [x] La taille du sac à dos : 40 cases (décidé à l'étape 4) ; sac plein → le nouvel objet est recyclé automatiquement. Agrandissement : à décider plus tard.
+- [x] L'or vient seulement du recyclage (décidé à l'étape 4).
 - [ ] Comment nourrir le familier, et ses bonus à chaque forme ?
 - [ ] Comment obtenir l'étendard et l'accessoire de taille ?
 - [ ] La Tour : nombre d'étages, niveaux, récompenses.

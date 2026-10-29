@@ -11,6 +11,8 @@ signal xp_change(xp: int, xp_requise: int, niveau: int)
 signal niveau_gagne(niveau: int)
 signal caracteristiques_change
 signal arme_change(id_arme: String)
+## Un objet vient d'arriver dans le sac (case), ou a été recyclé car le sac était plein (case = -1).
+signal objet_obtenu(objet: Objet, case_numero: int, or_gagne: int)
 signal mort
 signal retour
 
@@ -19,6 +21,8 @@ const GROUPE := "joueur"
 const ALTITUDE_CHUTE := -20.0
 ## Position des armes en main quand on n'attaque pas (voir « placements » du catalogue).
 const VARIANTE_REPOS := "repos"
+## Zone du monde où l'on joue (le butin prend le style de la zone).
+const ZONE := 1
 const POINTS_ATTACHE := {"modele_main_droite": "main_droite", "modele_main_gauche": "main_gauche"}
 
 enum Mode { DEPLACEMENT, COMBAT }
@@ -34,6 +38,8 @@ var personnage := ""
 var mode := Mode.DEPLACEMENT
 var experience: Experience
 var statistiques := Statistiques.new()
+var inventaire: Inventaire
+var butin: Butin
 var id_arme := ""
 var arme := {}
 var pv := 1.0
@@ -59,6 +65,9 @@ func _ready() -> void:
 	_hasard.randomize()
 	_depart = global_position
 	experience = Experience.new(Config.jeu)
+	inventaire = Inventaire.new(Config.jeu)
+	butin = Butin.new(Config.jeu)
+	_remplir_sac_de_depart()
 	experience.niveau_gagne.connect(_sur_niveau_gagne)
 	statistiques.change.connect(_sur_statistiques)
 	changer_personnage(personnage_depart)
@@ -221,8 +230,27 @@ func _toucher(cible: Monstre) -> void:
 		return
 	var coup := Combat.coup_joueur(experience.niveau, statistiques, arme, 0.0, cible.niveau, Config.jeu, _hasard)
 	var niveau_cible := cible.niveau
+	var position_cible := cible.global_position
 	if cible.recevoir_coup(coup["degats"], coup["critique"]):
 		gagner_xp(Experience.xp_gagnee(experience.niveau, niveau_cible, Config.jeu))
+		for objet in butin.tirer_monstre(niveau_cible, ZONE, _hasard):
+			recevoir_objet(objet, position_cible)
+
+
+## Un objet est gagné : il va dans le sac, ou il est recyclé si le sac est plein.
+func recevoir_objet(objet: Objet, position_depart: Vector3 = Vector3.INF) -> void:
+	if position_depart != Vector3.INF and is_inside_tree():
+		EffetButin.jouer(get_parent(), position_depart, objet, self, personnage == IdentifiantsAssets.HEROS_FEMME)
+	var case_numero := inventaire.ajouter(objet)
+	var or_gagne := inventaire.recycler_objet(objet) if case_numero == -1 else 0
+	objet_obtenu.emit(objet, case_numero, or_gagne)
+
+
+## Pour tester les builds : une arme standard de niveau 1 de chaque type dans le sac.
+func _remplir_sac_de_depart() -> void:
+	for famille in Config.jeu.ids_familles_objets():
+		if str(Config.jeu.famille_objet(famille).get("emplacement", "")) == "arme":
+			inventaire.ajouter(butin.creer_objet(famille, 1, "standard", _hasard))
 
 
 func _monstre_a_portee() -> Monstre:

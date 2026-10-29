@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+  <!-- Icône du sac à dos : sac de cuir à rabat, boucle dorée. -->
+  <path d="M34 22 Q34 10 48 10 Q62 10 62 22" fill="none" stroke="#6b4426" stroke-width="6"/>
+  <rect x="18" y="22" width="60" height="64" rx="14" fill="#9a6233"/>
+  <path d="M18 40 Q48 56 78 40 L78 34 Q78 22 66 22 L30 22 Q18 22 18 34 Z" fill="#7a4a24"/>
+  <rect x="42" y="42" width="12" height="12" rx="2" fill="#f0c341"/>
+  <rect x="26" y="62" width="44" height="14" rx="5" fill="#86522a"/>
+</svg>

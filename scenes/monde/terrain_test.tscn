@@ -15,6 +15,10 @@
 [ext_resource type="Script" path="res://scripts/ui/bouton_statistiques.gd" id="13_bstats"]
 [ext_resource type="Script" path="res://scripts/ui/boutons_test.gd" id="14_btest"]
 [ext_resource type="Texture2D" path="res://assets/icones/ui/statistiques.svg" id="15_icone"]
+[ext_resource type="Texture2D" path="res://assets/icones/ui/sac.svg" id="16_sac"]
+[ext_resource type="Script" path="res://scripts/ui/fenetre_sac.gd" id="17_fenetre_sac"]
+[ext_resource type="Script" path="res://scripts/ui/annonces.gd" id="18_annonces"]
+[ext_resource type="Script" path="res://scripts/ui/vignettes.gd" id="19_vignettes"]
 
 [sub_resource type="Environment" id="Environment_ciel"]
 background_mode = 1
@@ -154,7 +158,7 @@ anchor_right = 1.0
 offset_left = -264.0
 offset_top = 36.0
 offset_right = -24.0
-offset_bottom = 236.0
+offset_bottom = 300.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 script = ExtResource("14_btest")
@@ -181,6 +185,13 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "Test : +1 niveau"
 
+[node name="Butin" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Test : butin"
+
 [node name="Bandeau" parent="Interface" instance=ExtResource("11_bandeau")]
 
 [node name="BoutonStatistiques" type="Button" parent="Interface"]
@@ -206,6 +217,28 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 22
 text = "+0"
+
+[node name="BoutonSac" type="Button" parent="Interface"]
+offset_left = 120.0
+offset_top = 230.0
+offset_right = 204.0
+offset_bottom = 314.0
+focus_mode = 0
+icon = ExtResource("16_sac")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Annonces" type="VBoxContainer" parent="Interface"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 330.0
+offset_right = 260.0
+offset_bottom = 450.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("18_annonces")
 
 [node name="BoutonsMode" type="HBoxContainer" parent="Interface"]
 anchors_preset = 3
@@ -240,3 +273,9 @@ text = "Pied"
 
 [node name="FenetreStatistiques" type="PanelContainer" parent="Interface"]
 script = ExtResource("12_fenetre")
+
+[node name="FenetreSac" type="PanelContainer" parent="Interface"]
+script = ExtResource("17_fenetre_sac")
+
+[node name="Vignettes" type="Node" parent="Interface"]
+script = ExtResource("19_vignettes")
