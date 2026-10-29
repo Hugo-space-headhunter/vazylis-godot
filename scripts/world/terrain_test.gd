@@ -31,6 +31,8 @@ func _ready() -> void:
 	_bouton_sac.add_to_group(CommandesTactiles.GROUPE_UI)
 	_bouton_sac.pressed.connect(_fenetre_sac.basculer)
 	_fenetre_sac.relier(_joueur, _vignettes)
+	_fenetre_sac.or_gagne.connect(func(quantite: int, raison: String) -> void:
+		_annonces.annoncer("Recyclé : %s (+%d or)" % [raison, quantite], Color(1, 0.85, 0.35)))
 	_outils_test.butin_demande.connect(_butin_de_test)
 	_joueur.objet_obtenu.connect(_sur_objet_obtenu)
 
@@ -71,7 +73,7 @@ func _butin_de_test() -> void:
 
 
 func _sur_objet_obtenu(objet: Objet, case_numero: int, or_gagne: int) -> void:
-	if case_numero == -1:
+	if case_numero == Joueur.CASE_SAC_PLEIN:
 		_annonces.annoncer("Sac plein : %s recyclé (+%d or)" % [objet.nom, or_gagne], Color(1, 0.75, 0.4))
 
 

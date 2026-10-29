@@ -12,7 +12,8 @@ signal niveau_gagne(niveau: int)
 signal caracteristiques_change
 signal arme_change(id_arme: String)
 signal equipement_change
-## Un objet vient d'arriver dans le sac (case), ou a été recyclé car le sac était plein (case = -1).
+## Un objet vient d'arriver dans le sac (case), ou a été recyclé : case = CASE_SAC_PLEIN si le sac
+## était plein, CASE_RECYCLAGE_AUTO s'il correspondait aux filtres du recyclage automatique.
 signal objet_obtenu(objet: Objet, case_numero: int, or_gagne: int)
 signal mort
 signal retour
@@ -25,6 +26,8 @@ const VARIANTE_REPOS := "repos"
 ## Zone du monde où l'on joue (le butin prend le style de la zone).
 const ZONE := 1
 const POINTS_ATTACHE := {"modele_main_droite": "main_droite", "modele_main_gauche": "main_gauche"}
+const CASE_SAC_PLEIN := -1
+const CASE_RECYCLAGE_AUTO := -2
 
 enum Mode { DEPLACEMENT, COMBAT }
 
@@ -43,6 +46,7 @@ var statistiques := Statistiques.new()
 var inventaire: Inventaire
 var butin: Butin
 var equipement := Equipement.new()
+var recyclage_auto := RecyclageAuto.new()
 ## Type de l'arme portée (section de config/armes.cfg) et ses réglages.
 var id_arme := ""
 var arme := {}
@@ -320,13 +324,35 @@ func _toucher(cible: Monstre) -> void:
 			recevoir_objet(objet, position_cible)
 
 
-## Un objet est gagné : il va dans le sac, ou il est recyclé si le sac est plein.
+## Un objet est gagné : il va dans le sac, ou il est recyclé (filtres du recyclage automatique,
+## ou sac plein).
 func recevoir_objet(objet: Objet, position_depart: Vector3 = Vector3.INF) -> void:
 	if position_depart != Vector3.INF and is_inside_tree():
 		EffetButin.jouer(get_parent(), position_depart, objet, self, est_une_femme())
+	if recyclage_auto.doit_recycler(objet, Config.jeu):
+		var gain := inventaire.recycler_objet(objet)
+		if is_inside_tree():
+			ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * 1.9, "+%d or" % gain,
+				Color(1, 0.85, 0.35), 36, 1.0, 0.5)
+		objet_obtenu.emit(objet, CASE_RECYCLAGE_AUTO, gain)
+		return
 	var case_numero := inventaire.ajouter(objet)
-	var or_gagne := inventaire.recycler_objet(objet) if case_numero == -1 else 0
+	var or_gagne := inventaire.recycler_objet(objet) if case_numero == CASE_SAC_PLEIN else 0
 	objet_obtenu.emit(objet, case_numero, or_gagne)
+
+
+## Recycle tous les objets du sac qui correspondent aux filtres (même si le recyclage auto est éteint).
+## Renvoie l'or gagné.
+func recycler_le_sac_selon_les_filtres() -> int:
+	var actif := recyclage_auto.actif
+	recyclage_auto.actif = true
+	var gain := 0
+	for case_numero in inventaire.nombre_cases():
+		var objet := inventaire.objet(case_numero)
+		if objet != null and recyclage_auto.doit_recycler(objet, Config.jeu):
+			gain += inventaire.recycler(case_numero)
+	recyclage_auto.actif = actif
+	return gain
 
 
 ## Pour tester les builds : une arme standard de niveau 1 de chaque type dans le sac.

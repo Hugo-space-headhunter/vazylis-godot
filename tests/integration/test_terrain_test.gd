@@ -210,3 +210,32 @@ func test_glisser_pour_ranger_le_sac() -> void:
 	fenetre.deposer({"lieu": "sac", "cle": 0}, {"lieu": "sac", "cle": 20})
 	assert_eq(joueur.inventaire.objet(20), premier)
 	assert_null(joueur.inventaire.objet(0))
+
+
+func test_recyclage_manuel_et_automatique() -> void:
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreSac")
+	terrain.get_node("Interface/BoutonSac").pressed.emit()
+	await wait_physics_frames(2)
+	var hasard := RandomNumberGenerator.new()
+	# À la main : le bouton Recycler rapporte de l'or et vide la case.
+	fenetre.choisir("sac", 0)
+	assert_true(fenetre._recycler.visible)
+	fenetre._sur_recycler()
+	assert_null(joueur.inventaire.objet(0))
+	assert_gt(joueur.inventaire.or_possede, 0)
+	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), 1)
+
+	# Automatique : « sous Doré » recycle un argenté qui tombe, garde un doré.
+	fenetre._filtre_rarete.select(2)
+	fenetre._sur_filtre_rarete(2)
+	assert_true(joueur.recyclage_auto.actif)
+	assert_eq(joueur.recyclage_auto.rarete_limite, "dore")
+	var avant := joueur.inventaire.nombre_objets()
+	joueur.recevoir_objet(joueur.butin.creer_objet("objet.bottes_paysan", 3, "argente", hasard))
+	assert_eq(joueur.inventaire.nombre_objets(), avant, "L'argenté est recyclé tout de suite")
+	joueur.recevoir_objet(joueur.butin.creer_objet("objet.bottes_paysan", 3, "dore", hasard))
+	assert_eq(joueur.inventaire.nombre_objets(), avant + 1, "Le doré va dans le sac")
+
+	# Recycler le sac : les armes standard de départ partent, le doré reste.
+	fenetre._sur_recycler_le_sac()
+	assert_eq(joueur.inventaire.nombre_objets(), 1)

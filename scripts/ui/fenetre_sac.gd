@@ -2,18 +2,25 @@ extends PanelContainer
 ## Fenêtre du sac à dos : l'équipement porté, les cases du sac, l'or, et la fiche de l'objet touché.
 ## On s'équipe en faisant glisser un objet du sac vers le personnage (ou avec le bouton « Équiper »),
 ## on retire un objet en le faisant glisser vers le sac (ou avec « Retirer »).
+## En bas : le recyclage automatique (rareté et types d'objets à recycler dès qu'ils tombent).
 ## Le jeu continue de tourner pendant qu'elle est ouverte.
+
+signal or_gagne(quantite: int, raison: String)
 
 const COLONNES := 8
 
 var _joueur: Joueur
 var _vignettes: Vignettes
 var _disposition: BoxContainer
+var _apercu: ApercuPersonnage
 var _equipement: GridContainer
 var _grille: GridContainer
 var _or: Label
 var _fiche: FicheObjet
 var _action: Button
+var _recycler: Button
+var _filtre_rarete: OptionButton
+var _filtre_types := {}
 var _cases_sac: Array[CaseObjet] = []
 var _cases_equipement := {}
 ## Case touchée : {"lieu": "sac"|"equipement", "cle": …}, ou vide.
@@ -46,6 +53,8 @@ func _ready() -> void:
 	_disposition = BoxContainer.new()
 	_disposition.add_theme_constant_override("separation", 16)
 	contenu.add_child(_disposition)
+	_apercu = ApercuPersonnage.new()
+	_disposition.add_child(_apercu)
 	_equipement = GridContainer.new()
 	_equipement.add_theme_constant_override("h_separation", 5)
 	_equipement.add_theme_constant_override("v_separation", 5)
@@ -59,17 +68,27 @@ func _ready() -> void:
 	var colonne_fiche := VBoxContainer.new()
 	colonne_fiche.add_theme_constant_override("separation", 8)
 	var defilement := ScrollContainer.new()
-	defilement.custom_minimum_size = Vector2(300, 200)
+	defilement.custom_minimum_size = Vector2(270, 200)
 	defilement.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	defilement.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_fiche = FicheObjet.new()
 	_fiche.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	defilement.add_child(_fiche)
 	colonne_fiche.add_child(defilement)
+	var boutons_fiche := VBoxContainer.new()
+	boutons_fiche.add_theme_constant_override("separation", 8)
 	_action = _bouton("Équiper", _sur_action)
 	_action.visible = false
-	colonne_fiche.add_child(_action)
+	_action.add_theme_font_size_override("font_size", 22)
+	boutons_fiche.add_child(_action)
+	_recycler = _bouton("Recycler", _sur_recycler)
+	_recycler.visible = false
+	_recycler.add_theme_font_size_override("font_size", 22)
+	boutons_fiche.add_child(_recycler)
+	colonne_fiche.add_child(boutons_fiche)
 	_disposition.add_child(colonne_fiche)
+
+	contenu.add_child(_ligne_recyclage_auto())
 
 	var fermer := _bouton("Fermer", fermer_fenetre)
 	fermer.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -90,6 +109,8 @@ func relier(joueur: Joueur, vignettes: Vignettes) -> void:
 		_grille.add_child(case_objet)
 	_joueur.inventaire.change.connect(_rafraichir)
 	_joueur.equipement_change.connect(_rafraichir)
+	_apercu.relier(joueur)
+	_afficher_filtres()
 
 
 func ouvrir() -> void:
@@ -100,6 +121,7 @@ func ouvrir() -> void:
 	visible = true
 	_choix = {}
 	_rafraichir()
+	_apercu.rafraichir()
 	reset_size()
 	await get_tree().process_frame
 	position = (get_viewport_rect().size - size) / 2.0
@@ -184,6 +206,75 @@ func _sur_action() -> void:
 	_rafraichir()
 
 
+func _sur_recycler() -> void:
+	if _choix.is_empty() or _choix["lieu"] != "sac":
+		return
+	var objet := _objet(_choix)
+	var gain := _joueur.inventaire.recycler(int(_choix["cle"]))
+	if gain > 0:
+		or_gagne.emit(gain, objet.nom)
+	_choix = {}
+	_rafraichir()
+
+
+## Ligne du recyclage automatique : « Recyclage auto : [sous Doré] [Armes] [Armures] [Bijoux] [Recycler le sac] ».
+func _ligne_recyclage_auto() -> Control:
+	var ligne := HFlowContainer.new()
+	ligne.add_theme_constant_override("h_separation", 10)
+	ligne.add_theme_constant_override("v_separation", 6)
+	ligne.add_child(_texte("Recyclage auto :", 20, Color(0.85, 0.88, 0.95)))
+	_filtre_rarete = OptionButton.new()
+	_filtre_rarete.focus_mode = Control.FOCUS_NONE
+	_filtre_rarete.add_theme_font_size_override("font_size", 20)
+	_filtre_rarete.custom_minimum_size = Vector2(180, 52)
+	_filtre_rarete.item_selected.connect(_sur_filtre_rarete)
+	ligne.add_child(_filtre_rarete)
+	for type in RecyclageAuto.TYPES:
+		var case_a_cocher := CheckBox.new()
+		case_a_cocher.text = RecyclageAuto.NOMS_TYPES[type]
+		case_a_cocher.focus_mode = Control.FOCUS_NONE
+		case_a_cocher.add_theme_font_size_override("font_size", 20)
+		case_a_cocher.toggled.connect(_sur_filtre_type.bind(type))
+		_filtre_types[type] = case_a_cocher
+		ligne.add_child(case_a_cocher)
+	var maintenant := _bouton("Recycler le sac", _sur_recycler_le_sac)
+	maintenant.add_theme_font_size_override("font_size", 20)
+	maintenant.custom_minimum_size = Vector2(190, 52)
+	ligne.add_child(maintenant)
+	return ligne
+
+
+## Remplit la liste des raretés : « Désactivé », puis « Sous Argenté », « Sous Doré »…
+func _afficher_filtres() -> void:
+	var config := Config.jeu
+	var filtre := _joueur.recyclage_auto
+	_filtre_rarete.clear()
+	_filtre_rarete.add_item("Désactivé")
+	var raretes := config.ids_raretes()
+	for i in range(1, raretes.size()):
+		_filtre_rarete.add_item("Sous %s" % config.nom_rarete(raretes[i]))
+	_filtre_rarete.select(raretes.find(filtre.rarete_limite) if filtre.actif else 0)
+	for type: String in _filtre_types:
+		(_filtre_types[type] as CheckBox).set_pressed_no_signal(bool(filtre.types.get(type, true)))
+
+
+func _sur_filtre_rarete(index: int) -> void:
+	var raretes := Config.jeu.ids_raretes()
+	_joueur.recyclage_auto.regler(index > 0, raretes[maxi(index, 1)])
+
+
+func _sur_filtre_type(coche: bool, type: String) -> void:
+	_joueur.recyclage_auto.cocher(type, coche)
+
+
+func _sur_recycler_le_sac() -> void:
+	var gain := _joueur.recycler_le_sac_selon_les_filtres()
+	if gain > 0:
+		or_gagne.emit(gain, "le sac")
+	_choix = {}
+	_rafraichir()
+
+
 func _rafraichir() -> void:
 	if _joueur == null or not visible:
 		return
@@ -200,10 +291,13 @@ func _rafraichir() -> void:
 	var objet := _objet(_choix)
 	var porte: Objet = null
 	_action.visible = false
+	_recycler.visible = false
 	if objet != null and _choix["lieu"] == "sac":
 		porte = _joueur.equipement.objet(_joueur.equipement.emplacement_pour(objet))
 		_action.text = "Équiper"
 		_action.visible = true
+		_recycler.text = "Recycler : +%d or" % _joueur.inventaire.valeur_recyclage(objet)
+		_recycler.visible = true
 	elif objet != null and _choix["cle"] != "arme":
 		_action.text = "Retirer"
 		_action.visible = true

@@ -12,6 +12,10 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Armes à deux mains (épée, hache) : tenues en permanence à deux mains. Au repos, traînées au sol comme une couette très lourde, les deux bras vers l'arrière sur le côté. Attaques lourdes, comme si l'arme pesait une tonne (esprit « guerrier à grande épée », sans rien copier d'un jeu existant).
 - Arc : une vraie animation où une main tire la corde.
 - Animations d'attaque propres à chaque type d'arme (voir aussi « Armes et statistiques » plus bas).
+- Lecture de la rareté sur l'équipement porté : standard, argenté et doré se ressemblent encore beaucoup ; il faudra de vraies variantes de matières (métal poli, liserés dorés, runes bleues de l'épique, halo du mythique, aura du transcendant), et des pièces différentes selon la rareté.
+- Peau sous les vêtements : elle recule de 3 cm sous chaque pièce portée (voir `scripts/world/corps_sous_vetements.gd`) ; idéalement, des personnages de base dont le corps est fait pour les tenues.
+- Cape rigide : elle ne suit pas les jambes quand on court ; une vraie cape animée (os ou tissu simulé).
+- Boucles d'oreilles : pas encore visibles (trop petites pour le prototype).
 - Pistes techniques : IK des deux mains dans Godot (TwoBoneIK3D), animations dédiées (faites dans Blender, ou d'autres sources d'animations, à valider avec Hugo pour la licence), effets d'impact (secousse de caméra, ralenti de quelques images, poussière).
 
 ## Technique
@@ -56,5 +60,10 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 ## Équipement
 
 - Mains : le game design prévoit une main principale et une main secondaire (dague, épée à une main ou bouclier). Pour le prototype, un seul emplacement « Arme » couvre les deux mains (paire de dagues, épée et écu, arme à deux mains). Séparer les deux mains quand il y aura des épées à une main et des boucliers seuls — à valider avec Hugo.
-- Afficher le personnage en 3D dans la fenêtre du sac, avec son équipement (partie 4.3).
 - Comparaison plus détaillée entre l'objet du sac et l'objet porté (statistique par statistique).
+
+## Recyclage
+
+- Filtre par matériau (« tout ce qui est en fer ») : quand les matériaux existeront (étape 7).
+- Le recyclage rapporte seulement de l'or pour l'instant ; les matériaux arriveront avec la forge (étape 7).
+- Message d'erreur sans gravité dans la console de Godot (« Parameter "material" is null ») quand on change plusieurs fois de suite une pièce de rareté argentée ou plus : à comprendre.

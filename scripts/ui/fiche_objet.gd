@@ -29,9 +29,9 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 	add_child(_texte("Qualité %d %%%s · puissance %d" % [qualite, " (parfaite)" if qualite >= 100 else "", objet.puissance(config)],
 		17, Color(0.85, 0.88, 0.95)))
 	if objet.degats > 0.0:
-		add_child(_texte("Dégâts %d" % roundi(objet.degats), 20, Color.WHITE))
+		add_child(_texte("Dégâts %s" % _nombre(objet.degats), 20, Color.WHITE))
 	if objet.armure > 0.0:
-		add_child(_texte("Armure %d" % roundi(objet.armure), 20, Color.WHITE))
+		add_child(_texte("Armure %s" % _nombre(objet.armure), 20, Color.WHITE))
 	for nom: String in objet.statistiques:
 		add_child(_texte("+%d %s" % [objet.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 18, Color(0.75, 0.92, 0.75)))
 	for nom: String in objet.bonus:
@@ -42,6 +42,11 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 		var couleur_ecart := Color(0.5, 1, 0.5) if ecart > 0 else (Color(1, 0.5, 0.45) if ecart < 0 else Color(0.85, 0.85, 0.85))
 		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom, porte.puissance(config), signe, ecart], 16, couleur_ecart))
 
+
+
+## Un nombre lisible : une décimale en dessous de 10 (0,5), un entier au-dessus.
+func _nombre(valeur: float) -> String:
+	return ("%.1f" % valeur).replace(".", ",") if valeur < 10.0 else str(roundi(valeur))
 
 
 func _texte(texte: String, taille: int, couleur: Color) -> Label:
