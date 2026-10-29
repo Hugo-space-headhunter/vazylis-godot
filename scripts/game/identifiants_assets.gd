@@ -16,8 +16,14 @@ const COCHONNET_SUIE := "monster.cochonnet_suie"
 const CORBAC := "monster.corbac"
 const POMELIN := "monster.pomelin"
 
-## Arme de départ provisoire (épée et bouclier, sans modèle de bouclier pour l'instant).
+## Armes (les types d'armes de config/armes.cfg indiquent lesquelles portent quoi).
 const EPEE_DEPART := "weapon.epee_depart"
+const DAGUE := "weapon.dague"
+const CLAYMORE := "weapon.claymore"
+const HACHE := "weapon.hache"
+const BOUCLIER := "weapon.bouclier"
+const ARC := "weapon.arc"
+const FLECHE := "projectile.fleche"
 
 ## Objet de démonstration de l'étape 0 : un cristal qui tourne.
 const CRISTAL_TEST := "prop.cristal_test"

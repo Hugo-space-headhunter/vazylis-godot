@@ -50,9 +50,11 @@ func test_en_mode_combat_on_tue_un_cochonnet_et_on_gagne_de_l_xp() -> void:
 
 
 func test_l_arme_change_de_place_selon_le_mode() -> void:
-	assert_eq(joueur._arme.get_parent().name, "Attache_dos")
+	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_dos")
+	assert_eq(joueur._armes["main_gauche"].get_parent().name, "Attache_dos")
 	joueur.changer_mode(Joueur.Mode.COMBAT)
-	assert_eq(joueur._arme.get_parent().name, "Attache_main_droite")
+	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_main_droite")
+	assert_eq(joueur._armes["main_gauche"].get_parent().name, "Attache_main_gauche")
 
 
 func test_un_pomelin_charge_le_joueur() -> void:
@@ -69,7 +71,8 @@ func test_un_passif_ne_charge_pas() -> void:
 
 
 func test_mort_et_retour_au_depart() -> void:
-	joueur.recevoir_degats(roundi(joueur.pv_max))
+	joueur.changer_arme("arme.hache_deux_mains")
+	joueur.recevoir_degats(joueur.pv_max * 10.0, 1)
 	assert_false(joueur.est_vivant())
 	await wait_until(func(): return joueur.est_vivant(), 5.0)
 	assert_true(joueur.est_vivant())
@@ -78,8 +81,53 @@ func test_mort_et_retour_au_depart() -> void:
 
 func test_monter_de_niveau_rend_la_vie_et_l_augmente() -> void:
 	var avant := joueur.pv_max
-	joueur.recevoir_degats(10)
+	joueur.changer_arme("arme.hache_deux_mains")
+	joueur.recevoir_degats(10.0, 1)
 	joueur.gagner_xp(joueur.experience.xp_pour_niveau_suivant())
 	assert_eq(joueur.niveau(), 2)
 	assert_gt(joueur.pv_max, avant)
 	assert_eq(joueur.pv, joueur.pv_max)
+
+
+func test_monter_de_niveau_donne_4_points() -> void:
+	joueur.gagner_xp(joueur.experience.xp_pour_niveau_suivant())
+	assert_eq(joueur.statistiques.points_libres, 4)
+
+
+func test_valider_de_la_vitalite_augmente_la_vie() -> void:
+	joueur.gagner_xp(joueur.experience.xp_pour_niveau_suivant())
+	var avant := joueur.pv_max
+	for i in 4:
+		joueur.statistiques.ajouter("vitalite")
+	assert_eq(joueur.pv_max, avant, "Pas avant la validation")
+	joueur.statistiques.valider()
+	assert_almost_eq(joueur.pv_max, avant + 48.0, 0.001)
+	assert_almost_eq(joueur.pv, joueur.pv_max, 0.001)
+
+
+func test_chaque_arme_affiche_ses_modeles() -> void:
+	for id in Config.jeu.ids_armes():
+		joueur.changer_arme(id)
+		var arme := Config.jeu.arme(id)
+		assert_eq(joueur._armes.has("main_droite"), not str(arme["modele_main_droite"]).is_empty(), id)
+		assert_eq(joueur._armes.has("main_gauche"), not str(arme["modele_main_gauche"]).is_empty(), id)
+
+
+func test_l_arc_tue_de_loin() -> void:
+	joueur.changer_arme("arme.arc")
+	joueur.changer_mode(Joueur.Mode.COMBAT)
+	var cochonnet := _monstre("monstre.cochonnet_suie", 1, Vector3(0, 0, 6.0))
+	await wait_until(func(): return cochonnet.pv < cochonnet.pv_max, 5.0)
+	assert_lt(cochonnet.pv, cochonnet.pv_max, "La flèche aurait dû toucher à 6 mètres")
+
+
+func test_le_bouclier_bloque_parfois() -> void:
+	joueur.changer_arme("arme.epee_bouclier")
+	var touches := 0
+	for i in 400:
+		var avant := joueur.pv
+		joueur.recevoir_degats(1.0, 1)
+		if joueur.pv < avant:
+			touches += 1
+		joueur.pv = joueur.pv_max
+	assert_between(touches, 320, 390, "Environ 90 % des coups passent")

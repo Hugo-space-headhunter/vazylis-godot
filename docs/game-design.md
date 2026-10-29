@@ -119,6 +119,15 @@ Chaque arme a une **statistique d'affinité** qui augmente ses dégâts de 0,3 %
 | Hache à deux mains | 0,75 coup/s | Très élevés | Force | Ignore 15 % de la défense adverse |
 | Épée et bouclier | 1,1 coup/s | Moyens | Vitalité | 10 % de chance de bloquer un coup, défense augmentée |
 
+**Valeurs décidées à l'étape 3** (réglables dans le fichier de configuration) :
+
+- **Dégâts de l'arme selon son type** : la formule des dégâts de l'arme est multipliée par ×0,65 pour les dagues (faibles), ×0,8 pour l'arc (moyens), ×1,35 pour l'épée à deux mains (élevés), ×1,45 pour la hache (très élevés) et ×0,9 pour l'épée et bouclier (moyens, un peu moins forte car plus résistante). Sans points de statistiques, toutes les armes ont ainsi une force proche : la différence vient des statistiques et des particularités.
+- **Bloquer un coup** (épée et bouclier) : le coup est entièrement annulé. **Défense augmentée** : le bouclier apporte 2 de défense par niveau.
+- **Mana** = 5 × Intelligence, sans base (la magie viendra plus tard).
+- **Points de statistiques** : 0 au niveau 1, puis 4 à chaque niveau gagné ; les points non dépensés se gardent.
+- **Calibrage des monstres** : il est fait sur un joueur « moyen », qui met 1 point dans chaque statistique à chaque niveau et porte une épée et bouclier standard de son niveau. Un build réfléchi tue donc plus vite que ce joueur moyen.
+- **Nom du personnage** : « Vazylien » ou « Vazylienne » en attendant l'écran de création.
+
 ## Formules de combat (valeurs de départ)
 
 Toutes les valeurs sont dans le fichier de configuration et se règlent en jouant.
@@ -144,7 +153,7 @@ Toutes les valeurs sont dans le fichier de configuration et se règlent en jouan
 
 Un monstre plus haut que le joueur de plus de 5 niveaux frappe 5 % plus fort par niveau d'écart.
 
-**Comment le calibrage se traduit en chiffres (décidé à l'étape 2)** : la vie d'un monstre vaut les dégâts par seconde d'un joueur de son niveau (sans points de statistiques, avec une arme standard de son niveau) multipliés par le temps visé pour le tuer (10 secondes). Ses dégâts par seconde valent les points de vie d'un joueur de son niveau divisés par le temps visé pour tuer le joueur (60 secondes). Les monstres passifs frappent 2 fois moins fort. Ces valeurs sont dans le fichier de configuration.
+**Comment le calibrage se traduit en chiffres (décidé à l'étape 2, précisé à l'étape 3)** : la vie d'un monstre vaut les dégâts par seconde d'un joueur « moyen » de son niveau (voir les valeurs de l'étape 3) multipliés par le temps visé pour le tuer (10 secondes). Ses dégâts par seconde sont réglés pour qu'il tue ce joueur moyen, défense comprise, dans le temps visé (60 secondes). Les monstres passifs frappent 2 fois moins fort. Ces valeurs sont dans le fichier de configuration.
 
 ## Combat et modes de jeu
 

@@ -10,28 +10,11 @@
 [ext_resource type="PackedScene" path="res://scenes/monde/pilier.tscn" id="8_pilier"]
 [ext_resource type="Script" path="res://scripts/world/zone_apparition.gd" id="9_zone"]
 [ext_resource type="Script" path="res://scripts/ui/boutons_mode.gd" id="10_modes"]
-[ext_resource type="Script" path="res://scripts/ui/infos_provisoires.gd" id="11_infos"]
-
-[sub_resource type="StyleBoxFlat" id="Fond_barre"]
-bg_color = Color(0, 0, 0, 0.55)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="Remplissage_vie"]
-bg_color = Color(0.85, 0.2, 0.2, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="Remplissage_xp"]
-bg_color = Color(0.3, 0.6, 1, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[ext_resource type="PackedScene" path="res://scenes/ui/bandeau.tscn" id="11_bandeau"]
+[ext_resource type="Script" path="res://scripts/ui/fenetre_statistiques.gd" id="12_fenetre"]
+[ext_resource type="Script" path="res://scripts/ui/bouton_statistiques.gd" id="13_bstats"]
+[ext_resource type="Script" path="res://scripts/ui/boutons_test.gd" id="14_btest"]
+[ext_resource type="Texture2D" path="res://assets/icones/ui/statistiques.svg" id="15_icone"]
 
 [sub_resource type="Environment" id="Environment_ciel"]
 background_mode = 1
@@ -164,81 +147,65 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("4_commandes")
 
-[node name="BoutonPersonnage" type="Button" parent="Interface"]
+[node name="OutilsTest" type="VBoxContainer" parent="Interface"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -184.0
+offset_left = -264.0
 offset_top = 36.0
 offset_right = -24.0
-offset_bottom = 96.0
+offset_bottom = 236.0
 grow_horizontal = 0
+theme_override_constants/separation = 8
+script = ExtResource("14_btest")
+
+[node name="BoutonPersonnage" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 24
 text = "Homme"
 script = ExtResource("5_bouton")
 
-[node name="InfosProvisoires" type="VBoxContainer" parent="Interface"]
+[node name="Arme" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Arme"
+
+[node name="Niveau" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Test : +1 niveau"
+
+[node name="Bandeau" parent="Interface" instance=ExtResource("11_bandeau")]
+
+[node name="BoutonStatistiques" type="Button" parent="Interface"]
 offset_left = 24.0
-offset_top = 90.0
-offset_right = 324.0
-offset_bottom = 260.0
-mouse_filter = 2
-theme_override_constants/separation = 6
-script = ExtResource("11_infos")
+offset_top = 230.0
+offset_right = 108.0
+offset_bottom = 314.0
+focus_mode = 0
+icon = ExtResource("15_icone")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("13_bstats")
 
-[node name="Niveau" type="Label" parent="Interface/InfosProvisoires"]
-layout_mode = 2
+[node name="Pastille" type="Label" parent="Interface/BoutonStatistiques"]
+layout_mode = 0
+offset_left = 58.0
+offset_top = -10.0
+offset_right = 110.0
+offset_bottom = 22.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 28
-text = "Niveau 1"
-
-[node name="Vie" type="ProgressBar" parent="Interface/InfosProvisoires"]
-custom_minimum_size = Vector2(300, 30)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/background = SubResource("Fond_barre")
-theme_override_styles/fill = SubResource("Remplissage_vie")
-show_percentage = false
-
-[node name="Texte" type="Label" parent="Interface/InfosProvisoires/Vie"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="XP" type="ProgressBar" parent="Interface/InfosProvisoires"]
-custom_minimum_size = Vector2(300, 22)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/background = SubResource("Fond_barre")
-theme_override_styles/fill = SubResource("Remplissage_xp")
-show_percentage = false
-
-[node name="Texte" type="Label" parent="Interface/InfosProvisoires/XP"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 15
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Message" type="Label" parent="Interface/InfosProvisoires"]
-visible = false
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.5, 0.45, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 22
+text = "+0"
 
 [node name="BoutonsMode" type="HBoxContainer" parent="Interface"]
 anchors_preset = 3
@@ -270,3 +237,6 @@ theme_override_font_sizes/font_size = 32
 text = "Pied"
 
 [node name="CompteurFPS" parent="Interface" instance=ExtResource("6_fps")]
+
+[node name="FenetreStatistiques" type="PanelContainer" parent="Interface"]
+script = ExtResource("12_fenetre")

@@ -18,8 +18,16 @@ Les idées et améliorations hors de l'étape en cours sont notées ici, au lieu
 
 ## Combat
 
-- Bouclier : l'arme de départ est « épée et bouclier », mais aucun modèle de bouclier n'est encore affiché (main gauche). Ses effets (10 % de blocage, défense) arrivent avec les affinités d'armes (étape 3).
 - Cochonnet de suie : pas de vrai cochon en CC0 chez Quaternius ; le modèle « Dog » teinté sert en attendant. Les yeux rouges demanderaient de retoucher la texture.
 - Épée : légèrement trop en avant pendant la marche avec l'arme sortie ; à affiner dans `placements` du catalogue si besoin.
 - Plusieurs monstres d'une même zone peuvent se chevaucher ; les écarter un peu les uns des autres.
 - Les étiquettes « nom niv. X » de tous les monstres sont toujours visibles ; ne les montrer que pour les monstres proches si l'écran devient chargé.
+
+## Armes et statistiques
+
+- Arc et bouclier : modèles provisoires faits par code ; les remplacer par de vrais modèles (aucun arc ni bouclier seul en CC0 dans les packs actuels ; chercher chez KayKit Adventurers ou Quaternius).
+- L'arc est tenu à l'horizontale au repos (l'animation de repos est faite pour une épée) ; trouver des animations de tir à l'arc.
+- Dagues : une même animation d'attaque à l'épée sert pour toutes les armes de mêlée ; chercher des animations propres aux dagues et aux armes à deux mains.
+- Hache : sa particularité (ignorer 15 % de la défense) n'a pas encore d'effet, car les monstres n'ont pas de défense.
+- Poids du jeu : les armes Polyy pèsent environ 3 Mo chacune (textures en 2048 px) ; réduire leurs textures pour accélérer le chargement sur l'iPhone.
+- Outil `tools/calculer_prise.gd` : il calcule la prise en main d'une nouvelle arme ; à utiliser pour les armes créées par Hugo.

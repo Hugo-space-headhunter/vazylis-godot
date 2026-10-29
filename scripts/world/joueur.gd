@@ -2,12 +2,15 @@ class_name Joueur
 extends CharacterBody3D
 ## Le personnage du joueur : il se déplace selon le joystick, se tourne dans sa
 ## direction et joue les animations de repos, de marche et de course.
-## En mode combat, il frappe tout seul le monstre le plus proche à sa portée.
+## En mode combat, il frappe tout seul le monstre le plus proche à la portée de son arme.
 
 signal mode_change(mode: Mode)
 signal pv_change(pv: float, pv_max: float)
+signal mana_change(mana: float, mana_max: float)
 signal xp_change(xp: int, xp_requise: int, niveau: int)
 signal niveau_gagne(niveau: int)
+signal caracteristiques_change
+signal arme_change(id_arme: String)
 signal mort
 signal retour
 
@@ -16,6 +19,7 @@ const GROUPE := "joueur"
 const ALTITUDE_CHUTE := -20.0
 ## Part de l'animation d'attaque à laquelle le coup touche (0,4 = un peu avant le milieu).
 const MOMENT_DU_COUP := 0.4
+const POINTS_ATTACHE := {"modele_main_droite": "main_droite", "modele_main_gauche": "main_gauche"}
 
 enum Mode { DEPLACEMENT, COMBAT }
 
@@ -29,11 +33,16 @@ var angle_camera := 0.0
 var personnage := ""
 var mode := Mode.DEPLACEMENT
 var experience: Experience
+var statistiques := Statistiques.new()
+var id_arme := ""
+var arme := {}
 var pv := 1.0
 var pv_max := 1.0
+var mana := 0.0
+var mana_max := 0.0
 
 var _modele: ModeleAsset
-var _arme: ModeleAsset
+var _armes := {}
 var _allure := Deplacement.Allure.ARRET
 var _depart := Vector3.ZERO
 var _vivant := true
@@ -51,10 +60,10 @@ func _ready() -> void:
 	_depart = global_position
 	experience = Experience.new(Config.jeu)
 	experience.niveau_gagne.connect(_sur_niveau_gagne)
-	pv_max = Combat.pv_joueur(experience.niveau, Config.jeu)
-	pv = pv_max
-	_arme = CatalogueAssets.creer(IdentifiantsAssets.EPEE_DEPART)
+	statistiques.change.connect(_sur_statistiques)
 	changer_personnage(personnage_depart)
+	changer_arme(Config.jeu.arme_depart())
+	_recalculer(true)
 	_annoncer.call_deferred()
 
 
@@ -70,37 +79,65 @@ func modele() -> ModeleAsset:
 	return _modele
 
 
+func defense() -> float:
+	return Combat.defense_joueur(experience.niveau, statistiques, arme, Config.jeu)
+
+
 ## Remplace le modèle affiché (ex. homme ↔ femme), sans toucher au reste.
 func changer_personnage(id: String) -> void:
 	var rotation_actuelle := 0.0
 	if _modele != null:
 		rotation_actuelle = _modele.rotation.y
-		_arme.get_parent().remove_child(_arme)
+		for objet: ModeleAsset in _armes.values():
+			objet.get_parent().remove_child(objet)
 		_modele.queue_free()
 	personnage = id
 	_modele = CatalogueAssets.creer(id)
 	_modele.rotation.y = rotation_actuelle
 	add_child(_modele)
 	_modele.jouer(Deplacement.animation(_allure), 0.0)
-	_ranger_arme()
+	_ranger_armes()
 
 
-## Mode combat (arme sortie, attaque automatique) ou déplacement (arme rangée dans le dos).
+## Change de type d'arme (section de config/armes.cfg) et affiche ses modèles.
+func changer_arme(id: String) -> void:
+	for objet: ModeleAsset in _armes.values():
+		objet.queue_free()
+	_armes.clear()
+	id_arme = id
+	arme = Config.jeu.arme(id)
+	for cle in POINTS_ATTACHE:
+		var modele_id := str(arme.get(cle, ""))
+		if not modele_id.is_empty():
+			_armes[POINTS_ATTACHE[cle]] = CatalogueAssets.creer(modele_id)
+	_ranger_armes()
+	_coup_en_attente = -1.0
+	if experience != null:
+		_recalculer(false)
+	arme_change.emit(id)
+
+
+## Mode combat (armes sorties, attaque automatique) ou déplacement (armes rangées dans le dos).
 func changer_mode(nouveau: Mode) -> void:
 	mode = nouveau
 	_cible = null
 	_coup_en_attente = -1.0
-	_ranger_arme()
+	_ranger_armes()
 	mode_change.emit(mode)
 
 
-func recevoir_degats(degats: int) -> void:
+## Un monstre attaque : le bouclier peut bloquer, sinon la défense réduit les dégâts.
+func recevoir_degats(degats_bruts: float, niveau_attaquant: int) -> void:
 	if not _vivant:
 		return
+	var tete := global_position + Vector3.UP * 2.0
+	if Combat.bloque(arme, _hasard):
+		ChiffreFlottant.afficher(get_parent(), tete, "Bloqué", Color(0.75, 0.85, 1.0), 48)
+		return
+	var degats := Combat.degats_subis(degats_bruts, niveau_attaquant, defense(), Config.jeu)
 	pv = maxf(0.0, pv - degats)
 	pv_change.emit(pv, pv_max)
-	ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * 2.0, str(degats),
-		ChiffreFlottant.COULEUR_DEGATS_SUBIS, 52)
+	ChiffreFlottant.afficher(get_parent(), tete, str(degats), ChiffreFlottant.COULEUR_DEGATS_SUBIS, 52)
 	if pv <= 0.0:
 		_mourir()
 
@@ -153,12 +190,13 @@ func _combattre(delta: float) -> void:
 	_cible = _monstre_a_portee()
 	if _cible == null:
 		return
-	var intervalle := Combat.intervalle_attaque_joueur(Config.jeu)
+	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques, arme, Config.jeu)
 	_recharge_attaque = intervalle
 	_tourner_vers(_cible.global_position, 1.0)
-	var duree := _modele.duree("attack")
+	var animation := str(arme.get("animation", "attack"))
+	var duree := _modele.duree(animation)
 	var vitesse := maxf(1.0, duree / intervalle)
-	_modele.jouer("attack", 0.08, false, true)
+	_modele.jouer(animation, 0.08, false, true)
 	_modele.regler_vitesse_animation(vitesse)
 	_verrou_animation = duree / vitesse
 	_coup_en_attente = _verrou_animation * MOMENT_DU_COUP
@@ -167,14 +205,25 @@ func _combattre(delta: float) -> void:
 func _frapper() -> void:
 	if not is_instance_valid(_cible) or not _cible.est_vivant():
 		return
-	var coup := Combat.coup_joueur(experience.niveau, Config.jeu, _hasard)
-	var niveau_cible := _cible.niveau
-	if _cible.recevoir_coup(coup["degats"], coup["critique"]):
+	var cible := _cible
+	if bool(arme.get("a_distance", false)):
+		var depart := global_position + Vector3.UP * 1.4
+		Fleche.tirer(get_parent(), depart, cible, _toucher.bind(cible))
+	else:
+		_toucher(cible)
+
+
+func _toucher(cible: Monstre) -> void:
+	if not is_instance_valid(cible) or not cible.est_vivant():
+		return
+	var coup := Combat.coup_joueur(experience.niveau, statistiques, arme, 0.0, cible.niveau, Config.jeu, _hasard)
+	var niveau_cible := cible.niveau
+	if cible.recevoir_coup(coup["degats"], coup["critique"]):
 		gagner_xp(Experience.xp_gagnee(experience.niveau, niveau_cible, Config.jeu))
 
 
 func _monstre_a_portee() -> Monstre:
-	var portee := Config.jeu.combat("joueur", "portee_attaque")
+	var portee := float(arme.get("portee", 1.6))
 	var plus_proche: Monstre = null
 	var meilleure := INF
 	for noeud in get_tree().get_nodes_in_group(Monstre.GROUPE):
@@ -193,14 +242,35 @@ func _tourner_vers(point: Vector3, poids: float) -> void:
 		_modele.rotation.y = lerp_angle(_modele.rotation.y, atan2(direction.x, direction.z), poids)
 
 
-func _ranger_arme() -> void:
-	_arme.accrocher_a(_modele, "main_droite" if mode == Mode.COMBAT else "dos")
+func _ranger_armes() -> void:
+	if _modele == null:
+		return
+	for point: String in _armes:
+		_armes[point].accrocher_a(_modele, point if mode == Mode.COMBAT else "dos")
+
+
+## Recalcule vie, mana et défense après un changement de niveau, de statistiques ou d'arme.
+## « soigner » remet la vie au maximum ; sinon la vie gagnée s'ajoute à la vie actuelle.
+func _recalculer(soigner: bool) -> void:
+	var ancien_max := pv_max
+	pv_max = Combat.pv_joueur(experience.niveau, statistiques, Config.jeu)
+	pv = pv_max if soigner else clampf(pv + maxf(0.0, pv_max - ancien_max), 0.0, pv_max)
+	mana_max = Combat.mana(statistiques, Config.jeu)
+	mana = mana_max
+	pv_change.emit(pv, pv_max)
+	mana_change.emit(mana, mana_max)
+	caracteristiques_change.emit()
+
+
+func _sur_statistiques() -> void:
+	if not statistiques.a_des_points_en_attente():
+		_recalculer(false)
+	caracteristiques_change.emit()
 
 
 func _sur_niveau_gagne(nouveau_niveau: int) -> void:
-	pv_max = Combat.pv_joueur(nouveau_niveau, Config.jeu)
-	pv = pv_max
-	pv_change.emit(pv, pv_max)
+	statistiques.gagner_points(int(Config.jeu.statistique("points", "par_niveau")))
+	_recalculer(true)
 	EffetNiveau.jouer(self)
 	niveau_gagne.emit(nouveau_niveau)
 
@@ -213,15 +283,17 @@ func _mourir() -> void:
 	await get_tree().create_timer(Config.jeu.combat("joueur", "delai_reapparition"), false).timeout
 	global_position = _depart
 	velocity = Vector3.ZERO
-	pv = pv_max
 	_vivant = true
 	_verrou_animation = 0.0
 	_modele.jouer("idle", 0.0, true, true)
-	pv_change.emit(pv, pv_max)
+	_recalculer(true)
 	retour.emit()
 
 
 func _annoncer() -> void:
 	pv_change.emit(pv, pv_max)
+	mana_change.emit(mana, mana_max)
 	xp_change.emit(experience.xp, experience.xp_pour_niveau_suivant(), experience.niveau)
 	mode_change.emit(mode)
+	arme_change.emit(id_arme)
+	caracteristiques_change.emit()

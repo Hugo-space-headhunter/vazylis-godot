@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes"]
 
 var _fichiers := {}
 
@@ -98,8 +98,34 @@ func combat(section: String, cle: String) -> float:
 	return _nombre("combat", section, cle, 0.0)
 
 
-func rarete_arme_depart() -> String:
-	return str(_valeur("combat", "arme_depart", "rarete", "standard"))
+func rarete_arme() -> String:
+	return str(_valeur("combat", "arme", "rarete", "standard"))
+
+
+func arme_depart() -> String:
+	return str(_valeur("combat", "joueur", "arme_depart", "arme.epee_bouclier"))
+
+
+func arme_reference() -> String:
+	return str(_valeur("combat", "calibrage", "arme_reference", "arme.epee_bouclier"))
+
+
+# --- Statistiques ---
+
+## Valeur numérique de statistiques.cfg, par exemple statistique("force", "degats_par_point").
+func statistique(section: String, cle: String) -> float:
+	return _nombre("statistiques", section, cle, 0.0)
+
+
+# --- Armes ---
+
+func ids_armes() -> PackedStringArray:
+	return _fichier("armes").get_sections()
+
+
+## Toutes les valeurs d'un type d'arme de armes.cfg (nom, vitesse, affinite…).
+func arme(id: String) -> Dictionary:
+	return _section("armes", id)
 
 
 # --- Monstres ---
@@ -110,14 +136,7 @@ func ids_monstres() -> PackedStringArray:
 
 ## Toutes les valeurs d'un monstre de monstres.cfg (nom, modele, niveau_min…).
 func monstre(id: String) -> Dictionary:
-	var config := _fichier("monstres")
-	var valeurs := {}
-	if not config.has_section(id):
-		push_error("Config : monstre inconnu « %s »." % id)
-		return valeurs
-	for cle in config.get_section_keys(id):
-		valeurs[cle] = config.get_value(id, cle)
-	return valeurs
+	return _section("monstres", id)
 
 
 # --- Personnage ---
@@ -200,6 +219,17 @@ static func _lire(chemin: String) -> ConfigFile:
 
 func _fichier(nom: String) -> ConfigFile:
 	return _fichiers.get(nom, ConfigFile.new())
+
+
+func _section(fichier: String, section: String) -> Dictionary:
+	var config := _fichier(fichier)
+	var valeurs := {}
+	if not config.has_section(section):
+		push_error("Config : « %s » est absent de %s.cfg." % [section, fichier])
+		return valeurs
+	for cle in config.get_section_keys(section):
+		valeurs[cle] = config.get_value(section, cle)
+	return valeurs
 
 
 func _nombre(fichier: String, section: String, cle: String, defaut: float) -> float:

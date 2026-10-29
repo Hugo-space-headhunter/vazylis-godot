@@ -163,7 +163,7 @@ func _attaquer() -> void:
 	var intervalle := float(_definition.get("intervalle_attaque", 1.5))
 	_recharge_attaque = intervalle
 	_jouer_une_fois("attack")
-	_joueur.recevoir_degats(roundi(Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu)))
+	_joueur.recevoir_degats(Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu), niveau)
 
 
 func _mourir() -> void:
