@@ -53,6 +53,7 @@ var mana_max := 0.0
 
 var _modele: ModeleAsset
 var _armes := {}
+var _habillage := Habillage.new()
 var _allure := Deplacement.Allure.ARRET
 var _depart := Vector3.ZERO
 var _vivant := true
@@ -132,6 +133,11 @@ func changer_personnage(id: String) -> void:
 	add_child(_modele)
 	_modele.jouer(Deplacement.animation(_allure), 0.0)
 	_ranger_armes()
+	_habillage.habiller(_modele, equipement, est_une_femme())
+
+
+func est_une_femme() -> bool:
+	return personnage == IdentifiantsAssets.HEROS_FEMME
 
 
 ## Porte un objet (sans passer par le sac). Renvoie l'objet qui était porté à cet endroit, ou null.
@@ -141,6 +147,8 @@ func equiper_objet(objet: Objet, emplacement: String = "") -> Objet:
 		return null
 	if objet.est_arme():
 		_appliquer_arme()
+	else:
+		_habillage.habiller(_modele, equipement, est_une_femme())
 	_recalculer(false)
 	equipement_change.emit()
 	return ancien
@@ -168,6 +176,7 @@ func retirer_vers_sac(emplacement: String) -> bool:
 	if emplacement == "arme" or equipement.objet(emplacement) == null or inventaire.est_plein():
 		return false
 	inventaire.ajouter(equipement.retirer(emplacement))
+	_habillage.habiller(_modele, equipement, est_une_femme())
 	_recalculer(false)
 	equipement_change.emit()
 	return true
@@ -190,7 +199,10 @@ func _appliquer_arme() -> void:
 	for cle in POINTS_ATTACHE:
 		var modele_id := str(famille.get(cle, arme.get(cle, "")))
 		if not modele_id.is_empty():
-			_armes[POINTS_ATTACHE[cle]] = CatalogueAssets.creer(modele_id)
+			var modele_arme := CatalogueAssets.creer(modele_id)
+			ApparenceRarete.appliquer(modele_arme, objet.rarete)
+			ApparenceRarete.ajouter_etincelles(modele_arme, objet.rarete, modele_arme.boite_englobante())
+			_armes[POINTS_ATTACHE[cle]] = modele_arme
 	_ranger_armes()
 	_coup_en_attente = -1.0
 	arme_change.emit(id_arme)
@@ -311,7 +323,7 @@ func _toucher(cible: Monstre) -> void:
 ## Un objet est gagné : il va dans le sac, ou il est recyclé si le sac est plein.
 func recevoir_objet(objet: Objet, position_depart: Vector3 = Vector3.INF) -> void:
 	if position_depart != Vector3.INF and is_inside_tree():
-		EffetButin.jouer(get_parent(), position_depart, objet, self, personnage == IdentifiantsAssets.HEROS_FEMME)
+		EffetButin.jouer(get_parent(), position_depart, objet, self, est_une_femme())
 	var case_numero := inventaire.ajouter(objet)
 	var or_gagne := inventaire.recycler_objet(objet) if case_numero == -1 else 0
 	objet_obtenu.emit(objet, case_numero, or_gagne)

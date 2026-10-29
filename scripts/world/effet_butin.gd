@@ -27,6 +27,7 @@ func _lancer(objet: Objet, femme: bool) -> void:
 	var rang := config.ids_raretes().find(objet.rarete)
 
 	_modele = CatalogueAssets.creer(objet.modele(config, femme))
+	ApparenceRarete.appliquer(_modele, objet.rarete)
 	add_child(_modele)
 	var boite := _modele.boite_englobante()
 	var plus_grand := maxf(boite.size.x, maxf(boite.size.y, boite.size.z))

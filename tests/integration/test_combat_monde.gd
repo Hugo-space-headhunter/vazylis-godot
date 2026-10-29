@@ -153,3 +153,21 @@ func test_un_monstre_tue_lache_son_butin_dans_le_sac() -> void:
 	assert_gt(joueur.inventaire.nombre_objets(), avant, "La garantie donne au moins un doré")
 	var dernier := joueur.inventaire.objet(joueur.inventaire.nombre_objets() - 1)
 	assert_eq(dernier.niveau, 2, "L'objet a le niveau du monstre")
+
+
+func test_l_equipement_se_voit_sur_le_personnage() -> void:
+	var squelette := joueur.modele().squelette()
+	var avant := squelette.get_child_count()
+	var hasard := RandomNumberGenerator.new()
+	joueur.equiper_objet(joueur.butin.creer_objet("objet.brigandine_rodeur", 1, "epique", hasard))
+	# La brigandine et son épaulière sont cousues au squelette.
+	assert_gt(squelette.get_child_count(), avant + 1)
+	var morceaux := joueur._habillage.nombre_de_morceaux()
+	joueur.equiper_objet(joueur.butin.creer_objet("objet.cape_voyage", 1, "standard", hasard))
+	assert_eq(joueur._habillage.nombre_de_morceaux(), morceaux + 1, "La cape s'ajoute")
+	# La peau recule sous le plastron (le maillage de la peau a changé).
+	var peau := squelette.find_child("SuperHero_Male", false, false) as MeshInstance3D
+	assert_ne(peau.mesh, joueur._habillage._peau_origine)
+	# Changer de personnage garde la tenue.
+	joueur.changer_personnage(IdentifiantsAssets.HEROS_FEMME)
+	assert_eq(joueur._habillage.nombre_de_morceaux(), morceaux + 1)

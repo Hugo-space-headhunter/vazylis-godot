@@ -45,6 +45,14 @@ func couleur_rarete(id: String) -> Color:
 	return _valeur("raretes", id, "couleur", Color.WHITE)
 
 
+## Rendu d'un objet de cette rareté : melange_couleur, metallique, eclat, etincelles.
+func apparence_rarete(id: String) -> Dictionary:
+	var reglages := {}
+	for cle in ["melange_couleur", "metallique", "eclat", "etincelles"]:
+		reglages[cle] = _fichier("raretes").get_value(id, cle, 0)
+	return reglages
+
+
 # --- Amélioration ---
 
 func palier_max_amelioration() -> int:

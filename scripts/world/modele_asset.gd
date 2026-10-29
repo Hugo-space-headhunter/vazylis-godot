@@ -98,15 +98,15 @@ func regler_vitesse_animation(vitesse: float) -> void:
 func point_attache(nom: String) -> Node3D:
 	if _attaches.has(nom):
 		return _attaches[nom]
-	var squelette := _squelette()
+	var os_squelette := squelette()
 	var nom_os := str(_points_attache.get(nom, ""))
-	if squelette == null or nom_os.is_empty() or squelette.find_bone(nom_os) == -1:
+	if os_squelette == null or nom_os.is_empty() or os_squelette.find_bone(nom_os) == -1:
 		push_warning("ModeleAsset : point d'attache « %s » absent pour « %s »." % [nom, asset_id])
 		return self
 	var attache := BoneAttachment3D.new()
 	attache.name = "Attache_" + nom
 	attache.bone_name = nom_os
-	squelette.add_child(attache)
+	os_squelette.add_child(attache)
 	_attaches[nom] = attache
 	return attache
 
@@ -181,6 +181,7 @@ func _vrai_nom(animation_standard: String) -> String:
 	return ""
 
 
-func _squelette() -> Skeleton3D:
+## Squelette du modèle (null pour un objet sans os).
+func squelette() -> Skeleton3D:
 	var squelettes := find_children("*", "Skeleton3D", true, false)
 	return squelettes[0] if not squelettes.is_empty() else null
