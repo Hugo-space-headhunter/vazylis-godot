@@ -1,7 +1,7 @@
 class_name FicheObjet
 extends VBoxContainer
 ## Fiche détaillée d'un objet : nom (couleur de sa rareté), niveau, qualité, puissance,
-## dégâts ou armure, statistiques et bonus en %.
+## dégâts ou armure, statistiques et bonus en %. Peut le comparer à l'objet porté au même endroit.
 
 const NOMS_EMPLACEMENTS := {
 	"arme": "Arme", "casque": "Casque", "plastron": "Plastron", "gants": "Gants", "bottes": "Bottes",
@@ -13,7 +13,7 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 4)
 
 
-func afficher(objet: Objet) -> void:
+func afficher(objet: Objet, porte: Objet = null) -> void:
 	for enfant in get_children():
 		enfant.queue_free()
 	if objet == null:
@@ -36,6 +36,12 @@ func afficher(objet: Objet) -> void:
 		add_child(_texte("+%d %s" % [objet.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 18, Color(0.75, 0.92, 0.75)))
 	for nom: String in objet.bonus:
 		add_child(_texte("+%.1f %% %s" % [float(objet.bonus[nom]) * 100.0, Objet.NOMS_BONUS.get(nom, nom)], 18, Color(0.7, 0.85, 1.0)))
+	if porte != null and porte != objet:
+		var ecart := objet.puissance(config) - porte.puissance(config)
+		var signe := "+" if ecart > 0 else ""
+		var couleur_ecart := Color(0.5, 1, 0.5) if ecart > 0 else (Color(1, 0.5, 0.45) if ecart < 0 else Color(0.85, 0.85, 0.85))
+		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom, porte.puissance(config), signe, ecart], 16, couleur_ecart))
+
 
 
 func _texte(texte: String, taille: int, couleur: Color) -> Label:

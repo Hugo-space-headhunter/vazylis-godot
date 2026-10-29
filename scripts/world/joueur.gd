@@ -11,6 +11,7 @@ signal xp_change(xp: int, xp_requise: int, niveau: int)
 signal niveau_gagne(niveau: int)
 signal caracteristiques_change
 signal arme_change(id_arme: String)
+signal equipement_change
 ## Un objet vient d'arriver dans le sac (case), ou a été recyclé car le sac était plein (case = -1).
 signal objet_obtenu(objet: Objet, case_numero: int, or_gagne: int)
 signal mort
@@ -37,9 +38,12 @@ var angle_camera := 0.0
 var personnage := ""
 var mode := Mode.DEPLACEMENT
 var experience: Experience
+## Points de statistiques répartis par le joueur (sans les objets portés).
 var statistiques := Statistiques.new()
 var inventaire: Inventaire
 var butin: Butin
+var equipement := Equipement.new()
+## Type de l'arme portée (section de config/armes.cfg) et ses réglages.
 var id_arme := ""
 var arme := {}
 var pv := 1.0
@@ -71,7 +75,7 @@ func _ready() -> void:
 	experience.niveau_gagne.connect(_sur_niveau_gagne)
 	statistiques.change.connect(_sur_statistiques)
 	changer_personnage(personnage_depart)
-	changer_arme(Config.jeu.arme_depart())
+	equiper_objet(butin.creer_objet(Config.jeu.objet_depart(), 1, "standard", _hasard))
 	_recalculer(true)
 	_annoncer.call_deferred()
 
@@ -88,8 +92,30 @@ func modele() -> ModeleAsset:
 	return _modele
 
 
+## Statistiques avec les points des objets portés.
+func statistiques_effectives(points: Statistiques = null) -> Statistiques:
+	return (points if points != null else statistiques).avec_bonus(equipement.statistiques_totales())
+
+
 func defense() -> float:
-	return Combat.defense_joueur(experience.niveau, statistiques, arme, Config.jeu)
+	return Combat.defense_joueur(experience.niveau, statistiques_effectives(), arme, Config.jeu, equipement.armure_totale())
+
+
+## Caractéristiques de combat, avec des points de statistiques donnés (pour l'aperçu de la fenêtre).
+func caracteristiques(points: Statistiques = null) -> Dictionary:
+	var config := Config.jeu
+	var stats := statistiques_effectives(points)
+	var bonus := equipement.bonus_totaux()
+	var niveau_actuel := experience.niveau
+	return {
+		"degats": Combat.degats_coup(niveau_actuel, stats, arme, config, _degats_arme(), bonus),
+		"vitesse": Combat.vitesse_attaque(stats, arme, config, bonus),
+		"critique": Combat.chance_critique(stats, arme, config, bonus),
+		"pv": Combat.pv_joueur(niveau_actuel, stats, config, bonus),
+		"defense": Combat.defense_joueur(niveau_actuel, stats, arme, config, equipement.armure_totale()),
+		"mana": Combat.mana(stats, config),
+		"statistiques": stats,
+	}
 
 
 ## Remplace le modèle affiché (ex. homme ↔ femme), sans toucher au reste.
@@ -108,22 +134,66 @@ func changer_personnage(id: String) -> void:
 	_ranger_armes()
 
 
-## Change de type d'arme (section de config/armes.cfg) et affiche ses modèles.
-func changer_arme(id: String) -> void:
+## Porte un objet (sans passer par le sac). Renvoie l'objet qui était porté à cet endroit, ou null.
+func equiper_objet(objet: Objet, emplacement: String = "") -> Objet:
+	var ancien := equipement.equiper(objet, emplacement)
+	if ancien == objet:
+		return null
+	if objet.est_arme():
+		_appliquer_arme()
+	_recalculer(false)
+	equipement_change.emit()
+	return ancien
+
+
+## Porte l'objet d'une case du sac ; l'objet qui était porté prend sa place dans le sac.
+func equiper_depuis_sac(case_numero: int, emplacement: String = "") -> bool:
+	var objet := inventaire.objet(case_numero)
+	if objet == null:
+		return false
+	if emplacement.is_empty():
+		emplacement = equipement.emplacement_pour(objet)
+	if not equipement.accepte(emplacement, objet):
+		return false
+	inventaire.retirer(case_numero)
+	var ancien := equiper_objet(objet, emplacement)
+	if ancien != null:
+		inventaire.cases[case_numero] = ancien
+		inventaire.change.emit()
+	return true
+
+
+## Retire un objet porté et le range dans le sac. L'arme ne se retire pas : on la remplace.
+func retirer_vers_sac(emplacement: String) -> bool:
+	if emplacement == "arme" or equipement.objet(emplacement) == null or inventaire.est_plein():
+		return false
+	inventaire.ajouter(equipement.retirer(emplacement))
+	_recalculer(false)
+	equipement_change.emit()
+	return true
+
+
+func _degats_arme() -> float:
+	var objet := equipement.arme()
+	return objet.degats if objet != null else -1.0
+
+
+## Affiche les modèles de l'arme portée et règle son type (vitesse, portée, affinité…).
+func _appliquer_arme() -> void:
 	for objet: ModeleAsset in _armes.values():
 		objet.queue_free()
 	_armes.clear()
-	id_arme = id
-	arme = Config.jeu.arme(id)
+	var objet := equipement.arme()
+	var famille := Config.jeu.famille_objet(objet.famille)
+	id_arme = objet.type_arme
+	arme = Config.jeu.arme(id_arme)
 	for cle in POINTS_ATTACHE:
-		var modele_id := str(arme.get(cle, ""))
+		var modele_id := str(famille.get(cle, arme.get(cle, "")))
 		if not modele_id.is_empty():
 			_armes[POINTS_ATTACHE[cle]] = CatalogueAssets.creer(modele_id)
 	_ranger_armes()
 	_coup_en_attente = -1.0
-	if experience != null:
-		_recalculer(false)
-	arme_change.emit(id)
+	arme_change.emit(id_arme)
 
 
 ## Mode combat (armes sorties, attaque automatique) ou déplacement (armes rangées dans le dos).
@@ -201,7 +271,7 @@ func _combattre(delta: float) -> void:
 	_cible = _monstre_a_portee()
 	if _cible == null:
 		return
-	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques, arme, Config.jeu)
+	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques_effectives(), arme, Config.jeu, equipement.bonus_totaux())
 	_recharge_attaque = intervalle
 	_tourner_vers(_cible.global_position, 1.0)
 	var animation := str(arme.get("animation", "attack"))
@@ -228,7 +298,8 @@ func _frapper() -> void:
 func _toucher(cible: Monstre) -> void:
 	if not is_instance_valid(cible) or not cible.est_vivant():
 		return
-	var coup := Combat.coup_joueur(experience.niveau, statistiques, arme, 0.0, cible.niveau, Config.jeu, _hasard)
+	var coup := Combat.coup_joueur(experience.niveau, statistiques_effectives(), arme, 0.0, cible.niveau, Config.jeu,
+		_hasard, _degats_arme(), equipement.bonus_totaux())
 	var niveau_cible := cible.niveau
 	var position_cible := cible.global_position
 	if cible.recevoir_coup(coup["degats"], coup["critique"]):
@@ -288,13 +359,14 @@ func _varier_armes(variante: String) -> void:
 		objet.varier(variante)
 
 
-## Recalcule vie, mana et défense après un changement de niveau, de statistiques ou d'arme.
+## Recalcule vie, mana et défense après un changement de niveau, de statistiques ou d'objet porté.
 ## « soigner » remet la vie au maximum ; sinon la vie gagnée s'ajoute à la vie actuelle.
 func _recalculer(soigner: bool) -> void:
 	var ancien_max := pv_max
-	pv_max = Combat.pv_joueur(experience.niveau, statistiques, Config.jeu)
+	var stats := statistiques_effectives()
+	pv_max = Combat.pv_joueur(experience.niveau, stats, Config.jeu, equipement.bonus_totaux())
 	pv = pv_max if soigner else clampf(pv + maxf(0.0, pv_max - ancien_max), 0.0, pv_max)
-	mana_max = Combat.mana(statistiques, Config.jeu)
+	mana_max = Combat.mana(stats, Config.jeu)
 	mana = mana_max
 	pv_change.emit(pv, pv_max)
 	mana_change.emit(mana, mana_max)
@@ -335,4 +407,5 @@ func _annoncer() -> void:
 	xp_change.emit(experience.xp, experience.xp_pour_niveau_suivant(), experience.niveau)
 	mode_change.emit(mode)
 	arme_change.emit(id_arme)
+	equipement_change.emit()
 	caracteristiques_change.emit()

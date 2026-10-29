@@ -52,3 +52,9 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Vignettes : les objets fins (dagues, épée) paraissent petits dans leur case ; cadrer la vignette sur l'arme en diagonale.
 - Agrandir le sac (au-delà de 40 cases) : à décider plus tard (question ouverte du game design).
 - Trier le sac (par rareté, par type, par niveau).
+
+## Équipement
+
+- Mains : le game design prévoit une main principale et une main secondaire (dague, épée à une main ou bouclier). Pour le prototype, un seul emplacement « Arme » couvre les deux mains (paire de dagues, épée et écu, arme à deux mains). Séparer les deux mains quand il y aura des épées à une main et des boucliers seuls — à valider avec Hugo.
+- Afficher le personnage en 3D dans la fenêtre du sac, avec son équipement (partie 4.3).
+- Comparaison plus détaillée entre l'objet du sac et l'objet porté (statistique par statistique).

@@ -23,6 +23,13 @@ func before_each() -> void:
 	await wait_physics_frames(3)
 
 
+## Porte un objet standard de niveau 1 de cette famille.
+func _equiper(famille: String) -> Objet:
+	var objet := joueur.butin.creer_objet(famille, 1, "standard", RandomNumberGenerator.new())
+	joueur.equiper_objet(objet)
+	return objet
+
+
 func _monstre(id: String, niveau: int, point: Vector3) -> Monstre:
 	var monstre: Monstre = SCENE_MONSTRE.instantiate()
 	monstre.initialiser(id, niveau, point, joueur)
@@ -42,8 +49,8 @@ func test_en_mode_combat_on_tue_un_cochonnet_et_on_gagne_de_l_xp() -> void:
 	await wait_physics_frames(60)
 	assert_lt(cochonnet.pv, cochonnet.pv_max, "Le cochonnet devrait avoir été frappé")
 	assert_eq(cochonnet.etat, Monstre.Etat.POURSUITE, "Un passif frappé riposte")
-	# Environ 10 secondes à niveau égal : on laisse 16 secondes.
-	await wait_until(func(): return not cochonnet.est_vivant(), 16.0)
+	# Environ 10 à 15 secondes à niveau égal, sans armure ni statistiques : on laisse 25 secondes.
+	await wait_until(func(): return not cochonnet.est_vivant(), 25.0)
 	assert_false(cochonnet.est_vivant())
 	assert_eq(joueur.experience.xp, Experience.xp_gagnee(1, 1, Config.jeu))
 	assert_lt(joueur.pv, joueur.pv_max, "Le cochonnet a riposté")
@@ -71,7 +78,7 @@ func test_un_passif_ne_charge_pas() -> void:
 
 
 func test_mort_et_retour_au_depart() -> void:
-	joueur.changer_arme("arme.hache_deux_mains")
+	_equiper("objet.hache_bucheron")
 	joueur.recevoir_degats(joueur.pv_max * 10.0, 1)
 	assert_false(joueur.est_vivant())
 	await wait_until(func(): return joueur.est_vivant(), 5.0)
@@ -81,7 +88,7 @@ func test_mort_et_retour_au_depart() -> void:
 
 func test_monter_de_niveau_rend_la_vie_et_l_augmente() -> void:
 	var avant := joueur.pv_max
-	joueur.changer_arme("arme.hache_deux_mains")
+	_equiper("objet.hache_bucheron")
 	joueur.recevoir_degats(10.0, 1)
 	joueur.gagner_xp(joueur.experience.xp_pour_niveau_suivant())
 	assert_eq(joueur.niveau(), 2)
@@ -106,15 +113,18 @@ func test_valider_de_la_vitalite_augmente_la_vie() -> void:
 
 
 func test_chaque_arme_affiche_ses_modeles() -> void:
-	for id in Config.jeu.ids_armes():
-		joueur.changer_arme(id)
-		var arme := Config.jeu.arme(id)
-		assert_eq(joueur._armes.has("main_droite"), not str(arme["modele_main_droite"]).is_empty(), id)
-		assert_eq(joueur._armes.has("main_gauche"), not str(arme["modele_main_gauche"]).is_empty(), id)
+	for famille in Config.jeu.ids_familles_objets():
+		var definition := Config.jeu.famille_objet(famille)
+		if definition["emplacement"] != "arme":
+			continue
+		_equiper(famille)
+		assert_eq(joueur.id_arme, definition["type_arme"], famille)
+		assert_eq(joueur._armes.has("main_droite"), not str(definition["modele_main_droite"]).is_empty(), famille)
+		assert_eq(joueur._armes.has("main_gauche"), not str(definition["modele_main_gauche"]).is_empty(), famille)
 
 
 func test_l_arc_tue_de_loin() -> void:
-	joueur.changer_arme("arme.arc")
+	_equiper("objet.arc_chasseur")
 	joueur.changer_mode(Joueur.Mode.COMBAT)
 	var cochonnet := _monstre("monstre.cochonnet_suie", 1, Vector3(0, 0, 6.0))
 	await wait_until(func(): return cochonnet.pv < cochonnet.pv_max, 5.0)
@@ -122,7 +132,7 @@ func test_l_arc_tue_de_loin() -> void:
 
 
 func test_le_bouclier_bloque_parfois() -> void:
-	joueur.changer_arme("arme.epee_bouclier")
+	_equiper("objet.epee_ecu_milicien")
 	var touches := 0
 	for i in 400:
 		var avant := joueur.pv
@@ -138,7 +148,8 @@ func test_un_monstre_tue_lache_son_butin_dans_le_sac() -> void:
 	var avant := joueur.inventaire.nombre_objets()
 	var cochonnet := _monstre("monstre.cochonnet_suie", 2, Vector3(0, 0, 1.0))
 	joueur.changer_mode(Joueur.Mode.COMBAT)
-	await wait_until(func(): return not cochonnet.est_vivant(), 20.0)
+	await wait_until(func(): return not cochonnet.est_vivant(), 35.0)
+	assert_false(cochonnet.est_vivant())
 	assert_gt(joueur.inventaire.nombre_objets(), avant, "La garantie donne au moins un doré")
 	var dernier := joueur.inventaire.objet(joueur.inventaire.nombre_objets() - 1)
 	assert_eq(dernier.niveau, 2, "L'objet a le niveau du monstre")

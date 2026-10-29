@@ -20,6 +20,7 @@ var _joueur: Joueur
 var _points: Label
 var _valeurs := {}
 var _apercu: Label
+var _objets: Label
 var _valider: Button
 
 
@@ -46,6 +47,8 @@ func _ready() -> void:
 		contenu.add_child(_ligne(nom))
 	_apercu = _texte("", 18, Color(0.85, 0.88, 0.95))
 	contenu.add_child(_apercu)
+	_objets = _texte("", 14, Color(0.7, 0.72, 0.8))
+	contenu.add_child(_objets)
 	var boutons := HBoxContainer.new()
 	boutons.alignment = BoxContainer.ALIGNMENT_CENTER
 	boutons.add_theme_constant_override("separation", 16)
@@ -60,6 +63,7 @@ func relier(joueur: Joueur) -> void:
 	_joueur = joueur
 	_joueur.statistiques.change.connect(_rafraichir)
 	_joueur.caracteristiques_change.connect(_rafraichir)
+	_joueur.equipement_change.connect(_rafraichir)
 
 
 func ouvrir() -> void:
@@ -91,7 +95,7 @@ func _ligne(nom: String) -> Control:
 	ligne.add_child(titre)
 	ligne.add_child(_bouton("−", _modifier.bind(nom, false), Vector2(64, 56)))
 	var valeur := _texte("0", TAILLE_TEXTE, Color.WHITE)
-	valeur.custom_minimum_size = Vector2(90, 0)
+	valeur.custom_minimum_size = Vector2(150, 0)
 	valeur.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_valeurs[nom] = valeur
 	ligne.add_child(valeur)
@@ -114,24 +118,26 @@ func _rafraichir() -> void:
 	if _joueur == null or not visible:
 		return
 	var stats := _joueur.statistiques
+	var objets := _joueur.equipement.statistiques_totales()
 	_points.text = "Points à répartir : %d" % stats.points_restants()
 	for nom in Statistiques.NOMS:
 		var attente := int(stats.en_attente[nom])
-		(_valeurs[nom] as Label).text = "%d" % stats.valeur(nom) + (" (+%d)" % attente if attente > 0 else "")
+		var des_objets := int(objets.get(nom, 0))
+		# Points du joueur, points en attente (+), points des objets portés (entre crochets).
+		(_valeurs[nom] as Label).text = "%d" % stats.valeur(nom) + (" (+%d)" % attente if attente > 0 else "") 			+ (" [+%d]" % des_objets if des_objets > 0 else "")
 	_valider.disabled = not stats.a_des_points_en_attente()
-	var config := Config.jeu
-	var apercu := stats.apercu()
-	var niveau := _joueur.niveau()
-	var arme := _joueur.arme
-	_apercu.text = "%s — dégâts %d · %.2f coups/s · critique %d %%\nVie %d · défense %d · mana %d" % [
-		str(arme.get("nom", "")),
-		roundi(Combat.degats_coup(niveau, apercu, arme, config)),
-		Combat.vitesse_attaque(apercu, arme, config),
-		roundi(Combat.chance_critique(apercu, arme, config) * 100.0),
-		roundi(Combat.pv_joueur(niveau, apercu, config)),
-		roundi(Combat.defense_joueur(niveau, apercu, arme, config)),
-		roundi(Combat.mana(apercu, config)),
+	var apercu := _joueur.caracteristiques(stats.apercu())
+	_apercu.text = "%s — dégâts %d · %.2f coups/s · critique %d %%
+Vie %d · défense %d · mana %d" % [
+		str(_joueur.arme.get("nom", "")),
+		roundi(apercu["degats"]),
+		apercu["vitesse"],
+		roundi(apercu["critique"] * 100.0),
+		roundi(apercu["pv"]),
+		roundi(apercu["defense"]),
+		roundi(apercu["mana"]),
 	]
+	_objets.text = "Entre crochets : les points donnés par les objets portés." if not objets.is_empty() else ""
 
 
 func _texte(texte: String, taille: int, couleur: Color) -> Label:

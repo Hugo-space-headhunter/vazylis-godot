@@ -25,7 +25,6 @@ func _ready() -> void:
 	_commandes.rotation_camera.connect(_camera.tourner)
 	_bouton_personnage.personnage_choisi.connect(_changer_personnage)
 	_boutons_mode.mode_choisi.connect(_joueur.changer_mode)
-	_outils_test.arme_choisie.connect(_joueur.changer_arme)
 	_outils_test.niveau_demande.connect(_gagner_un_niveau)
 	_bouton_statistiques.pressed.connect(_fenetre.basculer)
 	_fenetre.relier(_joueur)
@@ -36,7 +35,6 @@ func _ready() -> void:
 	_joueur.objet_obtenu.connect(_sur_objet_obtenu)
 
 	_joueur.mode_change.connect(_boutons_mode.afficher_mode)
-	_joueur.arme_change.connect(_outils_test.afficher_arme)
 	_joueur.pv_change.connect(_bandeau.afficher_pv)
 	_joueur.mana_change.connect(_bandeau.afficher_mana)
 	_joueur.xp_change.connect(_bandeau.afficher_xp)

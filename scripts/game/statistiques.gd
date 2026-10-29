@@ -92,6 +92,14 @@ func annuler() -> void:
 	change.emit()
 
 
+## Copie avec des points en plus (par exemple ceux des objets portés : {"force": 12, …}).
+func avec_bonus(supplement: Dictionary) -> Statistiques:
+	var copie := Statistiques.new()
+	for nom in NOMS:
+		copie.valeurs[nom] = valeur(nom) + int(supplement.get(nom, 0))
+	return copie
+
+
 ## Copie où les points en attente sont considérés comme validés (pour l'aperçu).
 func apercu() -> Statistiques:
 	var copie := Statistiques.new()

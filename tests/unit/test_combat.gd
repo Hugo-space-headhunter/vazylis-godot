@@ -108,19 +108,28 @@ func test_un_build_force_frappe_plus_fort_a_deux_mains_un_build_agilite_aux_dagu
 
 
 func test_le_joueur_moyen_tue_un_monstre_de_son_niveau_en_10_secondes() -> void:
-	var arme := _arme(config.arme_reference())
 	for niveau in [1, 5, 10, 50]:
-		var stats := Statistiques.joueur_moyen(niveau, config)
-		var secondes := Combat.pv_monstre(niveau, config) / Combat.dps(niveau, stats, arme, config)
-		assert_almost_eq(secondes, 10.0, 0.001, "Niveau %d" % niveau)
+		var moyen := Combat.joueur_moyen(niveau, config)
+		var dps := Combat.dps(niveau, moyen["statistiques"], moyen["arme"], config, moyen["degats_arme"])
+		assert_almost_eq(Combat.pv_monstre(niveau, config) / dps, 10.0, 0.001, "Niveau %d" % niveau)
+
+
+func test_le_joueur_moyen_porte_un_equipement_complet() -> void:
+	var moyen := Combat.joueur_moyen(10, config)
+	# Arme standard de niveau 10 de qualité moyenne (85 %) : 40 × 0,9 × 0,85.
+	assert_almost_eq(moyen["degats_arme"], 30.6, 0.01)
+	# Armure : 10 × (1 + 0,6 + 0,5 + 0,4 + 0,4 + 0,3) × 0,85.
+	assert_almost_eq(moyen["armure"], 27.2, 0.01)
+	# Points de niveau (9 par statistique) + points des objets.
+	assert_gt((moyen["statistiques"] as Statistiques).valeur("force"), 9)
 
 
 func test_un_agressif_tue_le_joueur_moyen_en_60_secondes() -> void:
 	var intervalle := 1.5
-	var arme := _arme(config.arme_reference())
 	for niveau in [1, 10, 50]:
-		var stats := Statistiques.joueur_moyen(niveau, config)
-		var defense := Combat.defense_joueur(niveau, stats, arme, config)
+		var moyen := Combat.joueur_moyen(niveau, config)
+		var stats: Statistiques = moyen["statistiques"]
+		var defense := Combat.defense_joueur(niveau, stats, moyen["arme"], config, moyen["armure"])
 		var brut := Combat.degats_monstre(niveau, niveau, false, intervalle, config)
 		var dps_subis := brut * (1.0 - Combat.reduction(defense, niveau, config)) / intervalle
 		assert_almost_eq(Combat.pv_joueur(niveau, stats, config) / dps_subis, 60.0, 0.01, "Niveau %d" % niveau)
@@ -170,3 +179,15 @@ func test_chaque_monstre_de_la_config_a_un_modele_au_catalogue() -> void:
 		assert_true(CatalogueAssets.contient(str(monstre["modele"])), id)
 		assert_true(monstre["comportement"] in ["passif", "agressif"], id)
 		assert_lte(int(monstre["niveau_min"]), int(monstre["niveau_max"]), id)
+
+
+func test_les_bonus_des_objets_comptent() -> void:
+	var stats := _stats(0, 0, 0)
+	var epee := _arme("arme.epee_bouclier")
+	var bonus := {"degats": 0.1, "chance_critique": 0.05, "degats_critiques": 0.2, "vitesse_attaque": 0.1, "vie": 0.04}
+	assert_almost_eq(Combat.degats_coup(10, stats, epee, config, 50.0, bonus), 55.0, 0.001)
+	assert_almost_eq(Combat.chance_critique(stats, epee, config, bonus), 0.1, 0.0001)
+	assert_almost_eq(Combat.multiplicateur_critique(epee, bonus), 1.7, 0.0001)
+	assert_almost_eq(Combat.vitesse_attaque(stats, epee, config, bonus), 1.21, 0.0001)
+	assert_almost_eq(Combat.pv_joueur(10, stats, config, bonus), 250.0 * 1.04, 0.001)
+	assert_almost_eq(Combat.defense_joueur(10, stats, epee, config, 30.0), 50.0, 0.001)

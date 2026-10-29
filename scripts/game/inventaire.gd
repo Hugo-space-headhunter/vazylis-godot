@@ -49,6 +49,16 @@ func retirer(case_numero: int) -> Objet:
 	return retire
 
 
+## Échange le contenu de deux cases (pour ranger le sac).
+func echanger(case_a: int, case_b: int) -> void:
+	if case_a == case_b or case_a < 0 or case_b < 0 or case_a >= cases.size() or case_b >= cases.size():
+		return
+	var temporaire := cases[case_a]
+	cases[case_a] = cases[case_b]
+	cases[case_b] = temporaire
+	change.emit()
+
+
 ## Or rapporté par le recyclage d'un objet.
 func valeur_recyclage(un_objet: Objet) -> int:
 	return roundi(_config.butin("recyclage", "or_par_puissance") * un_objet.puissance(_config))

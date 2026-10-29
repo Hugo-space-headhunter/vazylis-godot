@@ -106,8 +106,9 @@ func rarete_arme() -> String:
 	return str(_valeur("combat", "arme", "rarete", "standard"))
 
 
-func arme_depart() -> String:
-	return str(_valeur("combat", "joueur", "arme_depart", "arme.epee_bouclier"))
+## Famille de l'objet porté au départ (section de objets.cfg).
+func objet_depart() -> String:
+	return str(_valeur("combat", "joueur", "objet_depart", "objet.epee_ecu_milicien"))
 
 
 func arme_reference() -> String:

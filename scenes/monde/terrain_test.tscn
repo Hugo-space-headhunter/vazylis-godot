@@ -158,7 +158,7 @@ anchor_right = 1.0
 offset_left = -264.0
 offset_top = 36.0
 offset_right = -24.0
-offset_bottom = 300.0
+offset_bottom = 236.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 script = ExtResource("14_btest")
@@ -170,13 +170,6 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 24
 text = "Homme"
 script = ExtResource("5_bouton")
-
-[node name="Arme" type="Button" parent="Interface/OutilsTest"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-focus_mode = 0
-theme_override_font_sizes/font_size = 20
-text = "Arme"
 
 [node name="Niveau" type="Button" parent="Interface/OutilsTest"]
 custom_minimum_size = Vector2(0, 56)

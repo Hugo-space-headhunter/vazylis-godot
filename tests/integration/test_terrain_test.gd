@@ -124,15 +124,10 @@ func test_bouton_test_niveau_et_fenetre_des_statistiques() -> void:
 	assert_eq(joueur.statistiques.valeur("force"), 2)
 
 
-func test_le_bouton_arme_fait_defiler_les_cinq_armes() -> void:
-	var bouton: Button = terrain.get_node("Interface/OutilsTest/Arme")
-	var vues := {}
-	for i in 5:
-		vues[joueur.id_arme] = true
-		bouton.pressed.emit()
-	assert_eq(vues.size(), 5)
-	assert_eq(joueur.id_arme, Config.jeu.arme_depart(), "On revient à l'arme de départ")
-	assert_eq(bouton.text, "Épée et bouclier")
+func test_au_depart_on_porte_l_epee_et_ecu_de_milicien() -> void:
+	assert_eq(joueur.equipement.arme().nom, "Épée et écu de milicien")
+	assert_eq(joueur.id_arme, "arme.epee_bouclier")
+	assert_false(terrain.get_node("Interface/OutilsTest").has_node("Arme"), "Le bouton de test Arme a disparu")
 
 
 func test_le_sac_contient_une_arme_de_chaque_type_au_depart() -> void:
@@ -151,7 +146,7 @@ func test_bouton_butin_et_fenetre_du_sac() -> void:
 	assert_eq(joueur.inventaire.nombre_objets(), 11, "Un objet de chaque rareté en plus")
 	bouton_sac.pressed.emit()
 	assert_true(fenetre.visible)
-	fenetre._choisir(10)
+	fenetre.choisir("sac", 10)
 	var fiche: FicheObjet = fenetre._fiche
 	await wait_physics_frames(1)
 	assert_gt(fiche.get_child_count(), 3, "La fiche montre l'objet touché")
@@ -169,3 +164,49 @@ func test_sac_plein_l_objet_est_recycle() -> void:
 	joueur.recevoir_objet(joueur.butin.creer_objet("objet.lame_guet", 10, "dore", hasard))
 	assert_gt(joueur.inventaire.or_possede, or_avant)
 	assert_eq(terrain.get_node("Interface/Annonces").get_child_count(), 1, "Un message prévient")
+
+
+func test_equiper_et_retirer_depuis_la_fenetre_du_sac() -> void:
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreSac")
+	terrain.get_node("Interface/BoutonSac").pressed.emit()
+	await wait_physics_frames(2)
+	# La case 2 contient la Lame du Guet (épée à deux mains), d'après le sac de départ.
+	var case_lame := -1
+	for i in 5:
+		if joueur.inventaire.objet(i).type_arme == "arme.epee_deux_mains":
+			case_lame = i
+	var ancienne := joueur.equipement.arme()
+	fenetre.choisir("sac", case_lame)
+	assert_eq(fenetre._action.text, "Équiper")
+	fenetre._sur_action()
+	assert_eq(joueur.id_arme, "arme.epee_deux_mains")
+	assert_eq(joueur.inventaire.objet(case_lame), ancienne, "L'ancienne arme prend la place dans le sac")
+
+	# Glisser-déposer : une armure du sac vers la case « casque » (mauvaise case) va quand même sur le plastron.
+	var hasard := RandomNumberGenerator.new()
+	var tunique := joueur.butin.creer_objet("objet.tunique_paysan", 5, "dore", hasard)
+	var case_tunique := joueur.inventaire.ajouter(tunique)
+	var pv_avant := joueur.pv_max
+	fenetre.deposer({"lieu": "sac", "cle": case_tunique}, {"lieu": "equipement", "cle": "casque"})
+	assert_eq(joueur.equipement.objet("plastron"), tunique)
+	assert_gt(joueur.defense(), 0.0, "L'armure compte dans la défense")
+
+	# Retirer : le plastron retourne dans le sac.
+	fenetre.choisir("equipement", "plastron")
+	assert_eq(fenetre._action.text, "Retirer")
+	fenetre._sur_action()
+	assert_null(joueur.equipement.objet("plastron"))
+	assert_true(joueur.inventaire.cases.has(tunique))
+
+	# L'arme ne se retire pas, elle se remplace.
+	fenetre.choisir("equipement", "arme")
+	assert_false(fenetre._action.visible)
+
+
+func test_glisser_pour_ranger_le_sac() -> void:
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreSac")
+	terrain.get_node("Interface/BoutonSac").pressed.emit()
+	var premier := joueur.inventaire.objet(0)
+	fenetre.deposer({"lieu": "sac", "cle": 0}, {"lieu": "sac", "cle": 20})
+	assert_eq(joueur.inventaire.objet(20), premier)
+	assert_null(joueur.inventaire.objet(0))
