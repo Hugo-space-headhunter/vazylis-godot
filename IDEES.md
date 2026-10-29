@@ -16,7 +16,8 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Peau sous les vêtements : elle recule de 3 cm sous chaque pièce portée (voir `scripts/world/corps_sous_vetements.gd`) ; idéalement, des personnages de base dont le corps est fait pour les tenues.
 - Cape rigide : elle ne suit pas les jambes quand on court ; une vraie cape animée (os ou tissu simulé).
 - Boucles d'oreilles : pas encore visibles (trop petites pour le prototype).
-- Pistes techniques : IK des deux mains dans Godot (TwoBoneIK3D), animations dédiées (faites dans Blender, ou d'autres sources d'animations, à valider avec Hugo pour la licence), effets d'impact (secousse de caméra, ralenti de quelques images, poussière).
+- Vêtements et armures (demande de Hugo, 29/10/2026) : retravailler tout le design et les textures des tenues, et la façon dont ils « vivent » selon les mouvements du personnage (marche, course, attaque) : tissus et capes qui flottent et suivent le mouvement, pièces qui bougent avec le corps, sans traverser la peau ni les autres pièces.
+- Pistes techniques : IK des deux mains dans Godot (TwoBoneIK3D), os ou simulation de tissu pour les capes et les pans de vêtements (SpringBoneSimulator3D de Godot), animations dédiées (faites dans Blender, ou d'autres sources d'animations, à valider avec Hugo pour la licence), effets d'impact (secousse de caméra, ralenti de quelques images, poussière).
 
 ## Technique
 
