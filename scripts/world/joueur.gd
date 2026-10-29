@@ -17,6 +17,8 @@ signal equipement_change
 signal objet_obtenu(objet: Objet, case_numero: int, or_gagne: int)
 signal mort
 signal retour
+## Quelque chose qui doit être sauvegardé a changé (niveau, points, sac, équipement…).
+signal partie_change
 
 const GROUPE := "joueur"
 ## Altitude en dessous de laquelle le personnage, tombé du terrain, revient au départ.
@@ -82,6 +84,7 @@ func _ready() -> void:
 	changer_personnage(personnage_depart)
 	equiper_objet(butin.creer_objet(Config.jeu.objet_depart(), 1, "standard", _hasard))
 	_recalculer(true)
+	_surveiller_la_partie()
 	_annoncer.call_deferred()
 
 
@@ -360,6 +363,54 @@ func _remplir_sac_de_depart() -> void:
 	for famille in Config.jeu.ids_familles_objets():
 		if str(Config.jeu.famille_objet(famille).get("emplacement", "")) == "arme":
 			inventaire.ajouter(butin.creer_objet(famille, 1, "standard", _hasard))
+
+
+## La partie du joueur, mise en forme pour la sauvegarde.
+func exporter_partie() -> Dictionary:
+	var partie := Partie.new()
+	partie.personnage = personnage
+	partie.niveau = experience.niveau
+	partie.xp = experience.xp
+	partie.statistiques = statistiques
+	partie.inventaire = inventaire
+	partie.equipement = equipement
+	partie.recyclage_auto = recyclage_auto
+	partie.monstres_sans_dore = butin.monstres_sans_dore
+	partie.monstres_sans_epique = butin.monstres_sans_epique
+	return partie.vers_dictionnaire()
+
+
+## Reprend une partie sauvegardée.
+func importer_partie(partie: Partie) -> void:
+	experience.niveau = partie.niveau
+	experience.xp = partie.xp
+	statistiques.valeurs = partie.statistiques.valeurs
+	statistiques.points_libres = partie.statistiques.points_libres
+	statistiques.annuler()
+	inventaire.cases = partie.inventaire.cases
+	inventaire.or_possede = partie.inventaire.or_possede
+	inventaire.change.emit()
+	recyclage_auto.actif = partie.recyclage_auto.actif
+	recyclage_auto.rarete_limite = partie.recyclage_auto.rarete_limite
+	recyclage_auto.types = partie.recyclage_auto.types
+	butin.monstres_sans_dore = partie.monstres_sans_dore
+	butin.monstres_sans_epique = partie.monstres_sans_epique
+	equipement.objets = partie.equipement.objets
+	if equipement.arme() == null:
+		equipement.objets["arme"] = butin.creer_objet(Config.jeu.objet_depart(), 1, "standard", _hasard)
+	if partie.personnage in [IdentifiantsAssets.HEROS_HOMME, IdentifiantsAssets.HEROS_FEMME]:
+		changer_personnage(partie.personnage)
+	_appliquer_arme()
+	_habillage.habiller(_modele, equipement, est_une_femme())
+	_recalculer(true)
+	_annoncer()
+
+
+## Relie les changements à sauvegarder au signal « partie_change ».
+func _surveiller_la_partie() -> void:
+	var signaler := func(_a = null, _b = null, _c = null) -> void: partie_change.emit()
+	for source: Signal in [xp_change, equipement_change, inventaire.change, statistiques.change, recyclage_auto.change]:
+		source.connect(signaler)
 
 
 func _monstre_a_portee() -> Monstre:

@@ -68,3 +68,10 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Filtre par matériau (« tout ce qui est en fer ») : quand les matériaux existeront (étape 7).
 - Le recyclage rapporte seulement de l'or pour l'instant ; les matériaux arriveront avec la forge (étape 7).
 - Message d'erreur sans gravité dans la console de Godot (« Parameter "material" is null ») quand on change plusieurs fois de suite une pièce de rareté argentée ou plus : à comprendre.
+
+## Sauvegarde
+
+- PC et iPhone ont chacun leur sauvegarde (un compte anonyme par appareil). Pour jouer la même partie sur les deux : un vrai compte (e-mail) relié au compte anonyme — à décider plus tard.
+- Supprimer l'icône Vazylis de l'iPhone fait perdre le compte anonyme, donc la partie : un vrai compte réglerait aussi ce point avant une publication.
+- Comptes de test : la vérification de l'étape 5 (29/10/2026) a créé un compte anonyme de test et sa ligne dans la table « saves » de Supabase (depuis la version web lancée sur le PC). Hugo peut les supprimer dans Supabase (Authentication → Users, et Table Editor → saves) s'il le souhaite.
+- La position du personnage et sa vie ne sont pas sauvegardées : on repart du point de départ, vie pleine (comme après une mort).

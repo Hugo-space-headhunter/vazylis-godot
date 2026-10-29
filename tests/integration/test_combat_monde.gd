@@ -171,3 +171,32 @@ func test_l_equipement_se_voit_sur_le_personnage() -> void:
 	# Changer de personnage garde la tenue.
 	joueur.changer_personnage(IdentifiantsAssets.HEROS_FEMME)
 	assert_eq(joueur._habillage.nombre_de_morceaux(), morceaux + 1)
+
+
+func test_exporter_puis_importer_la_partie() -> void:
+	var hasard := RandomNumberGenerator.new()
+	joueur.gagner_xp(joueur.experience.xp_pour_niveau_suivant() * 3)
+	joueur.statistiques.ajouter("force")
+	joueur.statistiques.valider()
+	joueur.equiper_objet(joueur.butin.creer_objet("objet.hache_bucheron", 3, "epique", hasard))
+	joueur.equiper_objet(joueur.butin.creer_objet("objet.tunique_paysan", 3, "dore", hasard))
+	joueur.inventaire.or_possede = 77
+	joueur.changer_personnage(IdentifiantsAssets.HEROS_FEMME)
+	var texte := JSON.stringify(joueur.exporter_partie())
+
+	# Un nouveau joueur reprend la partie.
+	var autre: Joueur = SCENE_JOUEUR.instantiate()
+	arene.add_child(autre)
+	await wait_physics_frames(2)
+	autre.importer_partie(Partie.depuis_dictionnaire(JSON.parse_string(texte), Config.jeu))
+	assert_eq(autre.niveau(), joueur.niveau())
+	assert_eq(autre.statistiques.valeur("force"), 1)
+	assert_eq(autre.id_arme, "arme.hache_deux_mains")
+	assert_eq(autre.equipement.objet("plastron").rarete, "dore")
+	assert_eq(autre.inventaire.or_possede, 77)
+	assert_eq(autre.personnage, IdentifiantsAssets.HEROS_FEMME)
+	assert_almost_eq(autre.pv_max, joueur.pv_max, 0.001)
+
+
+func test_pendant_les_tests_la_sauvegarde_est_eteinte() -> void:
+	assert_false(Sauvegarde.active, "Les tests ne doivent jamais toucher à la partie de Hugo")

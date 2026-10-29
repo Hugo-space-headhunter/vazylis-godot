@@ -18,6 +18,13 @@ func _ready() -> void:
 	_afficher()
 
 
+## Affiche le personnage choisi (par exemple après le chargement d'une partie).
+func choisir(id: String) -> void:
+	if PERSONNAGES.has(id):
+		_actuel = id
+		_afficher()
+
+
 func _suivant() -> void:
 	var ids := PERSONNAGES.keys()
 	_actuel = ids[(ids.find(_actuel) + 1) % ids.size()]

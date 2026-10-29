@@ -44,7 +44,46 @@ func _ready() -> void:
 	_joueur.retour.connect(_bandeau.cacher_message)
 	_joueur.statistiques.change.connect(_afficher_points)
 	_bandeau.afficher_nom(NOMS[_joueur.personnage])
+	_outils_test.nouvelle_partie_demandee.connect(_demander_nouvelle_partie)
+	Sauvegarde.etat_change.connect(_bandeau.afficher_sauvegarde)
+	Sauvegarde.sauvegarde_en_ligne_plus_recente.connect(func() -> void:
+		_annonces.annoncer("Une sauvegarde en ligne plus récente existe : relance l'app pour la reprendre.",
+			Color(1, 0.7, 0.4)))
+	_bandeau.afficher_sauvegarde(Sauvegarde.etat)
 	$Reperes/Cristal.add_child(CatalogueAssets.creer(IdentifiantsAssets.CRISTAL_TEST))
+	_reprendre_la_partie()
+
+
+## Charge la partie sauvegardée (s'il y en a une), puis sauvegarde à chaque changement.
+func _reprendre_la_partie() -> void:
+	var partie := Partie.depuis_dictionnaire(await Sauvegarde.charger(), Config.jeu)
+	if partie != null:
+		_joueur.importer_partie(partie)
+		_bouton_personnage.choisir(_joueur.personnage)
+		_bandeau.afficher_nom(NOMS[_joueur.personnage])
+	_joueur.partie_change.connect(func() -> void: Sauvegarde.enregistrer(_joueur.exporter_partie()))
+
+
+## Pour tester un autre build : efface la sauvegarde et recommence (après confirmation).
+func _demander_nouvelle_partie() -> void:
+	var confirmation := ConfirmationDialog.new()
+	confirmation.title = "Nouvelle partie"
+	confirmation.dialog_text = "Effacer la partie (niveau, points, sac, équipement)\net recommencer de zéro ?"
+	confirmation.ok_button_text = "Effacer"
+	confirmation.cancel_button_text = "Annuler"
+	confirmation.get_label().add_theme_font_size_override("font_size", 24)
+	for bouton: Button in [confirmation.get_ok_button(), confirmation.get_cancel_button()]:
+		bouton.add_theme_font_size_override("font_size", 24)
+		bouton.custom_minimum_size = Vector2(160, 60)
+	confirmation.confirmed.connect(_nouvelle_partie)
+	confirmation.canceled.connect(confirmation.queue_free)
+	$Interface.add_child(confirmation)
+	confirmation.popup_centered(Vector2i(580, 260))
+
+
+func _nouvelle_partie() -> void:
+	await Sauvegarde.effacer()
+	get_tree().reload_current_scene()
 
 
 func _physics_process(_delta: float) -> void:

@@ -45,7 +45,7 @@ corner_radius_bottom_left = 6
 offset_left = 24.0
 offset_top = 84.0
 offset_right = 324.0
-offset_bottom = 214.0
+offset_bottom = 222.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("Fond_bandeau")
 script = ExtResource("1_bandeau")
@@ -131,6 +131,13 @@ theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 11
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Sauvegarde" type="Label" parent="Contenu"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
 
 [node name="Message" type="Label" parent="Contenu"]
 visible = false

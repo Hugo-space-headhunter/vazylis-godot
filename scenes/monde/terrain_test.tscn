@@ -158,7 +158,7 @@ anchor_right = 1.0
 offset_left = -264.0
 offset_top = 36.0
 offset_right = -24.0
-offset_bottom = 236.0
+offset_bottom = 300.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 script = ExtResource("14_btest")
@@ -185,13 +185,20 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "Test : butin"
 
+[node name="NouvellePartie" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Test : nouvelle partie"
+
 [node name="Bandeau" parent="Interface" instance=ExtResource("11_bandeau")]
 
 [node name="BoutonStatistiques" type="Button" parent="Interface"]
 offset_left = 24.0
-offset_top = 230.0
+offset_top = 240.0
 offset_right = 108.0
-offset_bottom = 314.0
+offset_bottom = 324.0
 focus_mode = 0
 icon = ExtResource("15_icone")
 icon_alignment = 1
@@ -213,9 +220,9 @@ text = "+0"
 
 [node name="BoutonSac" type="Button" parent="Interface"]
 offset_left = 120.0
-offset_top = 230.0
+offset_top = 240.0
 offset_right = 204.0
-offset_bottom = 314.0
+offset_bottom = 324.0
 focus_mode = 0
 icon = ExtResource("16_sac")
 icon_alignment = 1

@@ -80,6 +80,11 @@ static func depuis_dictionnaire(donnees: Dictionary, config: ConfigJeu) -> Objet
 	objet.qualite = float(donnees.get("qualite", 1.0))
 	objet.degats = float(donnees.get("degats", 0.0))
 	objet.armure = float(donnees.get("armure", 0.0))
-	objet.statistiques = donnees.get("statistiques", {})
-	objet.bonus = donnees.get("bonus", {})
+	# Le texte JSON ne distingue pas les entiers des décimaux : les statistiques redeviennent entières.
+	var statistiques: Dictionary = donnees.get("statistiques", {})
+	for nom: String in statistiques:
+		objet.statistiques[nom] = int(statistiques[nom])
+	var bonus: Dictionary = donnees.get("bonus", {})
+	for nom: String in bonus:
+		objet.bonus[nom] = float(bonus[nom])
 	return objet

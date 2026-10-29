@@ -7,6 +7,15 @@ extends PanelContainer
 @onready var _mana: ProgressBar = $Contenu/Mana
 @onready var _xp: ProgressBar = $Contenu/XP
 @onready var _message: Label = $Contenu/Message
+@onready var _sauvegarde: Label = $Contenu/Sauvegarde
+
+const TEXTES_SAUVEGARDE := {
+	0: ["", Color.WHITE],
+	1: ["Chargement…", Color(0.85, 0.85, 0.9)],
+	2: ["Sauvegardé en ligne", Color(0.45, 0.95, 0.5)],
+	3: ["Envoi de la sauvegarde…", Color(1, 0.8, 0.35)],
+	4: ["Hors ligne : sauvegardé sur l'appareil", Color(1, 0.55, 0.45)],
+}
 
 
 func afficher_nom(nom: String) -> void:
@@ -24,6 +33,14 @@ func afficher_mana(mana: float, mana_max: float) -> void:
 func afficher_xp(xp: int, xp_requise: int, niveau: int) -> void:
 	_niveau.text = "Niv. %d" % niveau
 	_regler(_xp, xp, xp_requise, "XP %d / %d" % [xp, xp_requise])
+
+
+## Petit voyant de la sauvegarde (voir l'autoload Sauvegarde).
+func afficher_sauvegarde(etat: int) -> void:
+	var texte: Array = TEXTES_SAUVEGARDE.get(etat, ["", Color.WHITE])
+	_sauvegarde.text = texte[0]
+	_sauvegarde.add_theme_color_override("font_color", texte[1])
+	_sauvegarde.visible = not str(texte[0]).is_empty()
 
 
 func afficher_mort() -> void:
