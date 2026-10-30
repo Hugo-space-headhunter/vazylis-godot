@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ry5fw07s25lo"
-path="res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.ctex"
+path.s3tc="res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.s3tc.ctex"
+path.etc2="res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "054bb17e36fa3a9e47edd4dba127caf0"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/monster/corbac/corbac_Atlas_Monsters.png"
-dest_files=["res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.ctex"]
+dest_files=["res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.s3tc.ctex", "res://.godot/imported/corbac_Atlas_Monsters.png-d82769af7f796a914f1607ee7c684262.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

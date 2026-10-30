@@ -22,6 +22,7 @@
 [ext_resource type="Script" path="res://scripts/ui/annonces.gd" id="18_annonces"]
 [ext_resource type="Script" path="res://scripts/ui/vignettes.gd" id="19_vignettes"]
 [ext_resource type="Script" path="res://scripts/ui/fenetre_forge.gd" id="22_forge"]
+[ext_resource type="Script" path="res://scripts/world/veille_monstres.gd" id="23_veille"]
 
 [sub_resource type="Environment" id="Environment_ciel"]
 background_mode = 1
@@ -54,6 +55,9 @@ directional_shadow_max_distance = 25.0
 [node name="RuinesDuGuet" parent="Zones" instance=ExtResource("20_ruines")]
 
 [node name="LisierePourpre" parent="Zones" instance=ExtResource("21_lisiere")]
+
+[node name="VeilleMonstres" type="Node" parent="."]
+script = ExtResource("23_veille")
 
 [node name="Joueur" parent="." instance=ExtResource("2_joueur")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)

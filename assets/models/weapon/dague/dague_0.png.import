@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dv3kqmigpvken"
-path="res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.ctex"
+path.s3tc="res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.s3tc.ctex"
+path.etc2="res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "310e59e39690f68559c523da9c797b2c"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/weapon/dague/dague_0.png"
-dest_files=["res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.ctex"]
+dest_files=["res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.s3tc.ctex", "res://.godot/imported/dague_0.png-5330ccdb1ec5b69bb4678b9ee87248a1.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

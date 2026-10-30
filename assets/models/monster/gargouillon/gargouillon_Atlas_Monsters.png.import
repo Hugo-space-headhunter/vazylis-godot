@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bh43dtwni8c2d"
-path="res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.ctex"
+path.s3tc="res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.s3tc.ctex"
+path.etc2="res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "19edfe03ec2ac473b0a20d5684c8b79c"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/monster/gargouillon/gargouillon_Atlas_Monsters.png"
-dest_files=["res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.ctex"]
+dest_files=["res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.s3tc.ctex", "res://.godot/imported/gargouillon_Atlas_Monsters.png-d9ef2fc3eae8eb6fe3e3d193ba942cfd.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

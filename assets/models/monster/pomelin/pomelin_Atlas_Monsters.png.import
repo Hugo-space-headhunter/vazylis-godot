@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2xi18byh7cc2"
-path="res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.ctex"
+path.s3tc="res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.s3tc.ctex"
+path.etc2="res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "054bb17e36fa3a9e47edd4dba127caf0"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/monster/pomelin/pomelin_Atlas_Monsters.png"
-dest_files=["res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.ctex"]
+dest_files=["res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.s3tc.ctex", "res://.godot/imported/pomelin_Atlas_Monsters.png-18ae7b907e695f64e2259679a7757a13.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

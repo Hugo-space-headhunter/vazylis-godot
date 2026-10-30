@@ -27,6 +27,8 @@ var niveau := 1
 var pv_max := 1.0
 var pv := 1.0
 var etat := Etat.ERRANCE
+## Loin du joueur, le monstre dort : il ne bouge plus, n'est plus animé ni dessiné (voir VeilleMonstres).
+var endormi := false
 ## Combat.RANG_NORMAL, RANG_CHAMPION ou RANG_SOUS_BOSS.
 var rang := Combat.RANG_NORMAL
 ## Ressource lâchée (section de config/ressources.cfg), ou "".
@@ -133,6 +135,14 @@ func _ready() -> void:
 	if rang != Combat.RANG_NORMAL:
 		_barre.scale = Vector3.ONE * 1.6
 	add_child(_barre)
+
+
+func endormir(oui: bool) -> void:
+	if oui == endormi or not est_vivant():
+		return
+	endormi = oui
+	process_mode = Node.PROCESS_MODE_DISABLED if oui else Node.PROCESS_MODE_INHERIT
+	visible = not oui
 
 
 func est_vivant() -> bool:

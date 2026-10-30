@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bm4mmuq48jscs"
-path="res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.ctex"
+path.s3tc="res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.s3tc.ctex"
+path.etc2="res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "2e6d833c06f3024e9d41bf4c71d94bc9"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/weapon/hache/hache_0.png"
-dest_files=["res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.ctex"]
+dest_files=["res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.s3tc.ctex", "res://.godot/imported/hache_0.png-195c0b2a83dd571b340e41214f0c2da1.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

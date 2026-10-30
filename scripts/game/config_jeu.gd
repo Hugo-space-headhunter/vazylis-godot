@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin", "ressources", "panoplies"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin", "ressources", "panoplies", "performances"]
 
 var _fichiers := {}
 
@@ -185,6 +185,12 @@ func generation_objets(cle: String) -> Variant:
 ## Valeur de butin.cfg, par exemple butin("monstre", "dore").
 func butin(section: String, cle: String) -> float:
 	return _nombre("butin", section, cle, 0.0)
+
+
+# --- Performances ---
+
+func performance(section: String, cle: String) -> float:
+	return _nombre("performances", section, cle, 0.0)
 
 
 # --- Panoplies ---

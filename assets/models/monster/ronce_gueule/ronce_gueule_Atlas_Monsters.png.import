@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dokt3eji38qbl"
-path="res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.ctex"
+path.s3tc="res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.s3tc.ctex"
+path.etc2="res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "c60c152ebacaedd52f1e421df79c26c5"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/monster/ronce_gueule/ronce_gueule_Atlas_Monsters.png"
-dest_files=["res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.ctex"]
+dest_files=["res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.s3tc.ctex", "res://.godot/imported/ronce_gueule_Atlas_Monsters.png-fea14eca1ae6b750233c9616f1c611fb.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

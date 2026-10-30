@@ -371,3 +371,42 @@ func test_la_forge_de_vazylis() -> void:
 	await wait_physics_frames(40)
 	assert_false(fenetre.visible)
 	assert_false(bouton.visible)
+
+
+func test_les_monstres_loin_du_joueur_dorment() -> void:
+	var veille: VeilleMonstres = terrain.get_node("VeilleMonstres")
+	await wait_physics_frames(5)
+	veille.verifier()
+	var distance := Config.jeu.performance("monstres", "distance_sommeil")
+	var eveilles := 0
+	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		var loin := Vector2(monstre.global_position.x - joueur.global_position.x, monstre.global_position.z - joueur.global_position.z).length() > distance
+		assert_eq(monstre.endormi, loin, "%s à sa distance" % monstre.id_monstre)
+		assert_eq(monstre.visible, not loin)
+		if not loin:
+			eveilles += 1
+	assert_lt(eveilles, 40, "Depuis Vazylis, la plupart des monstres dorment")
+	# Le joueur part dans la Lisière : ses monstres se réveillent, ceux des Prés s'endorment.
+	joueur.global_position = Vector3(0, 0.1, -290)
+	veille.verifier()
+	var krag_eveille := false
+	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		if monstre.id_monstre == "monstre.krag":
+			krag_eveille = not monstre.endormi
+		if monstre.id_monstre == "monstre.cochonnet_suie":
+			assert_true(monstre.endormi)
+	assert_true(krag_eveille, "Krâg se réveille quand on approche")
+
+
+func test_le_panneau_de_mesure() -> void:
+	var panneau: Label = terrain.get_node("Interface/CompteurFPS/Marges/Texte")
+	assert_false(panneau.texte_mesures().contains("Dessin"), "Au départ : juste les images par seconde")
+	var clic := InputEventMouseButton.new()
+	clic.button_index = MOUSE_BUTTON_LEFT
+	clic.pressed = true
+	panneau.gui_input.emit(clic)
+	var texte: String = panneau.texte_mesures()
+	assert_true(texte.contains("Dessin"))
+	assert_true(texte.contains("Monstres éveillés"))
+	panneau.gui_input.emit(clic)
+	assert_false(panneau.detaille, "Toucher à nouveau referme le détail")

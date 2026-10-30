@@ -37,6 +37,7 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 
 ## Technique
 
+- Android (décidé le 30/10/2026 : plus tard) : on se concentre sur iOS. Le jeu ne dépend pas de la plateforme ; le jour venu, exporter l'app Android depuis le PC (Android SDK et Java gratuits) et la mesurer sur un vrai téléphone Android.
 - Netteté et performances sur iPhone : l'écran de l'iPhone affiche 3 pixels par point. Si les images par seconde baissent avec les vraies scènes, réduire la résolution de rendu 3D (réglage « Échelle 3D »).
 - Zone de sécurité de l'iPhone (encoche, barre du bas) : adapter les marges de l'interface quand le bandeau et les boutons arriveront (étape 3).
 - Raccourci pour lancer les tests automatiques depuis l'éditeur Godot (panneau GUT en bas de l'éditeur).
