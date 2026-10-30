@@ -37,6 +37,7 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 
 ## Technique
 
+- Relief (chantier B, 30/10/2026) : le sol de jeu reste plat (des bosses obligeraient à reposer décors et monstres) ; ajouter plus tard des collines en bordure de zone et des variations de hauteur décoratives, si le rendu le demande.
 - Android (décidé le 30/10/2026 : plus tard) : on se concentre sur iOS. Le jeu ne dépend pas de la plateforme ; le jour venu, exporter l'app Android depuis le PC (Android SDK et Java gratuits) et la mesurer sur un vrai téléphone Android.
 - Netteté et performances sur iPhone : l'écran de l'iPhone affiche 3 pixels par point. Si les images par seconde baissent avec les vraies scènes, réduire la résolution de rendu 3D (réglage « Échelle 3D »).
 - Zone de sécurité de l'iPhone (encoche, barre du bas) : adapter les marges de l'interface quand le bandeau et les boutons arriveront (étape 3).

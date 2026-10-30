@@ -11,10 +11,8 @@ extends Node3D
 @export var taille := Vector2(20, 20)
 ## … ou un cercle de ce rayon, s'il est plus grand que zéro.
 @export var rayon := 0.0
-## Ambiance quand on y entre : couleur du ciel (laisser transparent pour garder celle de départ)
-## et force de la lumière (1 = comme au départ, 0.7 = plus sombre).
-@export var couleur_ciel := Color(0, 0, 0, 0)
-@export var lumiere := 1.0
+## Ambiance quand on y entre : ciel, brouillard, soleil (scenes/zones/ambiances/).
+@export var ambiance: Ambiance
 
 
 func contient(point: Vector3) -> bool:

@@ -1,14 +1,26 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/world/herbe.gd" id="83_herbe"]
+[ext_resource type="Shader" path="res://scenes/monde/sol.gdshader" id="81_sol"]
+[ext_resource type="Texture2D" path="res://scenes/monde/bruit_sol.tres" id="82_bruit"]
+[ext_resource type="Resource" path="res://scenes/zones/ambiances/vallee_claire.tres" id="80_ambiance"]
 [ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
 [ext_resource type="Script" path="res://scripts/world/zone_apparition.gd" id="2_r"]
 [ext_resource type="PackedScene" path="res://scenes/monde/rocher.tscn" id="3_r"]
 [ext_resource type="PackedScene" path="res://scenes/monde/pilier.tscn" id="4_r"]
 [ext_resource type="Script" path="res://scripts/world/decor.gd" id="5_r"]
 
-[sub_resource type="StandardMaterial3D" id="Materiau_herbe"]
-albedo_color = Color(0.4, 0.6, 0.32, 1)
-roughness = 1.0
+[sub_resource type="ShaderMaterial" id="Materiau_herbe"]
+render_priority = 0
+shader = ExtResource("81_sol")
+shader_parameter/couleur_claire = Color(0.5, 0.66, 0.3, 1)
+shader_parameter/couleur_sombre = Color(0.33, 0.52, 0.25, 1)
+shader_parameter/bruit = ExtResource("82_bruit")
+shader_parameter/couleur_chemin = Color(0.52, 0.43, 0.3, 1)
+shader_parameter/chemin_x = 0.0
+shader_parameter/chemin_largeur = 3.2
+shader_parameter/chemin_z_debut = -16.5
+shader_parameter/chemin_z_fin = -75.5
 
 [sub_resource type="PlaneMesh" id="Maillage_sol"]
 material = SubResource("Materiau_herbe")
@@ -26,6 +38,7 @@ size = Vector3(1, 6, 100)
 [node name="PresDeVazylis" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)
 script = ExtResource("1_r")
+ambiance = ExtResource("80_ambiance")
 nom = "Les Prés de Vazylis"
 niveaux = "1–10"
 taille = Vector2(100, 100)
@@ -600,3 +613,14 @@ script = ExtResource("5_r")
 id_asset = "prop.fleurs_2"
 distance_affichage = 28.0
 projette_ombre = false
+
+[node name="Herbe" type="Node3D" parent="."]
+script = ExtResource("83_herbe")
+taille = Vector2(100, 100)
+densite = 0.7
+teinte = Color(0.42, 0.62, 0.27, 1)
+chemin_z_debut = -16.5
+chemin_z_fin = -75.5
+exclusion_centre = Vector3(0, 0, 0)
+exclusion_rayon = 18.5
+graine = 11

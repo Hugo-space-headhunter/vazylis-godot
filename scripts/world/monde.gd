@@ -28,9 +28,7 @@ const NOMS := {
 
 var _zone_actuelle: Zone
 var _verification_zone := 0.0
-var _ciel_depart := Color.WHITE
-var _ambiance_depart := 1.0
-var _soleil_depart := 1.0
+var _premiere_ambiance := true
 
 
 func _ready() -> void:
@@ -77,9 +75,7 @@ func _ready() -> void:
 	# Une copie, pour que les changements d'ambiance ne modifient pas la scène d'origine.
 	$Environnement.environment = ($Environnement.environment as Environment).duplicate()
 	var environnement: Environment = $Environnement.environment
-	_ciel_depart = environnement.background_color
-	_ambiance_depart = environnement.ambient_light_energy
-	_soleil_depart = ($Soleil as DirectionalLight3D).light_energy
+	environnement.sky = environnement.sky.duplicate(true)
 	_reprendre_la_partie()
 
 
@@ -154,14 +150,34 @@ func _surveiller_la_zone() -> void:
 			return
 
 
-## Le ciel et la lumière changent doucement selon la zone (le Bois des Lucioles est plus sombre).
+## Le ciel, le brouillard et la lumière passent doucement à l'ambiance de la zone
+## (tout de suite au lancement du jeu).
 func _changer_d_ambiance(zone: Zone) -> void:
+	var ambiance := zone.ambiance
+	if ambiance == null:
+		return
 	var environnement: Environment = $Environnement.environment
-	var ciel := zone.couleur_ciel if zone.couleur_ciel.a > 0.0 else _ciel_depart
+	var ciel := environnement.sky.sky_material as ProceduralSkyMaterial
+	var soleil: DirectionalLight3D = $Soleil
+	var cibles := [
+		[ciel, "sky_top_color", ambiance.ciel_haut],
+		[ciel, "sky_horizon_color", ambiance.ciel_horizon],
+		[ciel, "ground_horizon_color", ambiance.ciel_horizon],
+		[environnement, "fog_light_color", ambiance.brouillard_couleur],
+		[environnement, "fog_density", ambiance.brouillard_densite],
+		[environnement, "ambient_light_color", ambiance.ambiante_couleur],
+		[environnement, "ambient_light_energy", ambiance.ambiante_energie],
+		[soleil, "light_color", ambiance.soleil_couleur],
+		[soleil, "light_energy", ambiance.soleil_energie],
+	]
+	if _premiere_ambiance:
+		_premiere_ambiance = false
+		for cible in cibles:
+			cible[0].set(cible[1], cible[2])
+		return
 	var transition := create_tween().set_parallel()
-	transition.tween_property(environnement, "background_color", ciel, 1.5)
-	transition.tween_property(environnement, "ambient_light_energy", _ambiance_depart * zone.lumiere, 1.5)
-	transition.tween_property($Soleil, "light_energy", _soleil_depart * zone.lumiere, 1.5)
+	for cible in cibles:
+		transition.tween_property(cible[0], cible[1], cible[2], 1.5)
 
 
 func zone_actuelle() -> Zone:

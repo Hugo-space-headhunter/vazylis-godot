@@ -1,12 +1,21 @@
 [gd_scene format=3]
 
+[ext_resource type="Shader" path="res://scenes/monde/sol.gdshader" id="81_sol"]
+[ext_resource type="Texture2D" path="res://scenes/monde/bruit_paves.tres" id="82_bruit"]
+[ext_resource type="Resource" path="res://scenes/zones/ambiances/vallee_claire.tres" id="80_ambiance"]
 [ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
 [ext_resource type="Script" path="res://scripts/world/decor.gd" id="2_r"]
 [ext_resource type="PackedScene" path="res://scenes/monde/forge.tscn" id="90_forge"]
 
-[sub_resource type="StandardMaterial3D" id="Materiau_paves"]
-albedo_color = Color(0.6, 0.57, 0.5, 1)
-roughness = 1.0
+[sub_resource type="ShaderMaterial" id="Materiau_paves"]
+render_priority = 0
+shader = ExtResource("81_sol")
+shader_parameter/couleur_claire = Color(0.7, 0.66, 0.58, 1)
+shader_parameter/couleur_sombre = Color(0.56, 0.52, 0.46, 1)
+shader_parameter/bruit = ExtResource("82_bruit")
+shader_parameter/echelle_taches = 0.12
+shader_parameter/echelle_grain = 0.45
+shader_parameter/force_grain = 0.35
 
 [sub_resource type="CylinderMesh" id="Maillage_place"]
 material = SubResource("Materiau_paves")
@@ -18,6 +27,7 @@ rings = 1
 
 [node name="Vazylis" type="Node3D"]
 script = ExtResource("1_r")
+ambiance = ExtResource("80_ambiance")
 nom = "Vazylis"
 rayon = 18.0
 

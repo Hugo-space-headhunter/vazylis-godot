@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Ambiance" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/ambiance.gd" id="1_ambiance"]
+
+[resource]
+script = ExtResource("1_ambiance")
+ciel_haut = Color(0.2, 0.12, 0.28, 1)
+ciel_horizon = Color(0.5, 0.32, 0.55, 1)
+brouillard_couleur = Color(0.4, 0.27, 0.48, 1)
+brouillard_densite = 0.018
+soleil_couleur = Color(0.95, 0.84, 0.95, 1)
+soleil_energie = 0.72
+ambiante_couleur = Color(0.6, 0.57, 0.68, 1)
+ambiante_energie = 0.45

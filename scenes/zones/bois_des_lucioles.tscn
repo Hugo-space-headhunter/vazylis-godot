@@ -1,13 +1,25 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/world/herbe.gd" id="83_herbe"]
+[ext_resource type="Shader" path="res://scenes/monde/sol.gdshader" id="81_sol"]
+[ext_resource type="Texture2D" path="res://scenes/monde/bruit_sol.tres" id="82_bruit"]
+[ext_resource type="Resource" path="res://scenes/zones/ambiances/bois_des_lucioles.tres" id="80_ambiance"]
 [ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
 [ext_resource type="Script" path="res://scripts/world/zone_apparition.gd" id="2_r"]
 [ext_resource type="Script" path="res://scripts/world/decor.gd" id="3_r"]
 [ext_resource type="Script" path="res://scripts/world/lucioles.gd" id="4_r"]
 
-[sub_resource type="StandardMaterial3D" id="Materiau_herbe"]
-albedo_color = Color(0.27, 0.43, 0.24, 1)
-roughness = 1.0
+[sub_resource type="ShaderMaterial" id="Materiau_herbe"]
+render_priority = 0
+shader = ExtResource("81_sol")
+shader_parameter/couleur_claire = Color(0.33, 0.44, 0.22, 1)
+shader_parameter/couleur_sombre = Color(0.19, 0.31, 0.17, 1)
+shader_parameter/bruit = ExtResource("82_bruit")
+shader_parameter/couleur_chemin = Color(0.4, 0.32, 0.22, 1)
+shader_parameter/chemin_x = 0.0
+shader_parameter/chemin_largeur = 3.2
+shader_parameter/chemin_z_debut = -74.5
+shader_parameter/chemin_z_fin = -155.5
 
 [sub_resource type="PlaneMesh" id="Maillage_sol"]
 material = SubResource("Materiau_herbe")
@@ -25,11 +37,10 @@ size = Vector3(1, 6, 80)
 [node name="BoisDesLucioles" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -115)
 script = ExtResource("1_r")
+ambiance = ExtResource("80_ambiance")
 nom = "Le Bois des Lucioles"
 niveaux = "11–20"
 taille = Vector2(100, 80)
-couleur_ciel = Color(0.3, 0.42, 0.48, 1)
-lumiere = 0.72
 
 [node name="Sol" type="StaticBody3D" parent="."]
 
@@ -1052,3 +1063,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.16, 1.6, -2.80)
 script = ExtResource("4_r")
 etendue = Vector3(12, 3, 12)
 nombre = 16
+
+[node name="Herbe" type="Node3D" parent="."]
+script = ExtResource("83_herbe")
+taille = Vector2(100, 80)
+densite = 0.75
+teinte = Color(0.24, 0.42, 0.22, 1)
+chemin_z_debut = -74.5
+chemin_z_fin = -155.5
+graine = 12

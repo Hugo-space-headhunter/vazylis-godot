@@ -410,3 +410,22 @@ func test_le_panneau_de_mesure() -> void:
 	assert_true(texte.contains("Monstres éveillés"))
 	panneau.gui_input.emit(clic)
 	assert_false(panneau.detaille, "Toucher à nouveau referme le détail")
+
+
+func test_chaque_zone_a_son_ambiance_et_son_herbe() -> void:
+	var environnement: Environment = terrain.get_node("Environnement").environment
+	assert_true(environnement.fog_enabled, "Un brouillard donne de la profondeur")
+	assert_eq(environnement.background_mode, Environment.BG_SKY, "Un vrai ciel en dégradé")
+	for zone: Zone in terrain.get_node("Zones").get_children():
+		assert_not_null(zone.ambiance, "%s a son ambiance" % zone.nom)
+	var brume_vallee := environnement.fog_density
+	joueur.global_position = Vector3(0, 0.1, -290)
+	await wait_until(func(): return terrain.zone_actuelle().nom == "La Lisière pourpre", 2.0)
+	await wait_seconds(1.7)
+	assert_gt(environnement.fog_density, brume_vallee, "Plus de brume en approchant de Trazake")
+	var herbe: Herbe = terrain.get_node("Zones/PresDeVazylis/Herbe")
+	assert_gt(herbe.get_child_count(), 20, "L'herbe est semée par carreaux")
+	var carreau := herbe.get_child(0) as MultiMeshInstance3D
+	assert_gt(carreau.multimesh.instance_count, 10, "Chaque carreau dessine beaucoup de touffes d'un coup")
+	for enfant in herbe.get_children():
+		assert_gt(Vector2(enfant.global_position.x, enfant.global_position.z).length(), 7.0, "Pas d'herbe au cœur de Vazylis")

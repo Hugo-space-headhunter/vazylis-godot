@@ -29,6 +29,21 @@ Règle : une optimisation n'est « validée » que si elle a été mesurée, et 
   compressées pour ordinateur et pour téléphone ; sans la version ordinateur, les textures
   s'affichent en noir dans un navigateur de PC). Ensuite, le jeu reste en cache sur l'iPhone.
 
+## Chantier B (30/10/2026) — mesuré sur le PC, en portrait 720 × 1280
+
+Ciel en dégradé, brouillard et lumière par zone, sol dessiné par un shader (taches, grain, chemin),
+herbe semée par carreaux (MultiMesh, 16 triangles par touffe, masquée au-delà de 32 m) :
+
+| Endroit | Appels de dessin | Triangles |
+| --- | --- | --- |
+| Vazylis | 394 | 219 000 |
+| Prés | 287 | 169 000 |
+| Bois | 243 | 218 000 |
+| Ruines | 186 | 136 000 |
+| Lisière | 133 | 159 000 |
+
+Mémoire vidéo : 49 Mo. Version web : 49 Mo. **À mesurer sur l'iPhone.**
+
 ## Sur l'iPhone
 
 iPhone de Hugo (écran 1170 × 2532, rendu à la pleine résolution 1170 × 2391), version web,
