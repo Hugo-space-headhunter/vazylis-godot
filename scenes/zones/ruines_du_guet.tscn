@@ -1,5 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Texture2D" path="res://assets/textures/sol/gravier/gravier_couleur.jpg" id="84_couleur"]
+[ext_resource type="Texture2D" path="res://assets/textures/sol/gravier/gravier_relief.jpg" id="85_relief"]
+[ext_resource type="Texture2D" path="res://assets/textures/sol/chemin/chemin_couleur.jpg" id="86_chemin_couleur"]
+[ext_resource type="Texture2D" path="res://assets/textures/sol/chemin/chemin_relief.jpg" id="87_chemin_relief"]
 [ext_resource type="Script" path="res://scripts/world/herbe.gd" id="83_herbe"]
 [ext_resource type="Shader" path="res://scenes/monde/sol.gdshader" id="81_sol"]
 [ext_resource type="Texture2D" path="res://scenes/monde/bruit_sol.tres" id="82_bruit"]
@@ -12,10 +16,14 @@
 [sub_resource type="ShaderMaterial" id="Materiau_herbe"]
 render_priority = 0
 shader = ExtResource("81_sol")
-shader_parameter/couleur_claire = Color(0.27, 0.27, 0.23, 1)
-shader_parameter/couleur_sombre = Color(0.18, 0.19, 0.16, 1)
+shader_parameter/texture_couleur = ExtResource("84_couleur")
+shader_parameter/texture_relief = ExtResource("85_relief")
+shader_parameter/taille_motif = 2.5
+shader_parameter/teinte_claire = Color(0.95, 0.95, 0.92, 1)
+shader_parameter/teinte_sombre = Color(0.72, 0.74, 0.72, 1)
 shader_parameter/bruit = ExtResource("82_bruit")
-shader_parameter/couleur_chemin = Color(0.36, 0.34, 0.3, 1)
+shader_parameter/chemin_couleur = ExtResource("86_chemin_couleur")
+shader_parameter/chemin_relief = ExtResource("87_chemin_relief")
 shader_parameter/chemin_x = 0.0
 shader_parameter/chemin_largeur = 3.2
 shader_parameter/chemin_z_debut = -154.5

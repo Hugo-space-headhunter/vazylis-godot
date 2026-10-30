@@ -1,7 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Texture2D" path="res://assets/textures/sol/paves/paves_couleur.jpg" id="84_couleur"]
+[ext_resource type="Texture2D" path="res://assets/textures/sol/paves/paves_relief.jpg" id="85_relief"]
 [ext_resource type="Shader" path="res://scenes/monde/sol.gdshader" id="81_sol"]
-[ext_resource type="Texture2D" path="res://scenes/monde/bruit_paves.tres" id="82_bruit"]
+[ext_resource type="Texture2D" path="res://scenes/monde/bruit_sol.tres" id="82_bruit"]
 [ext_resource type="Resource" path="res://scenes/zones/ambiances/vallee_claire.tres" id="80_ambiance"]
 [ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
 [ext_resource type="Script" path="res://scripts/world/decor.gd" id="2_r"]
@@ -10,12 +12,12 @@
 [sub_resource type="ShaderMaterial" id="Materiau_paves"]
 render_priority = 0
 shader = ExtResource("81_sol")
-shader_parameter/couleur_claire = Color(0.7, 0.66, 0.58, 1)
-shader_parameter/couleur_sombre = Color(0.56, 0.52, 0.46, 1)
+shader_parameter/texture_couleur = ExtResource("84_couleur")
+shader_parameter/texture_relief = ExtResource("85_relief")
+shader_parameter/taille_motif = 2.5
+shader_parameter/teinte_claire = Color(1.0, 1.0, 1.0, 1)
+shader_parameter/teinte_sombre = Color(0.85, 0.83, 0.8, 1)
 shader_parameter/bruit = ExtResource("82_bruit")
-shader_parameter/echelle_taches = 0.12
-shader_parameter/echelle_grain = 0.45
-shader_parameter/force_grain = 0.35
 
 [sub_resource type="CylinderMesh" id="Maillage_place"]
 material = SubResource("Materiau_paves")

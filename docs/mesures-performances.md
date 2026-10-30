@@ -44,6 +44,12 @@ herbe semée par carreaux (MultiMesh, 16 triangles par touffe, masquée au-delà
 
 Mémoire vidéo : 49 Mo. Version web : 49 Mo. **À mesurer sur l'iPhone.**
 
+## Chantier B, textures détaillées (30/10/2026) — mesuré sur le PC, en portrait
+
+Vraies textures de sol (ambientCG, CC0) et arbres en 1024 px : les appels de dessin et les triangles
+ne changent pas (Vazylis 395 · Prés 295 · Bois 248 · Ruines 178 · Lisière 132 appels).
+**Mémoire vidéo : 49 → 61 Mo. Version web : 49 → 74 Mo** à télécharger la première fois. À mesurer sur l'iPhone.
+
 ## Sur l'iPhone
 
 iPhone de Hugo (écran 1170 × 2532, rendu à la pleine résolution 1170 × 2391), version web,

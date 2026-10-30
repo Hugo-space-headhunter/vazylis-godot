@@ -59,9 +59,23 @@ Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scene
 | --- | --- | --- | --- |
 | Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis, et murs effondrés, éboulis, dalles, piliers, armes brisées des Ruines du Guet (26 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
 | Maisons à colombages et de pierre, chariot, barrière de Vazylis | `assets/models/prop/maisons_village/` (textures partagées, réduites à 512 px) | Medieval Village Pack, Quaternius (https://quaternius.com/), pièces assemblées et fusionnées par `tools/assembler_maison.gd` | CC0 |
-| Bouleaux, érables, arbres morts, buissons, fleurs, herbe | `assets/models/prop/nature/` (textures réduites à 512 px, feuilles en découpe) | Ultimate Stylized Nature, Quaternius (https://quaternius.com/) | CC0 |
+| Bouleaux, érables, arbres morts, buissons, fleurs, herbe | `assets/models/prop/nature/` (textures 1024 px, reliefs 512 px, feuilles en découpe) | Ultimate Stylized Nature, Quaternius (https://quaternius.com/) | CC0 |
 | Enclume et souche de la forge de Vazylis | `scenes/monde/forge.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
 | Rochers et piliers des Prés | `scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
+
+## Textures de sol
+
+Téléchargées sur ambientCG (https://ambientcg.com/), licence CC0 (aucun crédit obligatoire), le 30/10/2026.
+On ne garde que la couleur (1024 px) et le relief (« NormalGL », réduit à 512 px), compressés pour la carte graphique.
+
+| Texture du jeu | Dossier | Source ambientCG | Licence |
+| --- | --- | --- | --- |
+| Herbe (Prés de Vazylis) | `assets/textures/sol/herbe/` | Grass004 | CC0 |
+| Pavés (place de Vazylis) | `assets/textures/sol/paves/` | PavingStones070 | CC0 |
+| Chemin de terre | `assets/textures/sol/chemin/` | Ground054 | CC0 |
+| Sous-bois (Bois des Lucioles) | `assets/textures/sol/sous_bois/` | Ground037 | CC0 |
+| Gravier (Ruines du Guet) | `assets/textures/sol/gravier/` | Gravel022 | CC0 |
+| Terre sombre (Lisière pourpre) | `assets/textures/sol/terre_sombre/` | Ground048 | CC0 |
 
 ## Images
 
