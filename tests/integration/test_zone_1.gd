@@ -172,3 +172,65 @@ func test_la_gueule_fleur_annonce_son_attaque_de_zone() -> void:
 	await wait_physics_frames(2)
 	assert_eq(joueur.pv, joueur.pv_max, "S'écarter évite l'attaque de zone")
 	assert_almost_eq(fleur.global_position.z, -3.8, 0.05, "Ancrée au sol")
+
+
+func test_le_gargouillon_est_tres_resistant() -> void:
+	var gargouillon := _monstre("monstre.gargouillon", 22, Vector3(0, 0, -6))
+	assert_almost_eq(gargouillon.pv_max, Combat.pv_monstre(22, Config.jeu) * 1.6, 0.01)
+
+
+func test_frapper_un_rat_attire_la_meute() -> void:
+	var rats := []
+	for i in 4:
+		var rat := _monstre("monstre.rat_cryptes", 24, Vector3(-2 + i * 1.3, 0, -12))
+		rats.append(rat)
+	var loin := _monstre("monstre.rat_cryptes", 24, Vector3(20, 0, -12))
+	await wait_physics_frames(2)
+	rats[0].recevoir_coup(1, false)
+	for rat: Monstre in rats:
+		assert_eq(rat.etat, Monstre.Etat.POURSUITE, "Toute la meute charge")
+	assert_eq(loin.etat, Monstre.Etat.ERRANCE, "Un rat loin de la meute ne bouge pas")
+
+
+func test_l_ecuyer_creux_pare_parfois() -> void:
+	var ecuyer := _monstre("monstre.ecuyer_creux", 27, Vector3(0, 0, -6))
+	await wait_physics_frames(2)
+	var pares := 0
+	for i in 400:
+		ecuyer.pv = ecuyer.pv_max
+		ecuyer.recevoir_coup(1, false)
+		if ecuyer.pv == ecuyer.pv_max:
+			pares += 1
+	assert_between(pares, 40, 85, "Environ 15 % des coups parés")
+
+
+func test_le_gardien_bloque_de_face_mais_pas_de_dos() -> void:
+	var gardien := _monstre("monstre.gardien_sans_visage", 30, Vector3(0, 0, -10))
+	await wait_physics_frames(2)
+	assert_eq(gardien.rang, Combat.RANG_SOUS_BOSS)
+	assert_eq(gardien.find_children("*", "ModeleAsset", true, false).size(), 3, "Le Gardien et son épée et son bouclier")
+	var compter := func() -> int:
+		var bloques := 0
+		for i in 300:
+			gardien.pv = gardien.pv_max
+			gardien.recevoir_coup(1, false)
+			if gardien.pv == gardien.pv_max:
+				bloques += 1
+		return bloques
+	# Il regarde vers le joueur (vers +Z) : la moitié des coups est bloquée.
+	gardien._modele.rotation.y = 0.0
+	assert_between(compter.call(), 110, 190, "De face, il bloque environ un coup sur deux")
+	# De dos : aucun blocage.
+	gardien._modele.rotation.y = PI
+	assert_eq(compter.call(), 0, "De dos, rien n'est bloqué")
+
+
+func test_le_gardien_tourne_lentement() -> void:
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	var gardien := _monstre("monstre.gardien_sans_visage", 30, Vector3(0, 0, -1.8))
+	await wait_physics_frames(2)
+	gardien._modele.rotation.y = PI
+	gardien.etat = Monstre.Etat.POURSUITE
+	await wait_physics_frames(30)
+	assert_gt(absf(angle_difference(gardien._modele.rotation.y, 0.0)), deg_to_rad(90.0), "En une demi-seconde, il n'a pas encore fait demi-tour")

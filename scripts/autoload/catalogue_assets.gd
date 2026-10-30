@@ -75,11 +75,13 @@ func creer(id: String) -> ModeleAsset:
 	return conteneur
 
 
-## Multiplie la couleur de toutes les matières du modèle (réglage « teinte »).
+## Multiplie la couleur de toutes les matières du modèle (réglage « teinte »), ou les remplace
+## par une seule couleur sans motif (réglage « couleur_unie », par exemple pour une statue de pierre).
 ## Les matières teintées sont partagées entre tous les exemplaires d'un même identifiant.
 func _appliquer_teinte(id: String, modele: Node3D) -> void:
 	var teinte: Color = reglage(id, "teinte", Color.WHITE)
-	if teinte == Color.WHITE:
+	var couleur_unie: Color = reglage(id, "couleur_unie", Color(0, 0, 0, 0))
+	if teinte == Color.WHITE and couleur_unie.a == 0.0:
 		return
 	var cache: Dictionary = _matieres_teintees.get_or_add(id, {})
 	for noeud in modele.find_children("*", "MeshInstance3D", true, false):
@@ -90,6 +92,9 @@ func _appliquer_teinte(id: String, modele: Node3D) -> void:
 				continue
 			if not cache.has(origine):
 				var copie := origine.duplicate() as BaseMaterial3D
+				if couleur_unie.a > 0.0:
+					copie.albedo_texture = null
+					copie.albedo_color = couleur_unie
 				copie.albedo_color *= teinte
 				cache[origine] = copie
 			instance.set_surface_override_material(surface, cache[origine])

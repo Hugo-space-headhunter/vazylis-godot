@@ -20,6 +20,10 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | `monster.ronce_gueule` | `assets/models/monster/ronce_gueule/` | Quaternius, Ultimate Monsters (« Mushnub ») — teinté vert | CC0 |
 | `monster.gobelin_chaman` | `assets/models/monster/gobelin_chaman/` | Quaternius, Ultimate Monsters (« Tribal ») | CC0 |
 | `monster.gueule_fleur` | `assets/models/monster/gueule_fleur/` | Quaternius, Ultimate Monsters (« Mushnub_Evolved ») — teinté pourpre | CC0 |
+| `monster.gargouillon` | `assets/models/monster/gargouillon/` | Quaternius, Ultimate Monsters (« Goleling ») — tout en pierre grise | CC0 |
+| `monster.rat_cryptes` | `assets/models/monster/rat_cryptes/` | Quaternius, Ultimate Monsters (« Cat ») — pas de rat CC0 trouvé, réduit et gris-brun | CC0 |
+| `monster.ecuyer_creux` | `assets/models/monster/ecuyer_creux/` | Quaternius (squelette guerrier), copié depuis l'ancien projet | CC0 |
+| `monster.gardien_sans_visage` | `assets/models/character/heros_homme/` (même modèle) | Quaternius, Universal Base Characters — agrandi, tout en pierre, avec l'épée et le bouclier du jeu | CC0 |
 | `weapon.epee_depart` | `assets/models/weapon/epee_depart/` | Polyy, 3D Fantasy Weapons Pack, version « low » (« Knight's Longsword »), https://polyy.ai — accord de Hugo le 29/10/2026 | CC0, aucun crédit exigé |
 | `weapon.dague` | `assets/models/weapon/dague/` | Polyy, 3D Fantasy Weapons Pack (low), « Rogue's Dagger », https://polyy.ai | CC0, aucun crédit exigé |
 | `weapon.claymore` | `assets/models/weapon/claymore/` | Polyy, 3D Fantasy Weapons Pack (low), « Highland Claymore » | CC0, aucun crédit exigé |
@@ -49,7 +53,7 @@ Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scene
 
 | Nom | Dossier | Source | Licence |
 | --- | --- | --- | --- |
-| Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis (16 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
+| Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis, et murs effondrés, éboulis, dalles, piliers, armes brisées des Ruines du Guet (26 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
 | Maisons à colombages et de pierre, chariot, barrière de Vazylis | `assets/models/prop/maisons_village/` (textures partagées, réduites à 512 px) | Medieval Village Pack, Quaternius (https://quaternius.com/), pièces assemblées et fusionnées par `tools/assembler_maison.gd` | CC0 |
 | Bouleaux, érables, arbres morts, buissons, fleurs, herbe | `assets/models/prop/nature/` (textures réduites à 512 px, feuilles en découpe) | Ultimate Stylized Nature, Quaternius (https://quaternius.com/) | CC0 |
 | Rochers et piliers des Prés | `scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |

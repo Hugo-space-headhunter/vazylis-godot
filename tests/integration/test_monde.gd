@@ -297,3 +297,27 @@ func test_le_bois_des_lucioles_est_au_nord_et_plus_sombre() -> void:
 	await wait_seconds(1.7)
 	assert_lt(terrain.get_node("Soleil").light_energy, lumiere_depart, "La lumière baisse dans le Bois")
 	assert_gt(terrain.get_node("Zones/BoisDesLucioles/Lucioles").get_child_count(), 5, "Des essaims de lucioles")
+
+
+func test_les_ruines_du_guet_sont_au_nord_du_bois() -> void:
+	var ruines: Zone = terrain.get_node("Zones/RuinesDuGuet")
+	assert_eq(ruines.titre(), "Les Ruines du Guet  (niv. 21–30)")
+	joueur.global_position = Vector3(0, 0.1, -170)
+	await wait_until(func(): return terrain.zone_actuelle() == ruines, 2.0)
+	assert_eq(terrain.zone_actuelle(), ruines)
+	var gardien_present := false
+	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		gardien_present = gardien_present or monstre.id_monstre == "monstre.gardien_sans_visage"
+	assert_true(gardien_present, "Le Gardien sans visage attend dans sa cour")
+
+
+func test_chaque_monstre_apparait_dans_sa_zone() -> void:
+	await wait_physics_frames(5)
+	var zones := terrain.get_node("Zones").get_children()
+	for monstre: Monstre in get_tree().get_nodes_in_group(Monstre.GROUPE):
+		var dedans := ""
+		for zone: Zone in zones:
+			if zone.name != "Vazylis" and zone.contient(monstre.global_position):
+				dedans = zone.nom
+		var attendu: Zone = monstre.get_parent().get_parent()
+		assert_eq(dedans, attendu.nom, "%s apparaît hors de sa zone, en %s" % [monstre.id_monstre, monstre.global_position])

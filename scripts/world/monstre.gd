@@ -5,7 +5,9 @@ extends CharacterBody3D
 ## et rentre chez lui si on l'entraîne trop loin.
 ## Un monstre peut être un champion (plus gros, aura dorée) ou un sous-boss (qui peut invoquer des renforts).
 ## Comportements réglés dans config/monstres.cfg : immobile (plante), recul après chaque coup (gobelin
-## chapardeur), attaque à distance (gobelin chaman) et attaque de zone annoncée au sol (Gueule-Fleur).
+## chapardeur), attaque à distance (gobelin chaman), attaque de zone annoncée au sol (Gueule-Fleur),
+## vie renforcée (Gargouillon), meute (Rat des cryptes), parade (Écuyer creux) et blocage de face
+## avec une rotation lente (le Gardien sans visage).
 
 signal mort(monstre: Monstre)
 
@@ -48,6 +50,8 @@ var _recul_restant := 0.0
 var _attaque_zone := {}
 var _recharge_zone := 0.0
 var _zone_en_cours := false
+var _vitesse_rotation := 0.0
+var _delta := 0.0
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -71,21 +75,28 @@ func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur, cha
 		_recharge_invocation = float(_invocation.get("intervalle", 0.0))
 	elif champion:
 		rang = Combat.RANG_CHAMPION
-	pv_max = Combat.pv_monstre(niveau, config, rang)
+	pv_max = Combat.pv_monstre(niveau, config, rang) * float(_definition.get("multiplicateur_vie", 1.0))
+	_vitesse_rotation = deg_to_rad(float(_definition.get("vitesse_rotation", 0.0)))
 	pv = pv_max
 	_point_apparition = point
 	_destination = point
 	_joueur = joueur
-	position = point
 	_hasard.randomize()
 
 
 func _ready() -> void:
 	add_to_group(GROUPE)
+	# « point » est une position du monde, quel que soit le nœud parent (une zone peut être décalée).
+	global_position = _point_apparition
 	_modele = CatalogueAssets.creer(str(_definition.get("modele", "")))
 	_modele.rotation.y = _hasard.randf() * TAU
 	add_child(_modele)
 	_modele.jouer("idle", 0.0)
+	var armes: Dictionary = _definition.get("armes", {})
+	for point: String in armes:
+		var arme := CatalogueAssets.creer(str(armes[point]))
+		add_child(arme)
+		arme.accrocher_a(_modele, point)
 	if rang == Combat.RANG_CHAMPION:
 		_modele.scale *= Config.jeu.combat("champion", "echelle")
 		$Collision.scale *= Config.jeu.combat("champion", "echelle")
@@ -125,6 +136,10 @@ func est_vivant() -> bool:
 func recevoir_coup(degats: int, critique: bool) -> bool:
 	if not est_vivant():
 		return false
+	if _evite_le_coup():
+		if etat == Etat.ERRANCE:
+			_engager()
+		return false
 	pv = maxf(0.0, pv - degats)
 	_barre.visible = true
 	_barre.regler(pv / pv_max)
@@ -135,13 +150,52 @@ func recevoir_coup(degats: int, critique: bool) -> bool:
 		_mourir()
 		return true
 	if etat != Etat.RETOUR:
-		etat = Etat.POURSUITE
+		_engager()
 	if _verrou_animation <= 0.0:
 		_jouer_une_fois("hit")
 	return false
 
 
+## Parade (« chance_parade ») ou blocage de face au bouclier (« blocage_de_face ») : le coup ne fait rien.
+func _evite_le_coup() -> bool:
+	var texte := ""
+	if _hasard.randf() < float(_definition.get("chance_parade", 0.0)):
+		texte = "Paré"
+	var blocage: Dictionary = _definition.get("blocage_de_face", {})
+	if texte.is_empty() and not blocage.is_empty() and _joueur_vivant() \
+			and _face_au_joueur(float(blocage.get("angle", 60.0))) and _hasard.randf() < float(blocage.get("chance", 0.5)):
+		texte = "Bloqué"
+	if texte.is_empty():
+		return false
+	ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * (_hauteur_infos + 0.3), texte, Color(0.75, 0.85, 1.0), 52)
+	return true
+
+
+## Le joueur est-il devant lui (à moins de « angle » degrés de son regard) ?
+func _face_au_joueur(angle: float) -> bool:
+	var vers := _joueur.global_position - global_position
+	var regard := Vector2(sin(_modele.rotation.y), cos(_modele.rotation.y))
+	var direction := Vector2(vers.x, vers.z)
+	if direction.length() < 0.01:
+		return true
+	return absf(rad_to_deg(regard.angle_to(direction.normalized()))) <= angle
+
+
+## Le monstre entre en combat ; une meute (« meute » : rayon en mètres) entraîne ses voisins du même type.
+func _engager() -> void:
+	etat = Etat.POURSUITE
+	var rayon := float(_definition.get("meute", 0.0))
+	if rayon <= 0.0:
+		return
+	for noeud in get_tree().get_nodes_in_group(GROUPE):
+		var voisin := noeud as Monstre
+		if voisin != self and voisin.id_monstre == id_monstre and voisin.etat == Etat.ERRANCE \
+				and voisin.global_position.distance_to(global_position) <= rayon:
+			voisin.etat = Etat.POURSUITE
+
+
 func _physics_process(delta: float) -> void:
+	_delta = delta
 	velocity.y = 0.0 if is_on_floor() else velocity.y - _gravite * delta
 	_recharge_attaque -= delta
 	_verrou_animation -= delta
@@ -159,7 +213,7 @@ func _physics_process(delta: float) -> void:
 				cible = _errer(delta)
 				vitesse = float(_definition.get("vitesse_marche", 1.0))
 			if not _passif and _joueur_visible(float(_definition.get("rayon_detection", 0.0))):
-				etat = Etat.POURSUITE
+				_engager()
 		Etat.POURSUITE:
 			var laisse := float(_definition.get("rayon_laisse", 12.0))
 			if not _joueur_vivant() or _distance_sol(_point_apparition) > laisse \
@@ -217,7 +271,9 @@ func _manoeuvrer() -> Array:
 	if distance > portee:
 		return [_joueur.global_position, course]
 	_tourner_vers(_joueur.global_position, 1.0)
-	_attaquer()
+	# Un monstre qui tourne lentement ne frappe que ce qu'il a devant lui : on peut le contourner.
+	if _vitesse_rotation <= 0.0 or _face_au_joueur(40.0):
+		_attaquer()
 	return [global_position, 0.0]
 
 
@@ -404,8 +460,13 @@ func _jouer_une_fois(animation: String) -> void:
 
 func _tourner_vers(point: Vector3, poids: float) -> void:
 	var direction := point - global_position
-	if Vector2(direction.x, direction.z).length() > 0.01:
-		_modele.rotation.y = lerp_angle(_modele.rotation.y, atan2(direction.x, direction.z), poids)
+	if Vector2(direction.x, direction.z).length() <= 0.01:
+		return
+	var visee := atan2(direction.x, direction.z)
+	if _vitesse_rotation > 0.0:
+		_modele.rotation.y = rotate_toward(_modele.rotation.y, visee, _vitesse_rotation * _delta)
+	else:
+		_modele.rotation.y = lerp_angle(_modele.rotation.y, visee, poids)
 
 
 func _joueur_vivant() -> bool:

@@ -26,6 +26,9 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Maisons de Vazylis : fenêtres sans vitres ni volets, pas encore d'intérieur ; ajouter un puits, un marché couvert, une forge (étape 7).
 - Gueule-Fleur : l'attaque de zone est un cercle rouge ; plus tard, de vraies lianes qui jaillissent du sol.
 - Gobelin chaman : sa boule verte est une simple sphère lumineuse ; lui donner une traînée et une animation d'incantation.
+- Ruines du Guet (étape 6.3) : des substituts faute de modèles CC0 exacts : le Gargouillon est un « Goleling » volant tout gris (pas une vraie gargouille), le Rat des cryptes est un chat gris-brun sans yeux rouges, l'Écuyer creux est un squelette sans épée (pas une armure vide). À remplacer par des modèles dédiés (Tripo ou créations de Hugo).
+- Le Gardien sans visage : le personnage de base en pierre unie ; lui faire une vraie armure gothique, un heaume sans visage et un grand pavois.
+- Décors des Ruines : pièces du pack KayKit « donjon » ; le pack Ultimate Modular Ruins (Quaternius, CC0) donnerait de vraies ruines gothiques (arches, escaliers, statues).
 
 ## Technique
 
