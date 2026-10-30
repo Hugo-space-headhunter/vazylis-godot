@@ -33,6 +33,20 @@ Règle : une optimisation n'est « validée » que si elle a été mesurée, et 
 
 À remplir avec les valeurs du panneau de mesure (Vazylis, Bois, Lisière).
 
-| Date | Endroit | Images/s | Image (ms) | Mémoire vidéo | Monstres éveillés |
-| --- | --- | --- | --- | --- | --- |
-| | | | | | |
+iPhone de Hugo (écran 1170 × 2532, rendu à la pleine résolution 1170 × 2391), version web,
+portrait, captures du 30/10/2026 après le chantier A :
+
+| Endroit | Images/s | Image (ms) | Scripts (ms) | Appels de dessin | Triangles | Mémoire vidéo | Monstres éveillés |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Vazylis | 60 | 16,7 | 4 | 380 | 236 000 | 68 Mo | 12 / 96 |
+| Prés (Pomelins) | 60 | 16,7 | 4 | 276 | 171 000 | 68 Mo | 17 / 96 |
+| Bois des Lucioles | 60 | 16,7 | 7 | 250 | 190 000 | 68 Mo | 21 / 96 |
+| Ruines du Guet (à l'entrée) | 58 | 17,2 | 53 (pointe passagère au changement de zone) | 197 | 175 000 | 68 Mo | 23 / 96 |
+| Lisière pourpre | 59 | 16,9 | 5 | 81 | 61 000 | 68 Mo | 14 / 96 |
+
+- **La cible des 60 images par seconde est atteinte partout** sur cet iPhone. L'écran est limité à 60 :
+  16,7 ms par image est donc le plafond, et on ne connaît pas encore la marge restante.
+- En portrait, la caméra voit plus loin vers le haut de l'écran : Vazylis dessine 380 appels (227 sur le PC en paysage).
+  C'est l'endroit le plus chargé, à surveiller quand on ajoutera des décors (chantier B).
+- Textures : affichage correct, rien de noir.
+- À vérifier : la chauffe et la batterie sur une longue session (30 minutes de farm).
