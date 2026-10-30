@@ -80,7 +80,6 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 ## Recyclage
 
 - Filtre par matériau (« tout ce qui est en fer ») : quand les matériaux existeront (étape 7).
-- Le recyclage rapporte seulement de l'or pour l'instant ; les matériaux arriveront avec la forge (étape 7).
 - Message d'erreur sans gravité dans la console de Godot (« Parameter "material" is null ») quand on change plusieurs fois de suite une pièce de rareté argentée ou plus : à comprendre.
 
 ## Sauvegarde

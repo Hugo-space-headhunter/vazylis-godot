@@ -2,8 +2,7 @@ class_name PuissanceItem
 extends RefCounted
 ## Puissance d'un item : niveau × multiplicateur de rareté, plus le bonus d'amélioration.
 ##
-## Le bonus apporté par chaque palier d'amélioration (+1 à +10) sera défini
-## à l'étape 7 (la forge) ; il est passé tel quel en attendant.
+## Le bonus d'amélioration est calculé par Objet.puissance (config/amelioration.cfg [gain]).
 
 
 ## Puissance arrondie à l'entier inférieur, comme dans le game design

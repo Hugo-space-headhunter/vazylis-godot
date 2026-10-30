@@ -63,6 +63,13 @@ func quantite(id_ressource: String) -> int:
 	return int(ressources.get(id_ressource, 0))
 
 
+## Paie une amélioration à la forge (sans vérifier : voir Forge.peut_payer).
+func payer(id_ressource: String, nombre: int, prix_or: int) -> void:
+	ressources[id_ressource] = maxi(0, quantite(id_ressource) - nombre)
+	or_possede = maxi(0, or_possede - prix_or)
+	change.emit()
+
+
 ## Échange le contenu de deux cases (pour ranger le sac).
 func echanger(case_a: int, case_b: int) -> void:
 	if case_a == case_b or case_a < 0 or case_b < 0 or case_a >= cases.size() or case_b >= cases.size():
@@ -78,15 +85,28 @@ func valeur_recyclage(un_objet: Objet) -> int:
 	return roundi(_config.butin("recyclage", "or_par_puissance") * un_objet.puissance(_config))
 
 
+## Matériaux rendus par le recyclage d'un objet : {"ressource.fer": 3}. Plus la rareté et le niveau
+## sont hauts, plus il en rend (butin.cfg [recyclage]).
+func materiaux_recyclage(un_objet: Objet) -> Dictionary:
+	var rang := maxi(0, _config.ids_raretes().find(un_objet.rarete))
+	var nombre := int(_config.butin("recyclage", "materiaux_base")) + rang * int(_config.butin("recyclage", "materiaux_par_rarete")) \
+		+ floori(un_objet.niveau / maxf(1.0, _config.butin("recyclage", "niveaux_par_materiau")))
+	return {un_objet.materiau(_config): nombre}
+
+
 ## Recycle l'objet d'une case. Renvoie l'or gagné.
 func recycler(case_numero: int) -> int:
 	var retire := retirer(case_numero)
 	return recycler_objet(retire) if retire != null else 0
 
 
-## Recycle un objet qui n'est pas dans le sac (par exemple quand le sac est plein).
+## Recycle un objet qui n'est pas dans le sac (par exemple quand le sac est plein) :
+## il rapporte de l'or et des matériaux. Renvoie l'or gagné.
 func recycler_objet(un_objet: Objet) -> int:
 	var gain := valeur_recyclage(un_objet)
 	or_possede += gain
+	var materiaux := materiaux_recyclage(un_objet)
+	for id: String in materiaux:
+		ressources[id] = quantite(id) + int(materiaux[id])
 	change.emit()
 	return gain

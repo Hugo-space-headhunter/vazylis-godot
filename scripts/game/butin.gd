@@ -105,6 +105,7 @@ func creer_objet(famille: String, niveau: int, rarete: String, hasard: RandomNum
 	var maximums: Dictionary = _config.generation_objets("bonus_maximum")
 	for nom in _au_hasard(maximums.keys(), _config.bonus_pourcent_rarete(rarete), hasard):
 		objet.bonus[nom] = snappedf(float(maximums[nom]) * _tirer(hasard, tirages), 0.001)
+	objet.fixer_depart()
 
 	var somme := 0.0
 	for tirage in tirages:

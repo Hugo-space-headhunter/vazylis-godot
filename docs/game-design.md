@@ -396,9 +396,16 @@ Un échec fait perdre les matériaux utilisés, jamais le niveau d'amélioration
 | +9 | 12 % | Très difficile |
 | +10 | 6 % | Très difficile |
 
+*Décidé à l'étape 7* :
+
+- **Ce que donne un palier** : +5 % des dégâts, de l'armure et des statistiques de départ pour chacun des paliers +1 à +5, puis +8 % pour chacun des paliers +6 à +10. Un objet +10 vaut 1,65 fois sa version de départ, et sa puissance augmente d'autant. Le palier se lit dans le nom (« Lame du Guet +7 »).
+- **Matériau utilisé** : le fer pour les armes en métal, le bouclier, le casque, le plastron et les bijoux (en attendant les pierres précieuses des donjons) ; le chêne pour l'arc ; le cuir pour les gants, les bottes, la ceinture et la cape.
+- **Prix** : (2 + palier) × (1 + niveau ÷ 10) unités du matériau, arrondi au-dessus, plus palier × puissance de départ en or. Exemple : passer une arme de niveau 10 en +5 coûte 14 fer.
+- **La forge** est à Vazylis : on y revient pour améliorer son équipement.
+
 ### Recyclage
 
-Les items inutiles se recyclent en matériaux et en or. Un objet recyclé rapporte 2 × sa puissance en or (décidé à l'étape 4) ; les matériaux arriveront avec la forge (étape 7). Le recyclage automatique filtre d'abord par rareté et par type d'objet (armes, armures, bijoux) ; le filtre par matériau viendra avec les matériaux. Un **recyclage automatique** réglable par filtres (par exemple « tout ce qui est en fer », « tout ce qui est sous le rang doré ») évite que le mode AFK remplisse l'inventaire.
+Les items inutiles se recyclent en matériaux et en or. Un objet recyclé rapporte 2 × sa puissance en or (décidé à l'étape 4), et le matériau qui sert à l'améliorer : 1 + rang de rareté (standard 0, argenté 1, doré 2…) + niveau ÷ 15 unités (décidé à l'étape 7). Le recyclage automatique filtre par rareté, par type d'objet (armes, armures, bijoux) et par matériau (fer, chêne, cuir). Un **recyclage automatique** réglable par filtres (par exemple « tout ce qui est en fer », « tout ce qui est sous le rang doré ») évite que le mode AFK remplisse l'inventaire.
 
 ## Familier, étendard et accessoire de taille
 

@@ -22,6 +22,7 @@ var _action: Button
 var _recycler: Button
 var _filtre_rarete: OptionButton
 var _filtre_types := {}
+var _filtre_materiaux := {}
 var _cases_sac: Array[CaseObjet] = []
 var _cases_equipement := {}
 ## Case touchée : {"lieu": "sac"|"equipement", "cle": …}, ou vide.
@@ -217,12 +218,13 @@ func _sur_recycler() -> void:
 	var objet := _objet(_choix)
 	var gain := _joueur.inventaire.recycler(int(_choix["cle"]))
 	if gain > 0:
-		or_gagne.emit(gain, objet.nom)
+		or_gagne.emit(gain, objet.nom_affiche())
 	_choix = {}
 	_rafraichir()
 
 
-## Ligne du recyclage automatique : « Recyclage auto : [sous Doré] [Armes] [Armures] [Bijoux] [Recycler le sac] ».
+## Ligne du recyclage automatique : « Recyclage auto : [sous Doré] [Armes] [Armures] [Bijoux] [Fer] [Chêne] [Cuir]
+## [Recycler le sac] ».
 func _ligne_recyclage_auto() -> Control:
 	var ligne := HFlowContainer.new()
 	ligne.add_theme_constant_override("h_separation", 10)
@@ -242,6 +244,16 @@ func _ligne_recyclage_auto() -> Control:
 		case_a_cocher.toggled.connect(_sur_filtre_type.bind(type))
 		_filtre_types[type] = case_a_cocher
 		ligne.add_child(case_a_cocher)
+	for id in Config.jeu.ids_ressources():
+		if str(Config.jeu.ressource(id).get("famille", "")) == "familier":
+			continue
+		var case_materiau := CheckBox.new()
+		case_materiau.text = str(Config.jeu.ressource(id).get("nom", id))
+		case_materiau.focus_mode = Control.FOCUS_NONE
+		case_materiau.add_theme_font_size_override("font_size", 20)
+		case_materiau.toggled.connect(_sur_filtre_materiau.bind(id))
+		_filtre_materiaux[id] = case_materiau
+		ligne.add_child(case_materiau)
 	var maintenant := _bouton("Recycler le sac", _sur_recycler_le_sac)
 	maintenant.add_theme_font_size_override("font_size", 20)
 	maintenant.custom_minimum_size = Vector2(190, 52)
@@ -261,6 +273,8 @@ func _afficher_filtres() -> void:
 	_filtre_rarete.select(raretes.find(filtre.rarete_limite) if filtre.actif else 0)
 	for type: String in _filtre_types:
 		(_filtre_types[type] as CheckBox).set_pressed_no_signal(bool(filtre.types.get(type, true)))
+	for id: String in _filtre_materiaux:
+		(_filtre_materiaux[id] as CheckBox).set_pressed_no_signal(bool(filtre.materiaux.get(id, true)))
 
 
 func _sur_filtre_rarete(index: int) -> void:
@@ -270,6 +284,19 @@ func _sur_filtre_rarete(index: int) -> void:
 
 func _sur_filtre_type(coche: bool, type: String) -> void:
 	_joueur.recyclage_auto.cocher(type, coche)
+
+
+func _sur_filtre_materiau(coche: bool, id_ressource: String) -> void:
+	_joueur.recyclage_auto.cocher_materiau(id_ressource, coche)
+
+
+## « , +2 Fer » : les matériaux que rendrait le recyclage de l'objet.
+func _texte_materiaux(objet: Objet) -> String:
+	var texte := ""
+	var materiaux := _joueur.inventaire.materiaux_recyclage(objet)
+	for id: String in materiaux:
+		texte += ", +%d %s" % [materiaux[id], Config.jeu.ressource(id).get("nom", id)]
+	return texte
 
 
 func _sur_recycler_le_sac() -> void:
@@ -302,7 +329,7 @@ func _rafraichir() -> void:
 		porte = _joueur.equipement.objet(_joueur.equipement.emplacement_pour(objet))
 		_action.text = "Équiper"
 		_action.visible = true
-		_recycler.text = "Recycler : +%d or" % _joueur.inventaire.valeur_recyclage(objet)
+		_recycler.text = "Recycler : +%d or%s" % [_joueur.inventaire.valeur_recyclage(objet), _texte_materiaux(objet)]
 		_recycler.visible = true
 	elif objet != null and _choix["cle"] != "arme":
 		_action.text = "Retirer"

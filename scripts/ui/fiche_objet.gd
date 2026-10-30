@@ -20,7 +20,7 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 		return
 	var config := Config.jeu
 	var couleur := config.couleur_rarete(objet.rarete)
-	add_child(_texte(objet.nom, 26, couleur))
+	add_child(_texte(objet.nom_affiche(), 26, couleur))
 	var type: String = str(NOMS_EMPLACEMENTS.get(objet.emplacement, objet.emplacement))
 	if objet.est_arme():
 		type = str(config.arme(objet.type_arme).get("nom", type))
@@ -28,6 +28,9 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 	var qualite := roundi(objet.qualite * 100.0)
 	add_child(_texte("Qualité %d %%%s · puissance %d" % [qualite, " (parfaite)" if qualite >= 100 else "", objet.puissance(config)],
 		17, Color(0.85, 0.88, 0.95)))
+	if objet.amelioration > 0:
+		add_child(_texte("Amélioré +%d à la forge : valeurs ×%s" % [objet.amelioration,
+			("%.2f" % config.multiplicateur_amelioration(objet.amelioration)).replace(".", ",")], 17, Color(1, 0.85, 0.4)))
 	if objet.degats > 0.0:
 		add_child(_texte("Dégâts %s" % _nombre(objet.degats), 20, Color.WHITE))
 	if objet.armure > 0.0:
@@ -40,7 +43,7 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 		var ecart := objet.puissance(config) - porte.puissance(config)
 		var signe := "+" if ecart > 0 else ""
 		var couleur_ecart := Color(0.5, 1, 0.5) if ecart > 0 else (Color(1, 0.5, 0.45) if ecart < 0 else Color(0.85, 0.85, 0.85))
-		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom, porte.puissance(config), signe, ecart], 16, couleur_ecart))
+		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom_affiche(), porte.puissance(config), signe, ecart], 16, couleur_ecart))
 
 
 

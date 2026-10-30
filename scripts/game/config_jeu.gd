@@ -64,6 +64,27 @@ func taux_reussite_amelioration(palier: int) -> float:
 	return _nombre("amelioration", "reussite", "plus_%d" % palier, 0.0)
 
 
+## Multiplicateur des valeurs d'un objet amélioré à ce palier (1 = pas amélioré, 1.65 = +10).
+func multiplicateur_amelioration(palier: int) -> float:
+	var total := 1.0
+	for p in range(1, palier + 1):
+		total += _nombre("amelioration", "gain", "plus_%d" % p, 0.0)
+	return total
+
+
+func amelioration(section: String, cle: String) -> float:
+	return _nombre("amelioration", section, cle, 0.0)
+
+
+## Matériau qui sert à améliorer un objet de cet emplacement (et de ce type d'arme).
+func materiau_amelioration(emplacement: String, type_arme: String = "") -> String:
+	var par_type: Dictionary = _valeur("amelioration", "materiaux", "par_type_arme", {})
+	if par_type.has(type_arme):
+		return str(par_type[type_arme])
+	var par_emplacement: Dictionary = _valeur("amelioration", "materiaux", "par_emplacement", {})
+	return str(par_emplacement.get(emplacement, "ressource.fer"))
+
+
 # --- Progression ---
 
 func temps_cible_base() -> float:

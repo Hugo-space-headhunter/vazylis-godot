@@ -445,6 +445,7 @@ func importer_partie(partie: Partie) -> void:
 	recyclage_auto.actif = partie.recyclage_auto.actif
 	recyclage_auto.rarete_limite = partie.recyclage_auto.rarete_limite
 	recyclage_auto.types = partie.recyclage_auto.types
+	recyclage_auto.materiaux = partie.recyclage_auto.materiaux
 	butin.monstres_sans_dore = partie.monstres_sans_dore
 	butin.monstres_sans_epique = partie.monstres_sans_epique
 	butin.victoires_sans_epique = partie.victoires_sans_epique

@@ -32,6 +32,10 @@ var armure := 0.0
 var statistiques := {}
 ## Bonus en % : {"vitesse_attaque": 0.03, …}
 var bonus := {}
+## Palier d'amélioration à la forge (0 à 10). Il augmente les dégâts, l'armure et les statistiques.
+var amelioration := 0
+## Dégâts, armure et statistiques de départ (avant amélioration) : {"degats": …, "armure": …, "statistiques": {…}}.
+var _depart := {}
 
 
 func _init() -> void:
@@ -47,9 +51,42 @@ func est_bijou() -> bool:
 	return emplacement in EMPLACEMENTS_BIJOUX
 
 
-## Puissance : niveau × multiplicateur de rareté (les améliorations viendront à l'étape 7).
+## Puissance : niveau × multiplicateur de rareté, plus le bonus de son amélioration à la forge.
 func puissance(config: ConfigJeu) -> int:
+	var depart := puissance_de_depart(config)
+	return PuissanceItem.calculer(niveau, rarete, config, floori(depart * (config.multiplicateur_amelioration(amelioration) - 1.0) + 0.0001))
+
+
+## Puissance sans l'amélioration.
+func puissance_de_depart(config: ConfigJeu) -> int:
 	return PuissanceItem.calculer(niveau, rarete, config)
+
+
+## Nom affiché, avec le palier d'amélioration (« Lame du Guet +7 »).
+func nom_affiche() -> String:
+	return nom if amelioration <= 0 else "%s +%d" % [nom, amelioration]
+
+
+## Matériau qui sert à l'améliorer et qu'il rend au recyclage (fer, chêne, cuir…).
+func materiau(config: ConfigJeu) -> String:
+	return config.materiau_amelioration(emplacement, type_arme)
+
+
+## Retient les valeurs actuelles comme valeurs de départ (à l'objet neuf, avant toute amélioration).
+func fixer_depart() -> void:
+	_depart = {"degats": degats, "armure": armure, "statistiques": statistiques.duplicate()}
+
+
+## Recalcule dégâts, armure et statistiques d'après les valeurs de départ et le palier.
+func appliquer_amelioration(config: ConfigJeu) -> void:
+	if _depart.is_empty():
+		fixer_depart()
+	var facteur := config.multiplicateur_amelioration(amelioration)
+	degats = float(_depart["degats"]) * facteur
+	armure = float(_depart["armure"]) * facteur
+	var depart_stats: Dictionary = _depart["statistiques"]
+	for nom_stat: String in depart_stats:
+		statistiques[nom_stat] = roundi(int(depart_stats[nom_stat]) * facteur)
 
 
 ## Identifiant du modèle 3D qui représente l'objet (pour sa vignette ou sur le sol).
@@ -61,10 +98,14 @@ func modele(config: ConfigJeu, femme: bool = false) -> String:
 	return str(definition.get("modele_femme" if femme else "modele_homme", ""))
 
 
+## Pour la sauvegarde : les valeurs de départ et le palier (les valeurs améliorées se recalculent).
 func vers_dictionnaire() -> Dictionary:
+	if _depart.is_empty():
+		fixer_depart()
 	return {
 		"famille": famille, "niveau": niveau, "rarete": rarete, "qualite": qualite,
-		"degats": degats, "armure": armure, "statistiques": statistiques, "bonus": bonus,
+		"degats": _depart["degats"], "armure": _depart["armure"], "statistiques": _depart["statistiques"], "bonus": bonus,
+		"amelioration": amelioration,
 	}
 
 
@@ -87,4 +128,7 @@ static func depuis_dictionnaire(donnees: Dictionary, config: ConfigJeu) -> Objet
 	var bonus: Dictionary = donnees.get("bonus", {})
 	for nom: String in bonus:
 		objet.bonus[nom] = float(bonus[nom])
+	objet.fixer_depart()
+	objet.amelioration = clampi(int(donnees.get("amelioration", 0)), 0, config.palier_max_amelioration())
+	objet.appliquer_amelioration(config)
 	return objet
