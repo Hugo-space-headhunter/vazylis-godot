@@ -41,8 +41,12 @@ func tirer(rang: String, niveau: int, zone: int, hasard: RandomNumberGenerator, 
 	else:
 		_compter_les_monstres(raretes)
 	var objets: Array[Objet] = []
+	var pieces := _config.pieces_de_panoplie(_config.panoplie_du_sous_boss(sous_boss_id)) if rang == Combat.RANG_SOUS_BOSS else PackedStringArray()
 	for rarete in raretes:
-		objets.append(creer_objet(tirer_famille(zone, hasard), niveau, rarete, hasard))
+		var famille := tirer_famille(zone, hasard)
+		if not pieces.is_empty() and hasard.randf() < _config.butin("sous_boss", "panoplie"):
+			famille = pieces[hasard.randi_range(0, pieces.size() - 1)]
+		objets.append(creer_objet(famille, niveau, rarete, hasard))
 	var ressources := {}
 	if not ressource.is_empty() and hasard.randf() < _config.butin(section, "ressources"):
 		ressources[ressource] = hasard.randi_range(int(_config.butin(section, "ressources_min")), int(_config.butin(section, "ressources_max")))

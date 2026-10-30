@@ -5,15 +5,15 @@ extends RefCounted
 ## et des étincelles pour les plus rares. Les réglages sont dans config/raretes.cfg.
 
 
-## Applique le rendu de la rareté à tous les maillages sous « noeud ».
-## Les matières sont copiées : le modèle d'origine n'est pas modifié.
-static func appliquer(noeud: Node, rarete: String) -> void:
+## Applique le rendu de la rareté à tous les maillages sous « noeud », et une teinte (celle de
+## la panoplie de l'objet). Les matières sont copiées : le modèle d'origine n'est pas modifié.
+static func appliquer(noeud: Node, rarete: String, teinte: Color = Color.WHITE) -> void:
 	var config := Config.jeu
 	var reglages := config.apparence_rarete(rarete)
 	var melange := float(reglages.get("melange_couleur", 0.0))
 	var metallique := float(reglages.get("metallique", 0.0))
 	var eclat := float(reglages.get("eclat", 0.0))
-	if melange <= 0.0 and metallique <= 0.0 and eclat <= 0.0:
+	if melange <= 0.0 and metallique <= 0.0 and eclat <= 0.0 and teinte == Color.WHITE:
 		return
 	var couleur := config.couleur_rarete(rarete)
 	var instances: Array = noeud.find_children("*", "MeshInstance3D", true, false)
@@ -26,7 +26,7 @@ static func appliquer(noeud: Node, rarete: String) -> void:
 			if origine == null:
 				continue
 			var matiere := origine.duplicate() as BaseMaterial3D
-			matiere.albedo_color = matiere.albedo_color.lerp(couleur, melange)
+			matiere.albedo_color = (matiere.albedo_color * teinte).lerp(couleur, melange)
 			matiere.metallic = maxf(matiere.metallic, metallique)
 			matiere.roughness = minf(matiere.roughness, 1.0 - metallique * 0.6)
 			if eclat > 0.0:

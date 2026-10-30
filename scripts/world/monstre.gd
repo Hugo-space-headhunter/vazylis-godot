@@ -343,12 +343,13 @@ func _attaquer() -> void:
 		var couleur: Color = _definition.get("couleur_tir", Color(0.5, 1.0, 0.4))
 		var joueur := _joueur
 		var niveau_tireur := niveau
+		var tireur: WeakRef = weakref(self)
 		BouleMagique.lancer(get_parent(), global_position + Vector3.UP * _hauteur_infos * 0.7, _joueur, couleur,
 			func() -> void:
 				if is_instance_valid(joueur):
-					joueur.recevoir_degats(degats, niveau_tireur))
+					joueur.recevoir_degats(degats, niveau_tireur, tireur.get_ref() as Monstre))
 		return
-	_joueur.recevoir_degats(degats, niveau)
+	_joueur.recevoir_degats(degats, niveau, self)
 	_recul_restant = float(_definition.get("recul", 0.0))
 
 
@@ -393,7 +394,7 @@ func _frapper_en_zone(cercle: Node3D, rayon: float) -> void:
 	_jouer_une_fois("attack")
 	var degats := Combat.degats_monstre(niveau, _joueur.niveau(), _passif, float(_definition.get("intervalle_attaque", 1.5)),
 		Config.jeu, rang) * float(_attaque_zone.get("multiplicateur", 2.0))
-	_joueur.recevoir_degats(degats, niveau)
+	_joueur.recevoir_degats(degats, niveau, self)
 
 
 ## Un sous-boss qui invoque appelle des renforts à intervalle régulier pendant le combat.

@@ -23,7 +23,8 @@ func afficher_nom(nom: String) -> void:
 
 
 func afficher_pv(pv: float, pv_max: float) -> void:
-	_regler(_vie, pv, pv_max, "%d / %d" % [ceili(pv), roundi(pv_max)])
+	# Arrondie vers le haut tant qu'il reste un peu de vie, sans jamais dépasser le maximum affiché.
+	_regler(_vie, pv, pv_max, "%d / %d" % [mini(ceili(pv), roundi(pv_max)), roundi(pv_max)])
 
 
 func afficher_mana(mana: float, mana_max: float) -> void:

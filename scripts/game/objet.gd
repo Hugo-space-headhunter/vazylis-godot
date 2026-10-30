@@ -10,6 +10,7 @@ const NOMS_BONUS := {
 	"degats_critiques": "dégâts critiques",
 	"vie": "vie",
 	"degats": "dégâts",
+	"defense": "défense",
 }
 
 static var _compteur := 0
@@ -65,6 +66,11 @@ func puissance_de_depart(config: ConfigJeu) -> int:
 ## Nom affiché, avec le palier d'amélioration (« Lame du Guet +7 »).
 func nom_affiche() -> String:
 	return nom if amelioration <= 0 else "%s +%d" % [nom, amelioration]
+
+
+## Panoplie dont l'objet est une pièce (config/panoplies.cfg), ou "".
+func panoplie(config: ConfigJeu) -> String:
+	return str(config.famille_objet(famille).get("panoplie", ""))
 
 
 ## Matériau qui sert à l'améliorer et qu'il rend au recyclage (fer, chêne, cuir…).

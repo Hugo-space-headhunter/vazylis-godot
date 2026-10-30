@@ -337,7 +337,7 @@ func _rafraichir() -> void:
 		_action.disabled = _joueur.inventaire.est_plein()
 	if _action.text == "Équiper":
 		_action.disabled = false
-	_fiche.afficher(objet, porte)
+	_fiche.afficher(objet, porte, _joueur.equipement)
 
 
 func _afficher_ressources() -> void:

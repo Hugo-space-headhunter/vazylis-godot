@@ -284,3 +284,56 @@ func test_les_pomelins_noircis_chargent_en_meute() -> void:
 	meute[1]._engager()
 	for pomelin: Monstre in meute:
 		assert_eq(pomelin.etat, Monstre.Etat.POURSUITE)
+
+
+func _panoplie_complete(familles: Array) -> void:
+	var hasard := RandomNumberGenerator.new()
+	for famille: String in familles:
+		joueur.equiper_objet(joueur.butin.creer_objet(famille, 10, "standard", hasard))
+
+
+func test_regain_rend_de_la_vie_hors_combat() -> void:
+	_panoplie_complete(["objet.coiffe_verger", "objet.bottes_verger", "objet.ceinture_verger"])
+	assert_true(joueur.a_effet("regain"))
+	joueur.pv = joueur.pv_max * 0.5
+	await wait_seconds(2.0)
+	assert_almost_eq(joueur.pv, joueur.pv_max * 0.5, 0.01, "Pas tout de suite après un combat")
+	joueur._hors_combat = 10.0
+	await wait_seconds(1.0)
+	assert_gt(joueur.pv, joueur.pv_max * 0.5, "Hors combat, la vie remonte")
+
+
+func test_epines_renvoie_des_degats() -> void:
+	_panoplie_complete(["objet.gants_epines", "objet.bottes_epines", "objet.cape_epines", "objet.boucle_epine"])
+	assert_true(joueur.a_effet("epines"))
+	var gobelin := _monstre("monstre.gobelin_chapardeur", 11, Vector3(0, 0, -8))
+	await wait_physics_frames(2)
+	joueur.recevoir_degats(500.0, 11, gobelin)
+	assert_lt(gobelin.pv, gobelin.pv_max, "Le gobelin se pique")
+
+
+func test_bastion_bloque_parfois() -> void:
+	_panoplie_complete(["objet.heaume_guet", "objet.cuirasse_guet", "objet.gantelets_guet", "objet.ceinturon_guet"])
+	assert_true(joueur.a_effet("bastion"))
+	joueur.pv_max = 1.0e9
+	var bloques := 0
+	for i in 400:
+		joueur.pv = joueur.pv_max
+		joueur.recevoir_degats(10.0, 1)
+		if joueur.pv == joueur.pv_max:
+			bloques += 1
+	assert_between(bloques, 40, 85, "Environ 15 % (la hache ne bloque jamais)")
+
+
+func test_rage_sous_la_moitie_de_la_vie() -> void:
+	_panoplie_complete(["objet.masque_krag", "objet.harnais_krag", "objet.cape_krag", "objet.collier_krag"])
+	assert_true(joueur.a_effet("rage"))
+	var calme := float(joueur.bonus_de_combat().get("degats", 0.0))
+	joueur.pv = joueur.pv_max * 0.4
+	assert_almost_eq(float(joueur.bonus_de_combat().get("degats", 0.0)), calme + 0.2, 0.0001)
+
+
+func test_les_pieces_de_panoplie_sont_teintees() -> void:
+	_panoplie_complete(["objet.cuirasse_guet"])
+	await wait_physics_frames(2)
+	assert_gt(joueur._habillage.nombre_de_morceaux(), 0, "La cuirasse se voit")

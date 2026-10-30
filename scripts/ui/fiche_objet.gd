@@ -1,7 +1,8 @@
 class_name FicheObjet
 extends VBoxContainer
 ## Fiche détaillée d'un objet : nom (couleur de sa rareté), niveau, qualité, puissance,
-## dégâts ou armure, statistiques et bonus en %. Peut le comparer à l'objet porté au même endroit.
+## dégâts ou armure, statistiques et bonus en %, et sa panoplie (pièces portées, paliers actifs).
+## Peut le comparer à l'objet porté au même endroit.
 
 const NOMS_EMPLACEMENTS := {
 	"arme": "Arme", "casque": "Casque", "plastron": "Plastron", "gants": "Gants", "bottes": "Bottes",
@@ -13,7 +14,7 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 4)
 
 
-func afficher(objet: Objet, porte: Objet = null) -> void:
+func afficher(objet: Objet, porte: Objet = null, equipement: Equipement = null) -> void:
 	for enfant in get_children():
 		enfant.queue_free()
 	if objet == null:
@@ -39,12 +40,26 @@ func afficher(objet: Objet, porte: Objet = null) -> void:
 		add_child(_texte("+%d %s" % [objet.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 18, Color(0.75, 0.92, 0.75)))
 	for nom: String in objet.bonus:
 		add_child(_texte("+%.1f %% %s" % [float(objet.bonus[nom]) * 100.0, Objet.NOMS_BONUS.get(nom, nom)], 18, Color(0.7, 0.85, 1.0)))
+	_afficher_panoplie(objet, equipement, config)
 	if porte != null and porte != objet:
 		var ecart := objet.puissance(config) - porte.puissance(config)
 		var signe := "+" if ecart > 0 else ""
 		var couleur_ecart := Color(0.5, 1, 0.5) if ecart > 0 else (Color(1, 0.5, 0.45) if ecart < 0 else Color(0.85, 0.85, 0.85))
 		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom_affiche(), porte.puissance(config), signe, ecart], 16, couleur_ecart))
 
+
+
+## « Panoplie Couronne du Verger (2/3) », puis ses paliers : en vert ceux qui sont actifs.
+func _afficher_panoplie(objet: Objet, equipement: Equipement, config: ConfigJeu) -> void:
+	var id := objet.panoplie(config)
+	if id.is_empty():
+		return
+	var portees := int(Panoplies.compter(equipement, config).get(id, 0)) if equipement != null else 0
+	add_child(_texte("Panoplie %s (%d/%d)" % [config.panoplie(id).get("nom", id), portees, Panoplies.nombre_de_pieces(id, config)],
+		19, Color(0.55, 0.95, 0.6)))
+	for palier: Dictionary in config.panoplie(id).get("paliers", []):
+		var actif := portees >= int(palier.get("pieces", 99))
+		add_child(_texte(Panoplies.decrire_palier(palier, config), 16, Color(0.6, 1, 0.6) if actif else Color(0.6, 0.62, 0.66)))
 
 
 ## Un nombre lisible : une décimale en dessous de 10 (0,5), un entier au-dessus.

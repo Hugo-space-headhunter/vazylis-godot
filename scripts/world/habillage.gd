@@ -32,14 +32,14 @@ func habiller(personnage: ModeleAsset, equipement: Equipement, femme: bool) -> v
 		var modeles: Array = [objet.modele(config, femme)]
 		modeles.append_array(famille.get("accessoires_femme" if femme else "accessoires_homme", []))
 		for modele_id: String in modeles:
-			_coudre(squelette, modele_id, objet.rarete)
+			_coudre(squelette, modele_id, objet.rarete, _teinte(objet, config))
 	for emplacement: String in OBJETS_ACCROCHES:
 		var objet := equipement.objet(emplacement)
 		if objet == null:
 			continue
 		var accroche := CatalogueAssets.creer(objet.modele(config, femme))
 		accroche.accrocher_a(personnage, OBJETS_ACCROCHES[emplacement])
-		ApparenceRarete.appliquer(accroche, objet.rarete)
+		ApparenceRarete.appliquer(accroche, objet.rarete, _teinte(objet, config))
 		_noeuds.append(accroche)
 	if _porte_un_transcendant(equipement):
 		var aura := ApparenceRarete.ajouter_etincelles(personnage, "transcendant",
@@ -80,7 +80,13 @@ func nombre_de_morceaux() -> int:
 
 
 ## Ajoute les maillages d'une pièce de tenue au squelette du personnage, pour qu'ils bougent avec lui.
-func _coudre(squelette: Skeleton3D, modele_id: String, rarete: String) -> void:
+## Teinte d'une pièce de panoplie (blanc pour un objet ordinaire).
+static func _teinte(objet: Objet, config: ConfigJeu) -> Color:
+	var panoplie := objet.panoplie(config)
+	return config.panoplie(panoplie).get("teinte", Color.WHITE) if not panoplie.is_empty() else Color.WHITE
+
+
+func _coudre(squelette: Skeleton3D, modele_id: String, rarete: String, teinte: Color = Color.WHITE) -> void:
 	var piece := CatalogueAssets.creer(modele_id)
 	if piece.provisoire:
 		piece.free()
@@ -92,7 +98,7 @@ func _coudre(squelette: Skeleton3D, modele_id: String, rarete: String) -> void:
 		squelette.add_child(maillage)
 		maillage.skeleton = NodePath("..")
 		maillage.transform = Transform3D.IDENTITY
-		ApparenceRarete.appliquer(maillage, rarete)
+		ApparenceRarete.appliquer(maillage, rarete, teinte)
 		_noeuds.append(maillage)
 	piece.free()
 

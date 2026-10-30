@@ -118,7 +118,7 @@ func _rafraichir() -> void:
 	if _joueur == null or not visible:
 		return
 	var stats := _joueur.statistiques
-	var objets := _joueur.equipement.statistiques_totales()
+	var objets := _joueur.equipement.statistiques_totales(Config.jeu)
 	_points.text = "Points à répartir : %d" % stats.points_restants()
 	for nom in Statistiques.NOMS:
 		var attente := int(stats.en_attente[nom])

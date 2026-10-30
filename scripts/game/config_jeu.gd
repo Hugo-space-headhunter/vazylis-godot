@@ -6,7 +6,7 @@ extends RefCounted
 ## directement, et l'autoload « Config » en garde un exemplaire pour le jeu.
 
 const DOSSIER_PAR_DEFAUT := "res://config"
-const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin", "ressources"]
+const FICHIERS: PackedStringArray = ["raretes", "amelioration", "progression", "personnage", "commandes", "combat", "monstres", "statistiques", "armes", "objets", "butin", "ressources", "panoplies"]
 
 var _fichiers := {}
 
@@ -185,6 +185,45 @@ func generation_objets(cle: String) -> Variant:
 ## Valeur de butin.cfg, par exemple butin("monstre", "dore").
 func butin(section: String, cle: String) -> float:
 	return _nombre("butin", section, cle, 0.0)
+
+
+# --- Panoplies ---
+
+func ids_panoplies() -> PackedStringArray:
+	var ids := PackedStringArray()
+	for section in _fichier("panoplies").get_sections():
+		if section.begins_with("panoplie."):
+			ids.append(section)
+	return ids
+
+
+func panoplie(id: String) -> Dictionary:
+	return _section("panoplies", id)
+
+
+func effet_panoplie(id: String) -> Dictionary:
+	return _section("panoplies", "effet." + id)
+
+
+func reglage_effet(cle: String) -> float:
+	return _nombre("panoplies", "effets", cle, 0.0)
+
+
+## Familles d'objets qui sont des pièces de cette panoplie.
+func pieces_de_panoplie(id: String) -> PackedStringArray:
+	var pieces := PackedStringArray()
+	for famille in ids_familles_objets():
+		if str(famille_objet(famille).get("panoplie", "")) == id:
+			pieces.append(famille)
+	return pieces
+
+
+## La panoplie qu'un sous-boss fait tomber, ou "".
+func panoplie_du_sous_boss(id_monstre: String) -> String:
+	for id in ids_panoplies():
+		if str(panoplie(id).get("sous_boss", "")) == id_monstre:
+			return id
+	return ""
 
 
 # --- Ressources ---

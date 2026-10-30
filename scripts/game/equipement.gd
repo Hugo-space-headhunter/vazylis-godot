@@ -81,22 +81,37 @@ func armure_totale() -> float:
 	return total
 
 
-## Statistiques données par tous les objets portés : {"force": 12, …}
-func statistiques_totales() -> Dictionary:
+## Statistiques données par tous les objets portés : {"force": 12, …} ;
+## avec « config », celles des panoplies portées en plus.
+func statistiques_totales(config: ConfigJeu = null) -> Dictionary:
 	var total := {}
 	for un_objet: Objet in objets.values():
 		for nom: String in un_objet.statistiques:
 			total[nom] = int(total.get(nom, 0)) + int(un_objet.statistiques[nom])
+	if config != null:
+		var panoplies: Dictionary = Panoplies.bonus(self, config)["statistiques"]
+		for nom: String in panoplies:
+			total[nom] = int(total.get(nom, 0)) + int(panoplies[nom])
 	return total
 
 
-## Bonus en % de tous les objets portés, additionnés : {"vitesse_attaque": 0.05, …}
-func bonus_totaux() -> Dictionary:
+## Bonus en % de tous les objets portés, additionnés : {"vitesse_attaque": 0.05, …} ;
+## avec « config », ceux des panoplies portées en plus.
+func bonus_totaux(config: ConfigJeu = null) -> Dictionary:
 	var total := {}
 	for un_objet: Objet in objets.values():
 		for nom: String in un_objet.bonus:
 			total[nom] = float(total.get(nom, 0.0)) + float(un_objet.bonus[nom])
+	if config != null:
+		var panoplies: Dictionary = Panoplies.bonus(self, config)["bonus"]
+		for nom: String in panoplies:
+			total[nom] = float(total.get(nom, 0.0)) + float(panoplies[nom])
 	return total
+
+
+## Effets spéciaux des panoplies complètes portées (« regain », « epines »…).
+func effets(config: ConfigJeu) -> Array:
+	return Panoplies.bonus(self, config)["effets"]
 
 
 func vers_dictionnaire() -> Dictionary:

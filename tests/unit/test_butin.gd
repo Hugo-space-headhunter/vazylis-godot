@@ -100,7 +100,7 @@ func test_le_niveau_de_l_objet_suit_le_monstre() -> void:
 
 
 func test_toutes_les_familles_ont_leurs_modeles() -> void:
-	assert_eq(config.ids_familles_objets().size(), 17)
+	assert_eq(config.ids_familles_objets().size(), 32, "17 objets de la zone 1 et 15 pièces de panoplie")
 	var butin := Butin.new(config)
 	for famille in config.ids_familles_objets():
 		var objet := butin.creer_objet(famille, 1, "standard", hasard)

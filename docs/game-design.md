@@ -365,6 +365,13 @@ Chaque sous-boss et chaque boss de donjon a sa panoplie. Porter plusieurs pièce
 
 Les panoplies des zones 2 à 5 suivront le même modèle, avec des valeurs plus élevées.
 
+*Décidé à l'étape 7* :
+
+- **Les pièces** : Coiffe, Ceinture et Bottes du Verger ; Gants, Bottes et Cape d'épines, Boucle d'épine ; Heaume, Cuirasse, Gantelets et Ceinturon du Guet ; Masque, Harnais, Cape et Collier de Krâg.
+- **Obtention** : chaque objet lâché par un sous-boss a 50 % de chances d'être une pièce de sa panoplie ; les pièces ne tombent jamais des monstres ordinaires. Elles ont la rareté, le niveau et les valeurs tirées comme n'importe quel objet, et s'améliorent à la forge.
+- **Regain** agit après 4 secondes sans frapper ni être frappé.
+- **Lecture** : la fiche d'une pièce indique la panoplie, le nombre de pièces portées (« 2/3 ») et ses paliers, en vert ceux qui sont actifs. Sur le personnage, les pièces prennent la teinte de leur panoplie.
+
 ## Ressources, amélioration et recyclage
 
 Les monstres lâchent des items et des ressources. Les ressources servent à améliorer les items de +1 à +10.

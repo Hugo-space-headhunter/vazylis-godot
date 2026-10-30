@@ -73,6 +73,9 @@ var _verrou_animation := 0.0
 var _coup_en_attente := -1.0
 var _cible: Monstre
 var _point_afk := Vector3.ZERO
+## Effets spéciaux des panoplies complètes portées (« regain », « epines », « bastion », « rage »).
+var _effets: Array = []
+var _hors_combat := 0.0
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -126,25 +129,31 @@ func modele() -> ModeleAsset:
 
 ## Statistiques avec les points des objets portés.
 func statistiques_effectives(points: Statistiques = null) -> Statistiques:
-	return (points if points != null else statistiques).avec_bonus(equipement.statistiques_totales())
+	return (points if points != null else statistiques).avec_bonus(equipement.statistiques_totales(Config.jeu))
 
 
+## Défense, avec le bonus de défense en % des panoplies.
 func defense() -> float:
-	return Combat.defense_joueur(experience.niveau, statistiques_effectives(), arme, Config.jeu, equipement.armure_totale())
+	return Combat.defense_joueur(experience.niveau, statistiques_effectives(), arme, Config.jeu, equipement.armure_totale()) \
+		* (1.0 + float(equipement.bonus_totaux(Config.jeu).get("defense", 0.0)))
+
+
+func a_effet(effet: String) -> bool:
+	return effet in _effets
 
 
 ## Caractéristiques de combat, avec des points de statistiques donnés (pour l'aperçu de la fenêtre).
 func caracteristiques(points: Statistiques = null) -> Dictionary:
 	var config := Config.jeu
 	var stats := statistiques_effectives(points)
-	var bonus := equipement.bonus_totaux()
+	var bonus := equipement.bonus_totaux(Config.jeu)
 	var niveau_actuel := experience.niveau
 	return {
 		"degats": Combat.degats_coup(niveau_actuel, stats, arme, config, _degats_arme(), bonus),
 		"vitesse": Combat.vitesse_attaque(stats, arme, config, bonus),
 		"critique": Combat.chance_critique(stats, arme, config, bonus),
 		"pv": Combat.pv_joueur(niveau_actuel, stats, config, bonus),
-		"defense": Combat.defense_joueur(niveau_actuel, stats, arme, config, equipement.armure_totale()),
+		"defense": Combat.defense_joueur(niveau_actuel, stats, arme, config, equipement.armure_totale()) * (1.0 + float(bonus.get("defense", 0.0))),
 		"mana": Combat.mana(stats, config),
 		"statistiques": stats,
 	}
@@ -262,18 +271,22 @@ func changer_mode(nouveau: Mode) -> void:
 	mode_change.emit(mode)
 
 
-## Un monstre attaque : le bouclier peut bloquer, sinon la défense réduit les dégâts.
-func recevoir_degats(degats_bruts: float, niveau_attaquant: int) -> void:
+## Un monstre attaque : le bouclier (ou Bastion) peut bloquer, sinon la défense réduit les dégâts.
+## Avec Épines, une part des dégâts est renvoyée à l'attaquant.
+func recevoir_degats(degats_bruts: float, niveau_attaquant: int, attaquant: Monstre = null) -> void:
 	if not _vivant:
 		return
+	_hors_combat = 0.0
 	var tete := global_position + Vector3.UP * 2.0
-	if Combat.bloque(arme, _hasard):
+	if Combat.bloque(arme, _hasard) or (a_effet("bastion") and _hasard.randf() < Config.jeu.reglage_effet("bastion")):
 		ChiffreFlottant.afficher(get_parent(), tete, "Bloqué", Color(0.75, 0.85, 1.0), 48)
 		return
 	var degats := Combat.degats_subis(degats_bruts, niveau_attaquant, defense(), Config.jeu)
 	pv = maxf(0.0, pv - degats)
 	pv_change.emit(pv, pv_max)
 	ChiffreFlottant.afficher(get_parent(), tete, str(degats), ChiffreFlottant.COULEUR_DEGATS_SUBIS, 52)
+	if a_effet("epines") and is_instance_valid(attaquant) and attaquant.est_vivant():
+		_infliger(attaquant, maxi(1, roundi(degats * Config.jeu.reglage_effet("epines"))), false)
 	if pv <= 0.0:
 		_mourir()
 
@@ -289,6 +302,7 @@ func _physics_process(delta: float) -> void:
 	var config := Config.jeu
 	_recharge_attaque -= delta
 	_verrou_animation -= delta
+	_regagner_de_la_vie(delta)
 	var poussee := joystick.length() if _vivant else 0.0
 	_allure = Deplacement.allure(poussee, config)
 	var direction := Deplacement.direction_au_sol(joystick, angle_camera) if _allure != Deplacement.Allure.ARRET else Vector3.ZERO
@@ -336,7 +350,7 @@ func _combattre(delta: float) -> void:
 	_cible = _monstre_a_portee()
 	if _cible == null:
 		return
-	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques_effectives(), arme, Config.jeu, equipement.bonus_totaux())
+	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques_effectives(), arme, Config.jeu, equipement.bonus_totaux(Config.jeu))
 	_recharge_attaque = intervalle
 	_tourner_vers(_cible.global_position, 1.0)
 	var animation := str(arme.get("animation", "attack"))
@@ -363,17 +377,42 @@ func _frapper() -> void:
 func _toucher(cible: Monstre) -> void:
 	if not is_instance_valid(cible) or not cible.est_vivant():
 		return
+	_hors_combat = 0.0
 	var coup := Combat.coup_joueur(experience.niveau, statistiques_effectives(), arme, 0.0, cible.niveau, Config.jeu,
-		_hasard, _degats_arme(), equipement.bonus_totaux())
+		_hasard, _degats_arme(), bonus_de_combat())
+	_infliger(cible, coup["degats"], coup["critique"])
+
+
+## Bonus en % pour frapper : ceux des objets et des panoplies, plus Rage quand la vie est basse.
+func bonus_de_combat() -> Dictionary:
+	var bonus := equipement.bonus_totaux(Config.jeu)
+	if a_effet("rage") and pv < pv_max * Config.jeu.reglage_effet("rage_seuil"):
+		bonus["degats"] = float(bonus.get("degats", 0.0)) + Config.jeu.reglage_effet("rage_degats")
+	return bonus
+
+
+## Inflige des dégâts à un monstre ; s'il en meurt, on gagne son XP et son butin.
+func _infliger(cible: Monstre, degats: int, critique: bool) -> void:
 	var niveau_cible := cible.niveau
 	var position_cible := cible.global_position
-	if cible.recevoir_coup(coup["degats"], coup["critique"]):
+	if cible.recevoir_coup(degats, critique):
 		var multiplicateur := Combat.multiplicateur_xp(cible.rang, Config.jeu)
 		gagner_xp(Experience.xp_gagnee(experience.niveau, niveau_cible, Config.jeu, multiplicateur))
 		var gains := butin.tirer(cible.rang, niveau_cible, ZONE, _hasard, cible.ressource, cible.id_monstre)
 		for objet: Objet in gains["objets"]:
 			recevoir_objet(objet, position_cible)
 		recevoir_ressources(gains["ressources"])
+
+
+## Regain : hors combat (sans être frappé ni frapper depuis quelques secondes), la vie remonte.
+func _regagner_de_la_vie(delta: float) -> void:
+	_hors_combat += delta
+	if not a_effet("regain") or not _vivant or pv >= pv_max:
+		return
+	if _hors_combat < Config.jeu.reglage_effet("regain_delai_hors_combat"):
+		return
+	pv = minf(pv_max, pv + pv_max * Config.jeu.reglage_effet("regain_par_seconde") * delta)
+	pv_change.emit(pv, pv_max)
 
 
 ## Des ressources sont gagnées : elles vont dans le sac, sans prendre de case.
@@ -557,7 +596,8 @@ func _varier_armes(variante: String) -> void:
 func _recalculer(soigner: bool) -> void:
 	var ancien_max := pv_max
 	var stats := statistiques_effectives()
-	pv_max = Combat.pv_joueur(experience.niveau, stats, Config.jeu, equipement.bonus_totaux())
+	pv_max = Combat.pv_joueur(experience.niveau, stats, Config.jeu, equipement.bonus_totaux(Config.jeu))
+	_effets = equipement.effets(Config.jeu)
 	pv = pv_max if soigner else clampf(pv + maxf(0.0, pv_max - ancien_max), 0.0, pv_max)
 	mana_max = Combat.mana(stats, Config.jeu)
 	mana = mana_max
