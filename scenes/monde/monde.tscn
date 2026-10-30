@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://scripts/ui/fenetre_sac.gd" id="17_fenetre_sac"]
 [ext_resource type="Script" path="res://scripts/ui/annonces.gd" id="18_annonces"]
 [ext_resource type="Script" path="res://scripts/ui/vignettes.gd" id="19_vignettes"]
+[ext_resource type="Script" path="res://scripts/ui/fenetre_forge.gd" id="22_forge"]
 
 [sub_resource type="Environment" id="Environment_ciel"]
 background_mode = 1
@@ -211,6 +212,23 @@ toggle_mode = true
 theme_override_font_sizes/font_size = 26
 text = "AFK"
 
+[node name="BoutonForge" type="Button" parent="Interface"]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -436.0
+offset_top = -244.0
+offset_right = -306.0
+offset_bottom = -154.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+theme_override_font_sizes/font_size = 26
+text = "Forge"
+
 [node name="CompteurFPS" parent="Interface" instance=ExtResource("6_fps")]
 
 [node name="FenetreStatistiques" type="PanelContainer" parent="Interface"]
@@ -218,6 +236,9 @@ script = ExtResource("12_fenetre")
 
 [node name="FenetreSac" type="PanelContainer" parent="Interface"]
 script = ExtResource("17_fenetre_sac")
+
+[node name="FenetreForge" type="PanelContainer" parent="Interface"]
+script = ExtResource("22_forge")
 
 [node name="Vignettes" type="Node" parent="Interface"]
 script = ExtResource("19_vignettes")

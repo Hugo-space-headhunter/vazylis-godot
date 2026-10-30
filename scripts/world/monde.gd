@@ -21,6 +21,9 @@ const NOMS := {
 @onready var _vignettes: Vignettes = $Interface/Vignettes
 @onready var _annonces: VBoxContainer = $Interface/Annonces
 @onready var _bouton_afk: Button = $Interface/BoutonAFK
+@onready var _bouton_forge: Button = $Interface/BoutonForge
+@onready var _fenetre_forge: PanelContainer = $Interface/FenetreForge
+@onready var _forge: PosteForge = $Zones/Vazylis/Forge
 @onready var _zones: Node3D = $Zones
 
 var _zone_actuelle: Zone
@@ -67,6 +70,10 @@ func _ready() -> void:
 	_joueur.afk_change.connect(func(actif: bool) -> void:
 		_bouton_afk.modulate = _boutons_mode.COULEUR_ACTIF if actif else Color(1, 1, 1, 0.75))
 	_bouton_afk.modulate = Color(1, 1, 1, 0.75)
+	_bouton_forge.add_to_group(CommandesTactiles.GROUPE_UI)
+	_bouton_forge.pressed.connect(_fenetre_forge.ouvrir)
+	_fenetre_forge.relier(_joueur)
+	_fenetre_forge.tentative.connect(_sur_tentative_de_forge)
 	# Une copie, pour que les changements d'ambiance ne modifient pas la scène d'origine.
 	$Environnement.environment = ($Environnement.environment as Environment).duplicate()
 	var environnement: Environment = $Environnement.environment
@@ -115,6 +122,23 @@ func _physics_process(delta: float) -> void:
 	if _verification_zone <= 0.0:
 		_verification_zone = 0.5
 		_surveiller_la_zone()
+		_surveiller_la_forge()
+
+
+## Le bouton « Forge » n'apparaît que près de l'enclume ; s'éloigner ferme la fenêtre.
+func _surveiller_la_forge() -> void:
+	var proche := _joueur.est_vivant() and _forge.joueur_proche(_joueur.global_position)
+	_bouton_forge.visible = proche
+	if not proche and _fenetre_forge.visible:
+		_fenetre_forge.fermer_fenetre()
+
+
+func _sur_tentative_de_forge(objet: Objet, reussite: bool) -> void:
+	_forge.jouer_effet(reussite)
+	if reussite:
+		_annonces.annoncer("Forge : %s !" % objet.nom_affiche(), PosteForge.COULEUR_REUSSITE)
+	else:
+		_annonces.annoncer("Forge : échec, %s reste +%d" % [objet.nom, objet.amelioration], Color(0.8, 0.8, 0.82))
 
 
 ## Annonce le nom de la zone quand on en change (la première zone qui contient le joueur gagne :

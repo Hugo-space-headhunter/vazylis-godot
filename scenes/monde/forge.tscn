@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/poste_forge.gd" id="1_forge"]
+[ext_resource type="Script" path="res://scripts/world/decor.gd" id="2_decor"]
+
+[sub_resource type="StandardMaterial3D" id="Materiau_fer"]
+albedo_color = Color(0.24, 0.24, 0.27, 1)
+metallic = 0.7
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="Materiau_bois"]
+albedo_color = Color(0.42, 0.28, 0.17, 1)
+roughness = 1.0
+
+[sub_resource type="CylinderMesh" id="Maillage_souche"]
+material = SubResource("Materiau_bois")
+top_radius = 0.34
+bottom_radius = 0.4
+height = 0.5
+radial_segments = 10
+rings = 1
+
+[sub_resource type="BoxMesh" id="Maillage_pied"]
+material = SubResource("Materiau_fer")
+size = Vector3(0.32, 0.22, 0.26)
+
+[sub_resource type="BoxMesh" id="Maillage_table"]
+material = SubResource("Materiau_fer")
+size = Vector3(0.78, 0.16, 0.3)
+
+[sub_resource type="PrismMesh" id="Maillage_bigorne"]
+material = SubResource("Materiau_fer")
+left_to_right = 1.0
+size = Vector3(0.34, 0.16, 0.3)
+
+[sub_resource type="CylinderShape3D" id="Forme_enclume"]
+height = 0.9
+radius = 0.5
+
+[node name="Forge" type="Node3D"]
+script = ExtResource("1_forge")
+
+[node name="Enclume" type="StaticBody3D" parent="."]
+
+[node name="Souche" type="MeshInstance3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("Maillage_souche")
+
+[node name="Pied" type="MeshInstance3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.61, 0)
+mesh = SubResource("Maillage_pied")
+
+[node name="Table" type="MeshInstance3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.8, 0)
+mesh = SubResource("Maillage_table")
+
+[node name="Bigorne" type="MeshInstance3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48, 0.8, 0)
+mesh = SubResource("Maillage_bigorne")
+
+[node name="Collision" type="CollisionShape3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("Forme_enclume")
+
+[node name="Dessus" type="Marker3D" parent="Enclume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Forgeron" type="Node3D" parent="."]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, -1.1, 0, -0.9)
+
+[node name="Foyer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, -0.9)
+script = ExtResource("2_decor")
+id_asset = "prop.colonne"
+obstacle = Vector3(0.7, 1.4, 0.7)
+
+[node name="Flamme" type="Node3D" parent="Foyer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+script = ExtResource("2_decor")
+id_asset = "prop.torche"
+projette_ombre = false
+
+[node name="Tonneau" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, 0.6)
+script = ExtResource("2_decor")
+id_asset = "prop.tonneau"
+obstacle = Vector3(0.8, 0.9, 0.8)
+projette_ombre = false
+
+[node name="Armes" type="Node3D" parent="."]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, -1.7, 0, 0.5)
+script = ExtResource("2_decor")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Panneau" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+billboard = 1
+pixel_size = 0.006
+text = "Forge"
+font_size = 48
+outline_size = 12
+modulate = Color(1, 0.85, 0.4, 1)

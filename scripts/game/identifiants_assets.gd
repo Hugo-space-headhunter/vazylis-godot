@@ -10,6 +10,8 @@ extends RefCounted
 ## Personnages de base (même squelette, mêmes animations, même équipement).
 const HEROS_HOMME := "character.heros_homme"
 const HEROS_FEMME := "character.heros_femme"
+## Le forgeron de Vazylis (personnage de base, tablier de cuir).
+const FORGERON := "character.forgeron"
 
 ## Monstres des Prés de Vazylis (voir aussi config/monstres.cfg).
 const COCHONNET_SUIE := "monster.cochonnet_suie"

@@ -336,3 +336,38 @@ func test_la_lisiere_pourpre_ferme_la_zone_1() -> void:
 		for zone: Zone in terrain.get_node("Zones").get_children():
 			couverte = couverte or zone.contient(Vector3(0, 0, z))
 		assert_true(couverte, "Le chemin vers le nord passe par une zone en z = %d" % z)
+
+
+func test_la_forge_de_vazylis() -> void:
+	var forge: PosteForge = terrain.get_node("Zones/Vazylis/Forge")
+	var bouton: Button = terrain.get_node("Interface/BoutonForge")
+	var fenetre: PanelContainer = terrain.get_node("Interface/FenetreForge")
+	await wait_physics_frames(40)
+	assert_false(bouton.visible, "Loin de l'enclume, pas de bouton Forge")
+	# On s'approche de l'enclume : le bouton apparaît.
+	joueur.global_position = forge.global_position + Vector3(1.5, 0.1, 1.0)
+	await wait_physics_frames(40)
+	assert_true(bouton.visible, "Près de l'enclume, le bouton Forge apparaît")
+	bouton.pressed.emit()
+	await wait_physics_frames(2)
+	assert_true(fenetre.visible)
+	var arme := joueur.equipement.arme()
+	assert_eq(fenetre.objet_choisi(), arme, "L'arme portée est proposée en premier")
+	joueur.recevoir_ressources({"ressource.fer": 50})
+	joueur.inventaire.or_possede = 1000
+	var degats := arme.degats
+	fenetre._sur_ameliorer()
+	assert_eq(arme.amelioration, 1, "+1 est garanti")
+	assert_gt(arme.degats, degats)
+	assert_eq(fenetre._resultat.text, "Réussite ! Épée et écu de milicien +1")
+	assert_eq(forge.get_node("Enclume/Dessus").get_child_count(), 1, "Des étincelles jaillissent de l'enclume")
+	assert_lt(joueur.inventaire.quantite("ressource.fer"), 50)
+	# Sans assez de matériaux, le bouton Améliorer est grisé.
+	joueur.inventaire.ressources["ressource.fer"] = 0
+	fenetre._rafraichir()
+	assert_true(fenetre._ameliorer.disabled)
+	# On s'éloigne : la fenêtre se ferme et le bouton disparaît.
+	joueur.global_position = Vector3(0, 0.1, 4)
+	await wait_physics_frames(40)
+	assert_false(fenetre.visible)
+	assert_false(bouton.visible)

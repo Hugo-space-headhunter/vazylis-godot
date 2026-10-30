@@ -49,6 +49,7 @@ var experience: Experience
 var statistiques := Statistiques.new()
 var inventaire: Inventaire
 var butin: Butin
+var forge: Forge
 var equipement := Equipement.new()
 var recyclage_auto := RecyclageAuto.new()
 ## Type de l'arme portée (section de config/armes.cfg) et ses réglages.
@@ -83,6 +84,7 @@ func _ready() -> void:
 	experience = Experience.new(Config.jeu)
 	inventaire = Inventaire.new(Config.jeu)
 	butin = Butin.new(Config.jeu)
+	forge = Forge.new(Config.jeu)
 	_remplir_sac_de_depart()
 	experience.niveau_gagne.connect(_sur_niveau_gagne)
 	statistiques.change.connect(_sur_statistiques)
@@ -167,6 +169,18 @@ func changer_personnage(id: String) -> void:
 
 func est_une_femme() -> bool:
 	return personnage == IdentifiantsAssets.HEROS_FEMME
+
+
+## Tente d'améliorer un objet (porté ou dans le sac) à la forge. Un objet porté qui réussit
+## renforce tout de suite le personnage.
+func ameliorer_objet(objet: Objet) -> Forge.Resultat:
+	var resultat := forge.ameliorer(objet, inventaire, _hasard)
+	if resultat == Forge.Resultat.REUSSITE and equipement.emplacement_de(objet) != "":
+		if objet.est_arme():
+			_appliquer_arme()
+		_recalculer(false)
+		equipement_change.emit()
+	return resultat
 
 
 ## Porte un objet (sans passer par le sac). Renvoie l'objet qui était porté à cet endroit, ou null.

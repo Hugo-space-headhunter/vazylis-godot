@@ -60,6 +60,7 @@ Rochers et piliers : formes simples de Godot (`scenes/monde/rocher.tscn`, `scene
 | Rempart, piliers, bannières, torches, tonneaux, caisses, tables, coffre de Vazylis, et murs effondrés, éboulis, dalles, piliers, armes brisées des Ruines du Guet (26 modèles) | `assets/models/prop/kaykit_donjon/` (une seule texture partagée) | KayKit Dungeon Pack 1.1, Kay Lousberg (https://kaylousberg.itch.io/), copié depuis l'ancien projet | CC0 |
 | Maisons à colombages et de pierre, chariot, barrière de Vazylis | `assets/models/prop/maisons_village/` (textures partagées, réduites à 512 px) | Medieval Village Pack, Quaternius (https://quaternius.com/), pièces assemblées et fusionnées par `tools/assembler_maison.gd` | CC0 |
 | Bouleaux, érables, arbres morts, buissons, fleurs, herbe | `assets/models/prop/nature/` (textures réduites à 512 px, feuilles en découpe) | Ultimate Stylized Nature, Quaternius (https://quaternius.com/) | CC0 |
+| Enclume et souche de la forge de Vazylis | `scenes/monde/forge.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
 | Rochers et piliers des Prés | `scenes/monde/rocher.tscn`, `scenes/monde/pilier.tscn` | Formes simples faites dans Godot (provisoires) | Original, propre au projet |
 
 ## Images

@@ -29,6 +29,14 @@ func arme() -> Objet:
 	return objet("arme")
 
 
+## Emplacement où cet objet précis est porté, ou "" s'il n'est pas porté.
+func emplacement_de(un_objet: Objet) -> String:
+	for emplacement: String in objets:
+		if objets[emplacement] == un_objet:
+			return emplacement
+	return ""
+
+
 ## Emplacement où irait cet objet (une boucle d'oreille prend la première oreille libre).
 func emplacement_pour(un_objet: Objet) -> String:
 	if un_objet.emplacement == "boucle_oreille":

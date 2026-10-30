@@ -23,7 +23,8 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Aura des champions et des sous-boss : anneau et étincelles simples, à embellir (halo, pulsation plus riche).
 - Ressources dans le sac : un petit rond de couleur pour l'instant ; leur dessiner de vraies icônes.
 - Bois des Lucioles (étape 6.2) : le pack Ultimate Stylized Nature n'est arrivé qu'en partie (Google Drive l'a coupé en plusieurs morceaux) ; il manque les pins, les « arbres normaux », les palmiers et les champignons. Les récupérer (autres morceaux du téléchargement) pour varier la forêt et ajouter les champignons géants de la Vallée claire.
-- Maisons de Vazylis : fenêtres sans vitres ni volets, pas encore d'intérieur ; ajouter un puits, un marché couvert, une forge (étape 7).
+- Maisons de Vazylis : fenêtres sans vitres ni volets, pas encore d'intérieur ; ajouter un puits et un marché couvert.
+- Forge de Vazylis (étape 7) : enclume en formes simples et forgeron sans tablier ni marteau ; lui faire un vrai atelier (soufflet, braises, marteau) et une animation de frappe à chaque tentative.
 - Gueule-Fleur : l'attaque de zone est un cercle rouge ; plus tard, de vraies lianes qui jaillissent du sol.
 - Gobelin chaman : sa boule verte est une simple sphère lumineuse ; lui donner une traînée et une animation d'incantation.
 - Ruines du Guet (étape 6.3) : des substituts faute de modèles CC0 exacts : le Gargouillon est un « Goleling » volant tout gris (pas une vraie gargouille), le Rat des cryptes est un chat gris-brun sans yeux rouges, l'Écuyer creux est un squelette sans épée (pas une armure vide). À remplacer par des modèles dédiés (Tripo ou créations de Hugo).
