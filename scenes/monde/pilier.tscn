@@ -1,8 +1,16 @@
 [gd_scene format=3]
 
+[ext_resource type="Texture2D" path="res://assets/textures/sol/paves/paves_couleur.jpg" id="1_couleur"]
+[ext_resource type="Texture2D" path="res://assets/textures/sol/paves/paves_relief.jpg" id="2_relief"]
+
 [sub_resource type="StandardMaterial3D" id="Materiau_ruine"]
-albedo_color = Color(0.68, 0.64, 0.58, 1)
+albedo_color = Color(0.85, 0.8, 0.72, 1)
+albedo_texture = ExtResource("1_couleur")
 roughness = 1.0
+normal_enabled = true
+normal_texture = ExtResource("2_relief")
+uv1_scale = Vector3(0.45, 0.45, 0.45)
+uv1_triplanar = true
 
 [sub_resource type="CylinderMesh" id="Maillage_pilier"]
 material = SubResource("Materiau_ruine")

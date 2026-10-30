@@ -126,6 +126,7 @@ rayon = 0.3
 transform = Transform3D(0.3068, 0, 0.9518, 0, 1.0000, 0, -0.9518, 0, 0.3068, 10.147, 0.000, -36.058)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 50.0
 
@@ -133,6 +134,7 @@ distance_affichage = 50.0
 transform = Transform3D(0.9050, 0, 0.4255, 0, 1.0000, 0, -0.4255, 0, 0.9050, 6.285, 0.000, -27.592)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 50.0
 
@@ -140,6 +142,7 @@ distance_affichage = 50.0
 transform = Transform3D(-0.3665, 0, -0.9304, 0, 1.0000, 0, 0.9304, 0, -0.3665, -4.270, 0.000, -26.691)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 50.0
 
@@ -147,6 +150,7 @@ distance_affichage = 50.0
 transform = Transform3D(0.9942, 0, 0.1080, 0, 1.0000, 0, -0.1080, 0, 0.9942, -10.452, 0.000, -33.235)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 50.0
 
@@ -154,6 +158,7 @@ distance_affichage = 50.0
 transform = Transform3D(0.1178, 0, 0.9964, 0, 1.0034, 0, -0.9964, 0, 0.1178, -35.813, 0.000, -10.542)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -161,6 +166,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.8591, 0, 0.7700, 0, 1.1537, 0, -0.7700, 0, 0.8591, 45.620, 0.000, -32.688)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -168,6 +174,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.5028, 0, -0.8513, 0, 0.9887, 0, 0.8513, 0, 0.5028, 14.053, 0.000, 35.696)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -175,6 +182,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9239, 0, 0.4174, 0, 1.0139, 0, -0.4174, 0, 0.9239, 1.165, 0.000, -20.912)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -182,6 +190,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9525, 0, -0.5704, 0, 1.1103, 0, 0.5704, 0, 0.9525, 22.034, 0.000, -12.097)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -189,6 +198,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.0679, 0, 0.0374, 0, 1.0685, 0, -0.0374, 0, -1.0679, 3.311, 0.000, 27.548)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -196,6 +206,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.9579, 0, 0.2675, 0, 0.9946, 0, -0.2675, 0, -0.9579, -27.227, 0.000, -13.739)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -203,6 +214,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.6383, 0, 0.9111, 0, 1.1125, 0, -0.9111, 0, -0.6383, -24.562, 0.000, -36.094)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -210,6 +222,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.1845, 0, 0.9224, 0, 0.9407, 0, -0.9224, 0, 0.1845, -41.123, 0.000, 27.265)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -217,6 +230,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.0138, 0, 0.0024, 0, 1.0138, 0, -0.0024, 0, -1.0138, -21.293, 0.000, 34.255)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -224,6 +238,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.3756, 0, 0.8675, 0, 0.9453, 0, -0.8675, 0, 0.3756, -33.987, 0.000, 16.370)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -231,6 +246,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.7964, 0, 0.5009, 0, 0.9408, 0, -0.5009, 0, -0.7964, 42.046, 0.000, 10.204)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -238,6 +254,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.5576, 0, 0.9564, 0, 1.1071, 0, -0.9564, 0, -0.5576, 37.332, 0.000, 2.605)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -245,6 +262,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.0767, 0, 0.1160, 0, 1.0829, 0, -0.1160, 0, -1.0767, -10.603, 0.000, 13.224)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -252,6 +270,7 @@ distance_affichage = 36.0
 transform = Transform3D(1.0145, 0, 0.0285, 0, 1.0149, 0, -0.0285, 0, 1.0145, 37.729, 0.000, 19.326)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -259,6 +278,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.7202, 0, -0.6026, 0, 0.9391, 0, 0.6026, 0, 0.7202, 26.736, 0.000, 16.915)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -266,6 +286,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9448, 0, 0.1332, 0, 0.9542, 0, -0.1332, 0, 0.9448, 46.746, 0.000, -7.337)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -273,6 +294,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.5470, 0, 0.8907, 0, 1.0452, 0, -0.8907, 0, 0.5470, 33.224, 0.000, 10.511)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -280,6 +302,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9962, 0, 0.1046, 0, 1.0017, 0, -0.1046, 0, 0.9962, -25.357, 0.000, -21.022)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -287,6 +310,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.6171, 0, -0.8770, 0, 1.0723, 0, 0.8770, 0, 0.6171, -27.873, 0.000, 20.018)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -294,6 +318,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.1016, 0, -0.9332, 0, 0.9387, 0, 0.9332, 0, 0.1016, 39.245, 0.000, -34.279)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -301,6 +326,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.2948, 0, 1.1094, 0, 1.1479, 0, -1.1094, 0, -0.2948, 10.641, 0.000, -24.240)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -308,6 +334,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.1461, 0, 1.1141, 0, 1.1236, 0, -1.1141, 0, 0.1461, 33.699, 0.000, 28.970)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -315,6 +342,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.2755, 0, 1.0287, 0, 1.0650, 0, -1.0287, 0, 0.2755, -30.064, 0.000, -23.006)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -322,6 +350,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.2471, 0, -1.1602, 0, 1.1862, 0, 1.1602, 0, 0.2471, -6.610, 0.000, 33.486)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -329,6 +358,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.5008, 0, -0.9672, 0, 1.0891, 0, 0.9672, 0, -0.5008, -6.527, 0.000, -9.256)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -336,6 +366,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.6235, 0, 0.6639, 0, 0.9108, 0, -0.6639, 0, -0.6235, 14.508, 0.000, -17.095)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -343,6 +374,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.7343, 0, -0.8098, 0, 1.0931, 0, 0.8098, 0, -0.7343, -35.775, 0.000, 26.870)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -350,6 +382,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.5698, 0, -0.7582, 0, 0.9485, 0, 0.7582, 0, 0.5698, 34.973, 0.000, 24.018)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -357,6 +390,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.2091, 0, 1.1173, 0, 1.1367, 0, -1.1173, 0, -0.2091, 6.764, 0.000, 15.939)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -364,6 +398,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.8189, 0, -0.7521, 0, 1.1119, 0, 0.7521, 0, 0.8189, 32.612, 0.000, -4.789)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -371,6 +406,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.9274, 0, -0.5774, 0, 1.0925, 0, 0.5774, 0, -0.9274, 29.035, 0.000, 6.006)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -378,6 +414,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9605, 0, -0.0996, 0, 0.9656, 0, 0.0996, 0, 0.9605, 15.374, 0.000, 9.866)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -385,6 +422,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.8643, 0, -0.6320, 0, 1.0707, 0, 0.6320, 0, 0.8643, -36.873, 0.000, -2.250)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -392,6 +430,7 @@ distance_affichage = 36.0
 transform = Transform3D(1.1769, 0, 0.1400, 0, 1.1852, 0, -0.1400, 0, 1.1769, -44.455, 0.000, -23.001)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -399,6 +438,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.6882, 0, -0.5823, 0, 0.9014, 0, 0.5823, 0, -0.6882, 7.974, 0.000, -12.788)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -406,6 +446,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.7670, 0, -0.4386, 0, 0.8835, 0, 0.4386, 0, 0.7670, -29.895, 0.000, 10.870)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -413,6 +454,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.6032, 0, 0.9058, 0, 1.0883, 0, -0.9058, 0, -0.6032, -1.212, 0.000, 0.808)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -420,6 +462,7 @@ distance_affichage = 36.0
 transform = Transform3D(1.0413, 0, 0.3069, 0, 1.0856, 0, -0.3069, 0, 1.0413, -20.841, 0.000, -9.112)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -427,6 +470,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.6200, 0, -0.7030, 0, 0.9374, 0, 0.7030, 0, 0.6200, 38.615, 0.000, -23.127)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -434,6 +478,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.4250, 0, 1.0816, 0, 1.1621, 0, -1.0816, 0, 0.4250, -37.992, 0.000, 37.537)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -441,6 +486,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.0233, 0, -1.1676, 0, 1.1678, 0, 1.1676, 0, 0.0233, -19.843, 0.000, -33.071)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -448,6 +494,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.0432, 0, -0.3503, 0, 1.1004, 0, 0.3503, 0, -1.0432, 32.300, 0.000, -24.392)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -455,6 +502,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.0639, 0, -0.3835, 0, 1.1309, 0, 0.3835, 0, -1.0639, -26.373, 0.000, 25.875)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -462,6 +510,7 @@ distance_affichage = 36.0
 transform = Transform3D(1.1256, 0, -0.3266, 0, 1.1720, 0, 0.3266, 0, 1.1256, -37.430, 0.000, -22.820)
 script = ExtResource("3_r")
 id_asset = "prop.erable_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -469,6 +518,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9990, 0, -0.5682, 0, 1.1493, 0, 0.5682, 0, 0.9990, -34.422, 0.000, -27.749)
 script = ExtResource("3_r")
 id_asset = "prop.erable_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -476,6 +526,7 @@ distance_affichage = 36.0
 transform = Transform3D(1.1846, 0, -0.1596, 0, 1.1953, 0, 0.1596, 0, 1.1846, -11.666, 0.000, -3.783)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -483,6 +534,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.1847, 0, 0.9775, 0, 0.9948, 0, -0.9775, 0, 0.1847, -16.768, 0.000, 19.078)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -490,6 +542,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.5094, 0, -0.7023, 0, 0.8676, 0, 0.7023, 0, 0.5094, 23.693, 0.000, 1.894)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -497,6 +550,7 @@ distance_affichage = 36.0
 transform = Transform3D(-1.1101, 0, 0.1735, 0, 1.1236, 0, -0.1735, 0, -1.1101, 1.532, 0.000, 33.997)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -504,6 +558,7 @@ distance_affichage = 36.0
 transform = Transform3D(0.9807, 0, -0.4331, 0, 1.0721, 0, 0.4331, 0, 0.9807, -44.838, 0.000, -11.944)
 script = ExtResource("3_r")
 id_asset = "prop.erable_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -511,6 +566,7 @@ distance_affichage = 36.0
 transform = Transform3D(-0.7737, 0, -0.8278, 0, 1.1331, 0, 0.8278, 0, -0.7737, -25.518, 0.000, -30.691)
 script = ExtResource("3_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 36.0
 
@@ -519,210 +575,180 @@ transform = Transform3D(-0.3052, 0, 0.9523, 0, 1.0000, 0, -0.9523, 0, -0.3052, 2
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson2" type="Node3D" parent="Nature"]
 transform = Transform3D(0.7387, 0, -0.6740, 0, 1.0000, 0, 0.6740, 0, 0.7387, 39.431, 0.000, -32.319)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson3" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.2985, 0, 0.9544, 0, 1.0000, 0, -0.9544, 0, -0.2985, -4.926, 0.000, -2.256)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson4" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.8891, 0, -0.4578, 0, 1.0000, 0, 0.4578, 0, -0.8891, 44.361, 0.000, 15.771)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson5" type="Node3D" parent="Nature"]
 transform = Transform3D(0.9741, 0, -0.2260, 0, 1.0000, 0, 0.2260, 0, 0.9741, -36.528, 0.000, -1.579)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson6" type="Node3D" parent="Nature"]
 transform = Transform3D(0.8107, 0, 0.5855, 0, 1.0000, 0, -0.5855, 0, 0.8107, 0.335, 0.000, 26.767)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson7" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.9947, 0, -0.1032, 0, 1.0000, 0, 0.1032, 0, -0.9947, -28.674, 0.000, -16.002)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson8" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.3950, 0, 0.9187, 0, 1.0000, 0, -0.9187, 0, -0.3950, 8.497, 0.000, 17.872)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson9" type="Node3D" parent="Nature"]
 transform = Transform3D(0.3908, 0, -0.9205, 0, 1.0000, 0, 0.9205, 0, 0.3908, -15.429, 0.000, -6.390)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson10" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.1589, 0, -0.9873, 0, 1.0000, 0, 0.9873, 0, -0.1589, -11.207, 0.000, -5.116)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson11" type="Node3D" parent="Nature"]
 transform = Transform3D(0.2332, 0, -0.9724, 0, 1.0000, 0, 0.9724, 0, 0.2332, -44.783, 0.000, 28.631)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson12" type="Node3D" parent="Nature"]
 transform = Transform3D(0.5337, 0, -0.8457, 0, 1.0000, 0, 0.8457, 0, 0.5337, 2.657, 0.000, 19.223)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson13" type="Node3D" parent="Nature"]
 transform = Transform3D(0.1788, 0, -0.9839, 0, 1.0000, 0, 0.9839, 0, 0.1788, -31.119, 0.000, -29.765)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson14" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.8260, 0, -0.5637, 0, 1.0000, 0, 0.5637, 0, -0.8260, 1.434, 0.000, -6.102)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson15" type="Node3D" parent="Nature"]
 transform = Transform3D(0.9997, 0, 0.0257, 0, 1.0000, 0, -0.0257, 0, 0.9997, 43.424, 0.000, -36.623)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson16" type="Node3D" parent="Nature"]
 transform = Transform3D(0.9923, 0, -0.1240, 0, 1.0000, 0, 0.1240, 0, 0.9923, 27.832, 0.000, -6.963)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson17" type="Node3D" parent="Nature"]
 transform = Transform3D(0.0460, 0, -0.9989, 0, 1.0000, 0, 0.9989, 0, 0.0460, 22.742, 0.000, 28.888)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson18" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.2625, 0, -0.9649, 0, 1.0000, 0, 0.9649, 0, -0.2625, 37.869, 0.000, 35.372)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson19" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.3841, 0, 0.9233, 0, 1.0000, 0, -0.9233, 0, -0.3841, 16.453, 0.000, -36.445)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson20" type="Node3D" parent="Nature"]
 transform = Transform3D(0.2631, 0, 0.9648, 0, 1.0000, 0, -0.9648, 0, 0.2631, 23.446, 0.000, -16.864)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson21" type="Node3D" parent="Nature"]
 transform = Transform3D(0.9845, 0, -0.1755, 0, 1.0000, 0, 0.1755, 0, 0.9845, 3.797, 0.000, 28.956)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson22" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.6508, 0, -0.7592, 0, 1.0000, 0, 0.7592, 0, -0.6508, 36.194, 0.000, -22.541)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson23" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.2613, 0, 0.9653, 0, 1.0000, 0, -0.9653, 0, -0.2613, -21.577, 0.000, 11.732)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson24" type="Node3D" parent="Nature"]
 transform = Transform3D(0.7660, 0, -0.6428, 0, 1.0000, 0, 0.6428, 0, 0.7660, -15.628, 0.000, -30.669)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson25" type="Node3D" parent="Nature"]
 transform = Transform3D(0.1173, 0, -0.9931, 0, 1.0000, 0, 0.9931, 0, 0.1173, 30.437, 0.000, 5.457)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson26" type="Node3D" parent="Nature"]
 transform = Transform3D(0.9466, 0, -0.3225, 0, 1.0000, 0, 0.3225, 0, 0.9466, 36.890, 0.000, -4.155)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson27" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.1932, 0, 0.9812, 0, 1.0000, 0, -0.9812, 0, -0.1932, -31.407, 0.000, -26.247)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson28" type="Node3D" parent="Nature"]
 transform = Transform3D(0.3484, 0, 0.9374, 0, 1.0000, 0, -0.9374, 0, 0.3484, 26.048, 0.000, 24.872)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson29" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.1875, 0, -0.9823, 0, 1.0000, 0, 0.9823, 0, -0.1875, 28.370, 0.000, 15.996)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Buisson30" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.1387, 0, 0.9903, 0, 1.0000, 0, -0.9903, 0, -0.1387, 17.598, 0.000, -13.060)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
-projette_ombre = false
 
 [node name="Fleurs1" type="Node3D" parent="Nature"]
 transform = Transform3D(0.2813, 0, -0.9596, 0, 1.0000, 0, 0.9596, 0, 0.2813, 34.069, 0.000, 2.626)
@@ -1074,9 +1100,10 @@ nombre = 16
 
 [node name="Herbe" type="Node3D" parent="."]
 script = ExtResource("83_herbe")
+id_asset = "prop.herbe"
 taille = Vector2(100, 80)
-densite = 0.75
-teinte = Color(0.22, 0.38, 0.2, 1)
+densite = 0.32
+teinte = Color(0.78, 0.92, 0.78, 1)
 chemin_z_debut = -74.5
 chemin_z_fin = -155.5
 graine = 12

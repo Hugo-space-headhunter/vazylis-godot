@@ -604,6 +604,7 @@ projette_ombre = false
 transform = Transform3D(1.0763, 0, -0.2018, 0, 1.0951, 0, 0.2018, 0, 1.0763, -0.276, 0.000, -8.232)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -611,6 +612,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.3790, 0, 0.7076, 0, 0.8027, 0, -0.7076, 0, 0.3790, -37.940, 0.000, 34.911)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -618,6 +620,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.5615, 0, 0.9157, 0, 1.0741, 0, -0.9157, 0, 0.5615, 27.642, 0.000, -0.286)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -625,6 +628,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.6708, 0, 0.6729, 0, 0.9501, 0, -0.6729, 0, -0.6708, -37.826, 0.000, 1.108)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -632,6 +636,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.2871, 0, 0.9146, 0, 0.9586, 0, -0.9146, 0, -0.2871, -33.105, 0.000, 22.898)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -639,6 +644,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.0044, 0, 1.0484, 0, 1.0484, 0, -1.0484, 0, -0.0044, -25.591, 0.000, -16.084)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -646,6 +652,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.8289, 0, 0.4828, 0, 0.9592, 0, -0.4828, 0, -0.8289, -34.568, 0.000, -32.179)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -653,6 +660,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.8237, 0, -0.7062, 0, 1.0850, 0, 0.7062, 0, -0.8237, 44.981, 0.000, -28.338)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -660,6 +668,7 @@ distance_affichage = 40.0
 transform = Transform3D(1.0608, 0, 0.1573, 0, 1.0724, 0, -0.1573, 0, 1.0608, 31.174, 0.000, -32.116)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -667,6 +676,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.7008, 0, 0.5867, 0, 0.9139, 0, -0.5867, 0, -0.7008, -45.462, 0.000, 35.078)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -674,6 +684,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.0621, 0, 0.9617, 0, 0.9637, 0, -0.9617, 0, 0.0621, -8.140, 0.000, 35.656)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -681,6 +692,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.5622, 0, 0.8546, 0, 1.0230, 0, -0.8546, 0, 0.5622, 30.664, 0.000, -22.999)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -688,6 +700,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.9929, 0, -0.4187, 0, 1.0775, 0, 0.4187, 0, -0.9929, 43.325, 0.000, -7.059)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -695,6 +708,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.6465, 0, 0.6027, 0, 0.8839, 0, -0.6027, 0, 0.6465, -0.143, 0.000, 15.804)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -702,6 +716,7 @@ distance_affichage = 40.0
 transform = Transform3D(0.7098, 0, -0.3719, 0, 0.8013, 0, 0.3719, 0, 0.7098, 9.727, 0.000, 6.858)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -709,6 +724,7 @@ distance_affichage = 40.0
 transform = Transform3D(-0.6349, 0, 0.8738, 0, 1.0801, 0, -0.8738, 0, -0.6349, 13.412, 0.000, 33.836)
 script = ExtResource("3_r")
 id_asset = "prop.arbre_mort_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 distance_affichage = 40.0
 
@@ -876,9 +892,10 @@ projette_ombre = false
 
 [node name="Herbe" type="Node3D" parent="."]
 script = ExtResource("83_herbe")
+id_asset = "prop.herbe"
 taille = Vector2(100, 80)
-densite = 0.25
-teinte = Color(0.5, 0.5, 0.33, 1)
+densite = 0.12
+teinte = Color(1, 0.95, 0.7, 1)
 chemin_z_debut = -154.5
 chemin_z_fin = -219.0
 exclusion_centre = Vector3(0, 0, -226)

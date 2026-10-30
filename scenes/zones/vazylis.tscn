@@ -554,24 +554,28 @@ projette_ombre = false
 transform = Transform3D(0.7418, 0, -0.3633, 0, 0.8260, 0, 0.3633, 0, 0.7418, 4.993, 0.000, -13.720)
 script = ExtResource("2_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 
 [node name="Arbre2" type="Node3D" parent="Nature"]
 transform = Transform3D(0.8210, 0, -0.1559, 0, 0.8357, 0, 0.1559, 0, 0.8210, 13.720, 0.000, 4.993)
 script = ExtResource("2_r")
 id_asset = "prop.bouleau_2"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 
 [node name="Arbre3" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.9115, 0, 0.2067, 0, 0.9347, 0, -0.2067, 0, -0.9115, -4.993, 0.000, 13.720)
 script = ExtResource("2_r")
 id_asset = "prop.bouleau_3"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 
 [node name="Arbre4" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.5396, 0, 0.6903, 0, 0.8762, 0, -0.6903, 0, -0.5396, -13.720, 0.000, -4.993)
 script = ExtResource("2_r")
 id_asset = "prop.bouleau_1"
+fondu_camera = 4.0
 obstacle = Vector3(0.7, 3, 0.7)
 
 [node name="Fleurs1" type="Node3D" parent="Nature"]
