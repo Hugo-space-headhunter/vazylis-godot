@@ -460,13 +460,13 @@ obstacle = Vector3(1, 0.9, 1)
 projette_ombre = false
 
 [node name="Tabouret1" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -2.630, 0.000, -5.393)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -3.250, 0.000, -5.800)
 script = ExtResource("2_r")
 id_asset = "prop.tabouret"
 projette_ombre = false
 
 [node name="Tabouret2" type="Node3D" parent="Village"]
-transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -1.742, 0.000, -6.986)
+transform = Transform3D(1.0000, 0, 0.0000, 0, 1.0000, 0, -0.0000, 0, 1.0000, -1.200, 0.000, -6.450)
 script = ExtResource("2_r")
 id_asset = "prop.tabouret"
 projette_ombre = false

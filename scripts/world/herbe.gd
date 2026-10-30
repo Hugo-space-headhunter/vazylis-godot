@@ -47,6 +47,11 @@ func _ready() -> void:
 		matiere = (maillage.surface_get_material(0) as BaseMaterial3D).duplicate() as BaseMaterial3D
 		modele.free()
 	matiere.vertex_color_use_as_albedo = true
+	# Les touffes qui passent tout près de la caméra (en bas de l'écran) s'effacent, au lieu de
+	# devenir énormes.
+	matiere.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_DITHER
+	matiere.distance_fade_min_distance = 2.5
+	matiere.distance_fade_max_distance = 4.5
 
 	var hasard := RandomNumberGenerator.new()
 	hasard.seed = graine
@@ -57,7 +62,7 @@ func _ready() -> void:
 		var x := origine.x + hasard.randf_range(-taille.x / 2.0, taille.x / 2.0)
 		var z := origine.z + hasard.randf_range(-taille.y / 2.0, taille.y / 2.0)
 		var tourne := hasard.randf() * TAU
-		var grossit := hasard.randf_range(0.8, 1.6) * echelle
+		var grossit := hasard.randf_range(0.75, 1.35) * echelle
 		var nuance := hasard.randf_range(0.85, 1.1)
 		if not _place_libre(x, z):
 			continue
@@ -79,7 +84,7 @@ static func _touffe_simple() -> ArrayMesh:
 		var angle := brin * TAU / 8.0 + hasard.randf_range(-0.4, 0.4)
 		var pied := Vector3(cos(angle), 0, sin(angle)) * hasard.randf_range(0.02, 0.12)
 		var cote := Vector3(-sin(angle), 0, cos(angle)) * 0.05
-		var hauteur := hasard.randf_range(0.35, 0.6)
+		var hauteur := hasard.randf_range(0.28, 0.48)
 		var bout := pied * 2.2 + Vector3(0, hauteur, 0)
 		# Deux faces (une par sens) : un brin vu de dos ne doit pas paraître noir.
 		for sommets in [[pied - cote, pied + cote, bout], [pied + cote, pied - cote, bout]]:
