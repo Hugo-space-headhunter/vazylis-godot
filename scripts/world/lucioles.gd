@@ -2,11 +2,14 @@ class_name Lucioles
 extends CPUParticles3D
 ## Un essaim de lucioles : de petits points lumineux qui flottent lentement au-dessus du sol.
 ## À poser dans une zone ; la taille de l'essaim et le nombre de lucioles se règlent dans l'éditeur.
+## Avec de gros points pâles (« taille », couleur peu opaque), cela fait une brume (la Lisière pourpre).
 
 ## Étendue de l'essaim (largeur, hauteur, profondeur), en mètres.
 @export var etendue := Vector3(10, 2.5, 10)
 @export var nombre := 14
 @export var couleur := Color(0.85, 1.0, 0.45)
+## Taille de chaque point lumineux, en mètres.
+@export var taille := 0.12
 ## Au-delà de cette distance de la caméra, l'essaim n'est plus dessiné.
 @export var distance_affichage := 40.0
 
@@ -27,12 +30,12 @@ func _ready() -> void:
 	scale_amount_max = 1.2
 	var degrade := Gradient.new()
 	degrade.set_color(0, Color(couleur, 0.0))
-	degrade.add_point(0.3, Color(couleur, 1.0))
-	degrade.add_point(0.7, Color(couleur, 0.8))
+	degrade.add_point(0.3, Color(couleur, couleur.a))
+	degrade.add_point(0.7, Color(couleur, couleur.a * 0.8))
 	degrade.set_color(degrade.get_point_count() - 1, Color(couleur, 0.0))
 	color_ramp = degrade
 	var carre := QuadMesh.new()
-	carre.size = Vector2(0.12, 0.12)
+	carre.size = Vector2(taille, taille)
 	var matiere := StandardMaterial3D.new()
 	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

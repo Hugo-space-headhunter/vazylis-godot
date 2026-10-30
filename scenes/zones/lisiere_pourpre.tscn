@@ -1,0 +1,764 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/zone.gd" id="1_r"]
+[ext_resource type="Script" path="res://scripts/world/zone_apparition.gd" id="2_r"]
+[ext_resource type="Script" path="res://scripts/world/decor.gd" id="3_r"]
+[ext_resource type="PackedScene" path="res://scenes/monde/rocher.tscn" id="4_r"]
+[ext_resource type="Script" path="res://scripts/world/lucioles.gd" id="5_r"]
+
+[sub_resource type="StandardMaterial3D" id="Materiau_herbe"]
+albedo_color = Color(0.34, 0.3, 0.36, 1)
+roughness = 1.0
+
+[sub_resource type="PlaneMesh" id="Maillage_sol"]
+material = SubResource("Materiau_herbe")
+size = Vector2(100, 80)
+
+[sub_resource type="BoxShape3D" id="Forme_sol"]
+size = Vector3(100, 1, 80)
+
+[sub_resource type="BoxShape3D" id="Forme_bordure_x"]
+size = Vector3(100, 6, 1)
+
+[sub_resource type="BoxShape3D" id="Forme_bordure_z"]
+size = Vector3(1, 6, 80)
+
+[node name="LisierePourpre" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -275)
+script = ExtResource("1_r")
+nom = "La Lisière pourpre"
+niveaux = "31–40"
+taille = Vector2(100, 80)
+couleur_ciel = Color(0.36, 0.26, 0.42, 1)
+lumiere = 0.68
+
+[node name="Sol" type="StaticBody3D" parent="."]
+
+[node name="Maillage" type="MeshInstance3D" parent="Sol"]
+mesh = SubResource("Maillage_sol")
+
+[node name="Collision" type="CollisionShape3D" parent="Sol"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("Forme_sol")
+
+[node name="Bordures" type="StaticBody3D" parent="."]
+
+[node name="Nord" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -40.5)
+shape = SubResource("Forme_bordure_x")
+
+[node name="Ouest" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5, 3, 0)
+shape = SubResource("Forme_bordure_z")
+
+[node name="Est" type="CollisionShape3D" parent="Bordures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.5, 3, 0)
+shape = SubResource("Forme_bordure_z")
+
+[node name="Monstres" type="Node3D" parent="."]
+
+[node name="PomelinsNoircis" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, 27)
+script = ExtResource("2_r")
+monstre_id = "monstre.pomelin_noirci"
+nombre = 5
+rayon = 4.0
+
+[node name="PomelinsNoircisEst" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 23)
+script = ExtResource("2_r")
+monstre_id = "monstre.pomelin_noirci"
+nombre = 5
+rayon = 4.0
+
+[node name="Loups" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 0, 3)
+script = ExtResource("2_r")
+monstre_id = "monstre.loup_morbide"
+nombre = 4
+rayon = 4.5
+
+[node name="LoupsEst" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -1)
+script = ExtResource("2_r")
+monstre_id = "monstre.loup_morbide"
+nombre = 3
+rayon = 4.5
+
+[node name="Villageois" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -19)
+script = ExtResource("2_r")
+monstre_id = "monstre.villageois_corrompu"
+nombre = 4
+rayon = 4.0
+
+[node name="VillageoisEst" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, -21)
+script = ExtResource("2_r")
+monstre_id = "monstre.villageois_corrompu"
+nombre = 3
+rayon = 4.0
+
+[node name="Krag" type="Node3D" parent="Monstres"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -32)
+script = ExtResource("2_r")
+monstre_id = "monstre.krag"
+nombre = 1
+rayon = 1.0
+
+[node name="Nature" type="Node3D" parent="."]
+
+[node name="RepaireArbre1" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1712, 0, 0.9852, 0, 1.0000, 0, -0.9852, 0, -0.1712, 4.015, 0.000, -37.891)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre2" type="Node3D" parent="Nature"]
+transform = Transform3D(0.8347, 0, 0.5508, 0, 1.0000, 0, -0.5508, 0, 0.8347, 9.257, 0.000, -33.462)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre3" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9492, 0, -0.3145, 0, 1.0000, 0, 0.3145, 0, 0.9492, 7.383, 0.000, -27.909)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre4" type="Node3D" parent="Nature"]
+transform = Transform3D(0.2346, 0, 0.9721, 0, 1.0000, 0, -0.9721, 0, 0.2346, -0.166, 0.000, -25.501)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre5" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9217, 0, -0.3879, 0, 1.0000, 0, 0.3879, 0, -0.9217, -7.587, 0.000, -28.088)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre6" type="Node3D" parent="Nature"]
+transform = Transform3D(0.3537, 0, -0.9354, 0, 1.0000, 0, 0.9354, 0, 0.3537, -9.176, 0.000, -33.682)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="RepaireArbre7" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7289, 0, -0.6846, 0, 1.0000, 0, 0.6846, 0, 0.7289, -3.712, 0.000, -37.983)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 40.0
+
+[node name="ArbreMort1" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.2330, 0, -0.9668, 0, 0.9945, 0, 0.9668, 0, -0.2330, 3.942, 0.000, -4.473)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort2" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.0475, 0, 0.8618, 0, 0.8631, 0, -0.8618, 0, -0.0475, -2.803, 0.000, 35.728)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort3" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7070, 0, 0.7139, 0, 1.0047, 0, -0.7139, 0, 0.7070, -27.970, 0.000, 29.332)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort4" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9462, 0, 0.2437, 0, 0.9770, 0, -0.2437, 0, 0.9462, -24.658, 0.000, 10.467)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort5" type="Node3D" parent="Nature"]
+transform = Transform3D(0.2726, 0, -0.7750, 0, 0.8215, 0, 0.7750, 0, 0.2726, -43.111, 0.000, -17.076)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort6" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.7856, 0, 0.3936, 0, 0.8787, 0, -0.3936, 0, -0.7856, -27.685, 0.000, -33.507)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort7" type="Node3D" parent="Nature"]
+transform = Transform3D(0.1058, 0, -0.9281, 0, 0.9341, 0, 0.9281, 0, 0.1058, 24.584, 0.000, 17.058)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort8" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6420, 0, 0.7705, 0, 1.0029, 0, -0.7705, 0, 0.6420, 0.378, 0.000, 0.909)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort9" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.5104, 0, -0.7757, 0, 0.9285, 0, 0.7757, 0, -0.5104, -6.579, 0.000, 13.995)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort10" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9215, 0, -0.0832, 0, 0.9252, 0, 0.0832, 0, 0.9215, 8.748, 0.000, 17.318)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort11" type="Node3D" parent="Nature"]
+transform = Transform3D(0.5968, 0, 0.7859, 0, 0.9869, 0, -0.7859, 0, 0.5968, 29.882, 0.000, 18.987)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort12" type="Node3D" parent="Nature"]
+transform = Transform3D(-1.1153, 0, 0.4419, 0, 1.1997, 0, -0.4419, 0, -1.1153, 4.869, 0.000, -11.607)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort13" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.5775, 0, 0.8144, 0, 0.9984, 0, -0.8144, 0, -0.5775, -2.155, 0.000, 23.310)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort14" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9036, 0, -0.4778, 0, 1.0221, 0, 0.4778, 0, 0.9036, -42.453, 0.000, 2.801)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort15" type="Node3D" parent="Nature"]
+transform = Transform3D(0.1153, 0, -1.1470, 0, 1.1528, 0, 1.1470, 0, 0.1153, -15.138, 0.000, -32.460)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort16" type="Node3D" parent="Nature"]
+transform = Transform3D(0.5478, 0, 0.6084, 0, 0.8187, 0, -0.6084, 0, 0.5478, -33.188, 0.000, -6.931)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort17" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7331, 0, 0.9402, 0, 1.1922, 0, -0.9402, 0, 0.7331, 37.473, 0.000, -34.866)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort18" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.4921, 0, 0.6538, 0, 0.8183, 0, -0.6538, 0, -0.4921, -15.586, 0.000, 37.323)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort19" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.4184, 0, -1.1130, 0, 1.1890, 0, 1.1130, 0, -0.4184, 30.575, 0.000, 31.706)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort20" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.2146, 0, 1.0444, 0, 1.0662, 0, -1.0444, 0, -0.2146, -29.552, 0.000, 37.645)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort21" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9544, 0, -0.1112, 0, 0.9608, 0, 0.1112, 0, 0.9544, 21.393, 0.000, -29.475)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort22" type="Node3D" parent="Nature"]
+transform = Transform3D(1.0852, 0, 0.3697, 0, 1.1465, 0, -0.3697, 0, 1.0852, 39.045, 0.000, 22.656)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort23" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6895, 0, 0.8808, 0, 1.1186, 0, -0.8808, 0, 0.6895, 2.252, 0.000, 32.275)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort24" type="Node3D" parent="Nature"]
+transform = Transform3D(1.0720, 0, -0.2392, 0, 1.0984, 0, 0.2392, 0, 1.0720, 43.468, 0.000, -20.255)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort25" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1452, 0, -0.9317, 0, 0.9430, 0, 0.9317, 0, -0.1452, -22.678, 0.000, 18.677)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort26" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1794, 0, -0.9296, 0, 0.9468, 0, 0.9296, 0, -0.1794, -36.922, 0.000, -31.616)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort27" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.5166, 0, 0.9714, 0, 1.1003, 0, -0.9714, 0, -0.5166, -36.099, 0.000, -0.100)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort28" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.3675, 0, -0.8874, 0, 0.9605, 0, 0.8874, 0, -0.3675, 9.630, 0.000, -16.056)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort29" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9236, 0, -0.2323, 0, 0.9523, 0, 0.2323, 0, 0.9236, -30.686, 0.000, -24.630)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort30" type="Node3D" parent="Nature"]
+transform = Transform3D(0.2955, 0, 1.1423, 0, 1.1799, 0, -1.1423, 0, 0.2955, -46.433, 0.000, -25.590)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort31" type="Node3D" parent="Nature"]
+transform = Transform3D(1.1187, 0, 0.1005, 0, 1.1232, 0, -0.1005, 0, 1.1187, 28.685, 0.000, 12.644)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort32" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.8331, 0, 0.7893, 0, 1.1477, 0, -0.7893, 0, -0.8331, 6.216, 0.000, -25.454)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_1"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort33" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.4665, 0, -0.9735, 0, 1.0795, 0, 0.9735, 0, -0.4665, 39.487, 0.000, -29.315)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="ArbreMort34" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.0882, 0, 1.1338, 0, 1.1372, 0, -1.1338, 0, -0.0882, 6.501, 0.000, 25.581)
+script = ExtResource("3_r")
+id_asset = "prop.arbre_mort_2"
+obstacle = Vector3(0.7, 3, 0.7)
+distance_affichage = 38.0
+
+[node name="Eboulis1" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9870, 0, -0.1610, 0, 1.0000, 0, 0.1610, 0, 0.9870, -4.956, 0.000, -3.822)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis_petit"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis2" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.4497, 0, 0.8932, 0, 1.0000, 0, -0.8932, 0, -0.4497, -25.092, 0.000, -14.906)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis_petit"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis3" type="Node3D" parent="Nature"]
+transform = Transform3D(0.4580, 0, 0.8890, 0, 1.0000, 0, -0.8890, 0, 0.4580, 36.613, 0.000, 20.272)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis4" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.3213, 0, -0.9470, 0, 1.0000, 0, 0.9470, 0, -0.3213, 32.067, 0.000, 11.086)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis5" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.7002, 0, -0.7139, 0, 1.0000, 0, 0.7139, 0, -0.7002, -21.412, 0.000, 15.249)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis_petit"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis6" type="Node3D" parent="Nature"]
+transform = Transform3D(0.8133, 0, 0.5819, 0, 1.0000, 0, -0.5819, 0, 0.8133, 44.229, 0.000, 13.275)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis7" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9868, 0, 0.1618, 0, 1.0000, 0, -0.1618, 0, 0.9868, 45.967, 0.000, -1.525)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis8" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.8806, 0, 0.4738, 0, 1.0000, 0, -0.4738, 0, -0.8806, 29.196, 0.000, -24.580)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis9" type="Node3D" parent="Nature"]
+transform = Transform3D(0.2638, 0, 0.9646, 0, 1.0000, 0, -0.9646, 0, 0.2638, 33.075, 0.000, -11.990)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis_petit"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Eboulis10" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9895, 0, 0.1445, 0, 1.0000, 0, -0.1445, 0, -0.9895, -31.076, 0.000, -6.590)
+script = ExtResource("3_r")
+id_asset = "prop.eboulis_petit"
+obstacle = Vector3(3, 2, 2.5)
+
+[node name="Rocher1" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-1.4566, 0, -0.2522, 0, 1.4782, 0, 0.2522, 0, -1.4566, 27.511, 0.000, 10.894)
+
+[node name="Rocher2" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-1.1646, 0, 1.0044, 0, 1.5379, 0, -1.0044, 0, -1.1646, -33.013, 0.000, -21.987)
+
+[node name="Rocher3" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.9495, 0, -0.9062, 0, 1.3126, 0, 0.9062, 0, 0.9495, -31.264, 0.000, -32.695)
+
+[node name="Rocher4" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.0078, 0, 1.6824, 0, 1.6824, 0, -1.6824, 0, 0.0078, 46.717, 0.000, 31.348)
+
+[node name="Rocher5" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.9157, 0, -0.2177, 0, 0.9412, 0, 0.2177, 0, 0.9157, 13.885, 0.000, -32.740)
+
+[node name="Rocher6" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.0016, 0, 1.4637, 0, 1.4637, 0, -1.4637, 0, 0.0016, 10.578, 0.000, 35.867)
+
+[node name="Rocher7" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.1826, 0, 0.9874, 0, 1.0041, 0, -0.9874, 0, 0.1826, -36.195, 0.000, -29.098)
+
+[node name="Rocher8" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.9572, 0, -0.2131, 0, 0.9807, 0, 0.2131, 0, 0.9572, 36.614, 0.000, 12.843)
+
+[node name="Rocher9" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-0.3187, 0, 1.2515, 0, 1.2915, 0, -1.2515, 0, -0.3187, -29.582, 0.000, 32.442)
+
+[node name="Rocher10" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-0.2963, 0, 1.1445, 0, 1.1823, 0, -1.1445, 0, -0.2963, -2.182, 0.000, -2.890)
+
+[node name="Rocher11" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(0.3822, 0, -1.4719, 0, 1.5207, 0, 1.4719, 0, 0.3822, 38.638, 0.000, -31.091)
+
+[node name="Rocher12" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-0.9749, 0, -1.1442, 0, 1.5032, 0, 1.1442, 0, -0.9749, -9.018, 0.000, 10.225)
+
+[node name="Rocher13" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-0.1014, 0, -0.8580, 0, 0.8640, 0, 0.8580, 0, -0.1014, 23.965, 0.000, -8.940)
+
+[node name="Rocher14" parent="Nature" instance=ExtResource("4_r")]
+transform = Transform3D(-0.9617, 0, -0.3987, 0, 1.0410, 0, 0.3987, 0, -0.9617, -41.068, 0.000, 9.379)
+
+[node name="Herbe1" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.2931, 0, 0.9561, 0, 1.0000, 0, -0.9561, 0, -0.2931, -34.192, 0.000, -3.160)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe2" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9917, 0, -0.1284, 0, 1.0000, 0, 0.1284, 0, 0.9917, -39.807, 0.000, 34.805)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe3" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.8028, 0, 0.5963, 0, 1.0000, 0, -0.5963, 0, -0.8028, -37.758, 0.000, 32.251)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe4" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9999, 0, -0.0148, 0, 1.0000, 0, 0.0148, 0, -0.9999, -42.510, 0.000, -19.926)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe5" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9844, 0, 0.1760, 0, 1.0000, 0, -0.1760, 0, 0.9844, 1.966, 0.000, 14.831)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe6" type="Node3D" parent="Nature"]
+transform = Transform3D(0.1122, 0, -0.9937, 0, 1.0000, 0, 0.9937, 0, 0.1122, 2.544, 0.000, -20.076)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe7" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.4475, 0, -0.8943, 0, 1.0000, 0, 0.8943, 0, -0.4475, 43.175, 0.000, 37.888)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe8" type="Node3D" parent="Nature"]
+transform = Transform3D(0.5314, 0, -0.8471, 0, 1.0000, 0, 0.8471, 0, 0.5314, -36.579, 0.000, -12.894)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe9" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1219, 0, -0.9925, 0, 1.0000, 0, 0.9925, 0, -0.1219, 29.288, 0.000, 36.072)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe10" type="Node3D" parent="Nature"]
+transform = Transform3D(0.5387, 0, -0.8425, 0, 1.0000, 0, 0.8425, 0, 0.5387, 45.417, 0.000, -7.359)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe11" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7634, 0, -0.6459, 0, 1.0000, 0, 0.6459, 0, 0.7634, 29.471, 0.000, 11.956)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe12" type="Node3D" parent="Nature"]
+transform = Transform3D(0.3277, 0, 0.9448, 0, 1.0000, 0, -0.9448, 0, 0.3277, -18.546, 0.000, 21.470)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe13" type="Node3D" parent="Nature"]
+transform = Transform3D(0.8668, 0, 0.4987, 0, 1.0000, 0, -0.4987, 0, 0.8668, 37.502, 0.000, -27.245)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe14" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6662, 0, -0.7458, 0, 1.0000, 0, 0.7458, 0, 0.6662, 35.719, 0.000, 36.217)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe15" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7448, 0, -0.6673, 0, 1.0000, 0, 0.6673, 0, 0.7448, -38.981, 0.000, -25.760)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe16" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1263, 0, 0.9920, 0, 1.0000, 0, -0.9920, 0, -0.1263, 39.121, 0.000, -33.776)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe17" type="Node3D" parent="Nature"]
+transform = Transform3D(0.6153, 0, -0.7883, 0, 1.0000, 0, 0.7883, 0, 0.6153, -28.693, 0.000, 31.497)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe18" type="Node3D" parent="Nature"]
+transform = Transform3D(0.3151, 0, 0.9491, 0, 1.0000, 0, -0.9491, 0, 0.3151, -28.070, 0.000, -0.884)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe19" type="Node3D" parent="Nature"]
+transform = Transform3D(0.7372, 0, -0.6757, 0, 1.0000, 0, 0.6757, 0, 0.7372, -21.047, 0.000, -8.329)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe20" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.6874, 0, 0.7263, 0, 1.0000, 0, -0.7263, 0, -0.6874, -14.847, 0.000, -10.101)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe21" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9994, 0, 0.0357, 0, 1.0000, 0, -0.0357, 0, 0.9994, 27.746, 0.000, 28.224)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Herbe22" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.1454, 0, -0.9894, 0, 1.0000, 0, 0.9894, 0, -0.1454, 12.099, 0.000, 7.246)
+script = ExtResource("3_r")
+id_asset = "prop.herbe"
+distance_affichage = 25.0
+projette_ombre = false
+
+[node name="Armes1" type="Node3D" parent="Nature"]
+transform = Transform3D(0.9441, 0, -0.3298, 0, 1.0000, 0, 0.3298, 0, 0.9441, -26.115, 0.000, -18.388)
+script = ExtResource("3_r")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Armes2" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9338, 0, 0.3578, 0, 1.0000, 0, -0.3578, 0, -0.9338, 33.142, 0.000, 10.777)
+script = ExtResource("3_r")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Armes3" type="Node3D" parent="Nature"]
+transform = Transform3D(0.3898, 0, 0.9209, 0, 1.0000, 0, -0.9209, 0, 0.3898, -28.994, 0.000, 22.052)
+script = ExtResource("3_r")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Armes4" type="Node3D" parent="Nature"]
+transform = Transform3D(-0.9015, 0, 0.4327, 0, 1.0000, 0, -0.4327, 0, -0.9015, -27.159, 0.000, -3.220)
+script = ExtResource("3_r")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Armes5" type="Node3D" parent="Nature"]
+transform = Transform3D(0.5128, 0, -0.8585, 0, 1.0000, 0, 0.8585, 0, 0.5128, -38.577, 0.000, 13.745)
+script = ExtResource("3_r")
+id_asset = "prop.epee_bouclier_brises"
+projette_ombre = false
+
+[node name="Brume" type="Node3D" parent="."]
+
+[node name="Volute1" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.00, 1.0, -1.79)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute2" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.61, 1.0, 4.53)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute3" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.39, 1.0, -34.35)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute4" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.24, 1.0, -10.84)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute5" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.32, 1.0, 24.77)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute6" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.47, 1.0, 5.69)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute7" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, 1.0, 11.94)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute8" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.90, 1.0, -12.60)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute9" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.83, 1.0, -14.49)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6
+
+[node name="Volute10" type="CPUParticles3D" parent="Brume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.99, 1.0, 23.99)
+script = ExtResource("5_r")
+etendue = Vector3(14, 1.6, 14)
+nombre = 14
+couleur = Color(0.6, 0.3, 0.85, 0.22)
+taille = 1.6

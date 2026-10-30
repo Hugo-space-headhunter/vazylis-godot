@@ -7,7 +7,8 @@ extends CharacterBody3D
 ## Comportements réglés dans config/monstres.cfg : immobile (plante), recul après chaque coup (gobelin
 ## chapardeur), attaque à distance (gobelin chaman), attaque de zone annoncée au sol (Gueule-Fleur),
 ## vie renforcée (Gargouillon), meute (Rat des cryptes), parade (Écuyer creux) et blocage de face
-## avec une rotation lente (le Gardien sans visage).
+## avec une rotation lente (le Gardien sans visage), encerclement (Loup morbide) et rage sous la
+## moitié de sa vie (Krâg le Mutilé).
 
 signal mort(monstre: Monstre)
 
@@ -16,6 +17,7 @@ const HAUTEUR_INFOS := 0.95
 const COULEUR_CHAMPION := Color(1.0, 0.8, 0.25)
 const COULEUR_SOUS_BOSS := Color(0.85, 0.55, 1.0)
 const COULEUR_ZONE := Color(1.0, 0.25, 0.2)
+const COULEUR_RAGE := Color(1.0, 0.2, 0.15)
 
 enum Etat { ERRANCE, POURSUITE, RETOUR, MORT }
 
@@ -51,6 +53,10 @@ var _attaque_zone := {}
 var _recharge_zone := 0.0
 var _zone_en_cours := false
 var _vitesse_rotation := 0.0
+## En rage (« enrage » dans la config) : il frappe plus vite et plus fort.
+var enrage := false
+var _matiere_aura: StandardMaterial3D
+var _sens_encerclement := 1.0
 var _delta := 0.0
 var _hasard := RandomNumberGenerator.new()
 var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -82,6 +88,7 @@ func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur, cha
 	_destination = point
 	_joueur = joueur
 	_hasard.randomize()
+	_sens_encerclement = 1.0 if _hasard.randf() < 0.5 else -1.0
 
 
 func _ready() -> void:
@@ -149,6 +156,7 @@ func recevoir_coup(degats: int, critique: bool) -> bool:
 	if pv <= 0.0:
 		_mourir()
 		return true
+	_verifier_la_rage()
 	if etat != Etat.RETOUR:
 		_engager()
 	if _verrou_animation <= 0.0:
@@ -229,6 +237,7 @@ func _physics_process(delta: float) -> void:
 			pv = pv_max
 			_barre.visible = false
 			_renvoyer_les_invoques()
+			_calmer()
 			cible = _point_apparition
 			vitesse = float(_definition.get("vitesse_course", 2.0))
 			if _distance_sol(_point_apparition) < 0.5:
@@ -268,6 +277,13 @@ func _manoeuvrer() -> Array:
 	var distance_tir := float(_definition.get("distance_tir", 0.0))
 	if distance_tir > 0.0 and distance < distance_tir * 0.5 and _recharge_attaque > 0.0:
 		return [global_position + loin_du_joueur, float(_definition.get("vitesse_marche", 1.0))]
+	# Encerclement (« encercle ») : entre deux morsures, il tourne autour du joueur au lieu de l'attendre en face.
+	if bool(_definition.get("encercle", false)) and _recharge_attaque > 0.3 and distance <= portee * 2.0:
+		var depuis_joueur := global_position - _joueur.global_position
+		depuis_joueur.y = 0.0
+		var tangente := depuis_joueur.normalized().cross(Vector3.UP) * _sens_encerclement
+		var rappel := depuis_joueur.normalized() * (portee * 1.3 - distance)
+		return [global_position + (tangente * 2.0 + rappel), float(_definition.get("vitesse_marche", 1.0)) * 1.6]
 	if distance > portee:
 		return [_joueur.global_position, course]
 	_tourner_vers(_joueur.global_position, 1.0)
@@ -275,6 +291,28 @@ func _manoeuvrer() -> Array:
 	if _vitesse_rotation <= 0.0 or _face_au_joueur(40.0):
 		_attaquer()
 	return [global_position, 0.0]
+
+
+## Sous un seuil de vie (« enrage » : {"seuil": part de la vie, "vitesse": …, "degats": …}), il enrage.
+func _verifier_la_rage() -> void:
+	var rage: Dictionary = _definition.get("enrage", {})
+	if rage.is_empty() or enrage or pv > pv_max * float(rage.get("seuil", 0.5)):
+		return
+	enrage = true
+	ChiffreFlottant.afficher(get_parent(), global_position + Vector3.UP * (_hauteur_infos + 0.6), "Enragé !", COULEUR_RAGE, 64, 1.4, 0.6)
+	if _matiere_aura != null:
+		_matiere_aura.albedo_color = Color(COULEUR_RAGE, 0.85)
+	_modele.regler_vitesse_animation(float(rage.get("vitesse", 1.0)))
+
+
+## De retour chez lui, il se calme (sa vie remonte au maximum).
+func _calmer() -> void:
+	if not enrage:
+		return
+	enrage = false
+	if _matiere_aura != null:
+		_matiere_aura.albedo_color = Color(COULEUR_SOUS_BOSS if rang == Combat.RANG_SOUS_BOSS else COULEUR_CHAMPION, 0.7)
+	_modele.regler_vitesse_animation(1.0)
 
 
 func _errer(delta: float) -> Vector3:
@@ -293,9 +331,14 @@ func _attaquer() -> void:
 	if _recharge_attaque > 0.0:
 		return
 	var intervalle := float(_definition.get("intervalle_attaque", 1.5))
+	var rage: Dictionary = _definition.get("enrage", {})
+	if enrage:
+		intervalle /= float(rage.get("vitesse", 1.0))
 	_recharge_attaque = intervalle
 	_jouer_une_fois("attack")
 	var degats := Combat.degats_monstre(niveau, _joueur.niveau(), _passif, intervalle, Config.jeu, rang)
+	if enrage:
+		degats *= float(rage.get("degats", 1.0))
 	if float(_definition.get("distance_tir", 0.0)) > 0.0:
 		var couleur: Color = _definition.get("couleur_tir", Color(0.5, 1.0, 0.4))
 		var joueur := _joueur
@@ -399,6 +442,7 @@ func _ajouter_aura(boite: AABB) -> void:
 	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	matiere.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	matiere.albedo_color = Color(couleur, 0.7)
+	_matiere_aura = matiere
 	matiere.albedo_texture = _anneau()
 	disque.material = matiere
 	var cercle := MeshInstance3D.new()

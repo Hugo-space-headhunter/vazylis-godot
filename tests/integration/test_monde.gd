@@ -321,3 +321,18 @@ func test_chaque_monstre_apparait_dans_sa_zone() -> void:
 				dedans = zone.nom
 		var attendu: Zone = monstre.get_parent().get_parent()
 		assert_eq(dedans, attendu.nom, "%s apparaît hors de sa zone, en %s" % [monstre.id_monstre, monstre.global_position])
+
+
+func test_la_lisiere_pourpre_ferme_la_zone_1() -> void:
+	var lisiere: Zone = terrain.get_node("Zones/LisierePourpre")
+	assert_eq(lisiere.titre(), "La Lisière pourpre  (niv. 31–40)")
+	joueur.global_position = Vector3(0, 0.1, -250)
+	await wait_until(func(): return terrain.zone_actuelle() == lisiere, 2.0)
+	assert_eq(terrain.zone_actuelle(), lisiere)
+	assert_gt(terrain.get_node("Zones/LisierePourpre/Brume").get_child_count(), 5, "De la brume pourpre")
+	# Les 4 sous-zones de la zone 1 se suivent sans trou, de Vazylis jusqu'à la Lisière.
+	for z in range(20, -315, -5):
+		var couverte := false
+		for zone: Zone in terrain.get_node("Zones").get_children():
+			couverte = couverte or zone.contient(Vector3(0, 0, z))
+		assert_true(couverte, "Le chemin vers le nord passe par une zone en z = %d" % z)

@@ -173,7 +173,7 @@ func test_chaque_arme_est_complete() -> void:
 
 
 func test_chaque_monstre_de_la_config_a_un_modele_au_catalogue() -> void:
-	assert_eq(config.ids_monstres().size(), 12, "3 sous-zones : 3 monstres et un sous-boss chacune")
+	assert_eq(config.ids_monstres().size(), 16, "4 sous-zones : 3 monstres et un sous-boss chacune")
 	for id in config.ids_monstres():
 		var monstre := config.monstre(id)
 		assert_true(CatalogueAssets.contient(str(monstre["modele"])), id)

@@ -42,10 +42,6 @@ shape = SubResource("Forme_sol")
 
 [node name="Bordures" type="StaticBody3D" parent="."]
 
-[node name="Nord" type="CollisionShape3D" parent="Bordures"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -40.5)
-shape = SubResource("Forme_bordure_x")
-
 [node name="Ouest" type="CollisionShape3D" parent="Bordures"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.5, 3, 0)
 shape = SubResource("Forme_bordure_z")

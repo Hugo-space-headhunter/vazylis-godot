@@ -21,6 +21,8 @@ func before_each() -> void:
 	arene.add_child(joueur)
 	add_child_autofree(arene)
 	await wait_physics_frames(3)
+	# Une hache plutôt que l'épée et l'écu de départ : le bouclier bloquerait des coups au hasard.
+	joueur.equiper_objet(joueur.butin.creer_objet("objet.hache_bucheron", 1, "standard", RandomNumberGenerator.new()))
 
 
 func _monstre(id: String, niveau: int, point: Vector3, champion: bool = false) -> Monstre:
@@ -234,3 +236,51 @@ func test_le_gardien_tourne_lentement() -> void:
 	gardien.etat = Monstre.Etat.POURSUITE
 	await wait_physics_frames(30)
 	assert_gt(absf(angle_difference(gardien._modele.rotation.y, 0.0)), deg_to_rad(90.0), "En une demi-seconde, il n'a pas encore fait demi-tour")
+
+
+func test_le_loup_morbide_tourne_autour_du_joueur() -> void:
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	var loup := _monstre("monstre.loup_morbide", 34, Vector3(0, 0, -5))
+	await wait_until(func(): return joueur.pv < joueur.pv_max, 5.0)
+	var angle_depart := Vector2(loup.global_position.x, loup.global_position.z).angle()
+	await wait_physics_frames(40)
+	var angle_apres := Vector2(loup.global_position.x, loup.global_position.z).angle()
+	assert_gt(absf(angle_difference(angle_depart, angle_apres)), deg_to_rad(20.0), "Entre deux morsures, il change d'angle autour du joueur")
+	assert_lt(Vector2(loup.global_position.x, loup.global_position.z).length(), 3.5, "Il reste tout près")
+
+
+func test_le_villageois_corrompu_tient_une_hache() -> void:
+	var villageois := _monstre("monstre.villageois_corrompu", 37, Vector3(0, 0, -8))
+	await wait_physics_frames(2)
+	assert_eq(villageois.find_children("*", "ModeleAsset", true, false).size(), 2, "Le villageois et sa hache")
+
+
+func test_krag_enrage_sous_la_moitie_de_sa_vie() -> void:
+	var krag := _monstre("monstre.krag", 40, Vector3(0, 0, -8))
+	await wait_physics_frames(2)
+	assert_eq(krag.rang, Combat.RANG_SOUS_BOSS)
+	krag.recevoir_coup(int(krag.pv_max * 0.3), false)
+	assert_false(krag.enrage, "Encore calme à 70 % de vie")
+	krag.recevoir_coup(int(krag.pv_max * 0.25), false)
+	assert_true(krag.enrage, "Enragé sous la moitié de sa vie")
+	# Il frappe 1,6 fois plus vite.
+	joueur.pv_max = 1.0e9
+	joueur.pv = joueur.pv_max
+	krag.global_position = Vector3(0, 0, -1.5)
+	await wait_until(func(): return joueur.pv < joueur.pv_max, 4.0)
+	assert_almost_eq(krag._recharge_attaque, 1.8 / 1.6, 0.1)
+	# Rentré chez lui, il se calme.
+	krag.etat = Monstre.Etat.RETOUR
+	await wait_physics_frames(2)
+	assert_false(krag.enrage)
+
+
+func test_les_pomelins_noircis_chargent_en_meute() -> void:
+	var meute := []
+	for i in 3:
+		meute.append(_monstre("monstre.pomelin_noirci", 31, Vector3(-1.5 + i * 1.5, 0, -12)))
+	await wait_physics_frames(2)
+	meute[1]._engager()
+	for pomelin: Monstre in meute:
+		assert_eq(pomelin.etat, Monstre.Etat.POURSUITE)

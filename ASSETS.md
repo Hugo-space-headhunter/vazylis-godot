@@ -24,6 +24,10 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | `monster.rat_cryptes` | `assets/models/monster/rat_cryptes/` | Quaternius, Ultimate Monsters (« Cat ») — pas de rat CC0 trouvé, réduit et gris-brun | CC0 |
 | `monster.ecuyer_creux` | `assets/models/monster/ecuyer_creux/` | Quaternius (squelette guerrier), copié depuis l'ancien projet | CC0 |
 | `monster.gardien_sans_visage` | `assets/models/character/heros_homme/` (même modèle) | Quaternius, Universal Base Characters — agrandi, tout en pierre, avec l'épée et le bouclier du jeu | CC0 |
+| `monster.pomelin_noirci` | `assets/models/monster/pomelin/` (même modèle) | Quaternius, Ultimate Monsters (« GreenBlob ») — tout noir pourpre | CC0 |
+| `monster.loup_morbide` | `assets/models/monster/loup_morbide/` | Quaternius, Ultimate Animated Animals (« Wolf ») — assombri | CC0 |
+| `monster.villageois_corrompu` | `assets/models/character/heros_homme/` (même modèle) | Quaternius, Universal Base Characters — teinté pourpre, avec la hache du jeu | CC0 |
+| `monster.krag` | `assets/models/monster/krag/` | Quaternius, Ultimate Monsters (« Orc ») — agrandi et teinté | CC0 |
 | `weapon.epee_depart` | `assets/models/weapon/epee_depart/` | Polyy, 3D Fantasy Weapons Pack, version « low » (« Knight's Longsword »), https://polyy.ai — accord de Hugo le 29/10/2026 | CC0, aucun crédit exigé |
 | `weapon.dague` | `assets/models/weapon/dague/` | Polyy, 3D Fantasy Weapons Pack (low), « Rogue's Dagger », https://polyy.ai | CC0, aucun crédit exigé |
 | `weapon.claymore` | `assets/models/weapon/claymore/` | Polyy, 3D Fantasy Weapons Pack (low), « Highland Claymore » | CC0, aucun crédit exigé |
