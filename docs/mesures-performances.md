@@ -31,8 +31,6 @@ Règle : une optimisation n'est « validée » que si elle a été mesurée, et 
 
 ## Sur l'iPhone
 
-À remplir avec les valeurs du panneau de mesure (Vazylis, Bois, Lisière).
-
 iPhone de Hugo (écran 1170 × 2532, rendu à la pleine résolution 1170 × 2391), version web,
 portrait, captures du 30/10/2026 après le chantier A :
 
