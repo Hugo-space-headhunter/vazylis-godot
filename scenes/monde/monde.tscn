@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://scripts/ui/vignettes.gd" id="19_vignettes"]
 [ext_resource type="Script" path="res://scripts/ui/fenetre_forge.gd" id="22_forge"]
 [ext_resource type="Script" path="res://scripts/world/veille_monstres.gd" id="23_veille"]
+[ext_resource type="Script" path="res://scripts/ui/disposition_interface.gd" id="24_disposition"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Materiau_ciel"]
 sky_top_color = Color(0.3, 0.55, 0.88, 1)
@@ -95,17 +96,21 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("4_commandes")
 
-[node name="OutilsTest" type="VBoxContainer" parent="Interface"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -264.0
-offset_top = 36.0
-offset_right = -24.0
-offset_bottom = 300.0
-grow_horizontal = 0
+[node name="OutilsTest" type="VBoxContainer" parent="Interface" node_paths=PackedStringArray("compteur")]
+custom_minimum_size = Vector2(240, 0)
+offset_right = 240.0
+offset_bottom = 56.0
 theme_override_constants/separation = 8
 script = ExtResource("14_btest")
+compteur = NodePath("../CompteurFPS")
+
+[node name="Menu" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 8
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+text = "Test ▾"
 
 [node name="BoutonPersonnage" type="Button" parent="Interface/OutilsTest"]
 custom_minimum_size = Vector2(0, 56)
@@ -135,6 +140,13 @@ layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "Test : nouvelle partie"
+
+[node name="Mesures" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Mesures (i/s)"
 
 [node name="Bandeau" parent="Interface" instance=ExtResource("11_bandeau")]
 
@@ -248,6 +260,19 @@ theme_override_font_sizes/font_size = 26
 text = "Forge"
 
 [node name="CompteurFPS" parent="Interface" instance=ExtResource("6_fps")]
+visible = false
+
+[node name="Disposition" type="Node" parent="Interface" node_paths=PackedStringArray("bandeau", "bouton_statistiques", "bouton_sac", "bouton_forge", "boutons_mode", "bouton_afk", "outils_test", "annonces", "compteur")]
+script = ExtResource("24_disposition")
+bandeau = NodePath("../Bandeau")
+bouton_statistiques = NodePath("../BoutonStatistiques")
+bouton_sac = NodePath("../BoutonSac")
+bouton_forge = NodePath("../BoutonForge")
+boutons_mode = NodePath("../BoutonsMode")
+bouton_afk = NodePath("../BoutonAFK")
+outils_test = NodePath("../OutilsTest")
+annonces = NodePath("../Annonces")
+compteur = NodePath("../CompteurFPS/Marges")
 
 [node name="FenetreStatistiques" type="PanelContainer" parent="Interface"]
 script = ExtResource("12_fenetre")

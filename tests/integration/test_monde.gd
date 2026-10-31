@@ -73,7 +73,7 @@ func test_deuxieme_doigt_tourne_la_camera() -> void:
 
 
 func test_toucher_le_bouton_ne_lance_pas_le_joystick() -> void:
-	var bouton: Button = terrain.get_node("Interface/OutilsTest/BoutonPersonnage")
+	var bouton: Button = terrain.get_node("Interface/OutilsTest/Menu")
 	var centre := bouton.get_global_rect().get_center()
 	_toucher(0, centre, true)
 	_glisser(0, centre + Vector2(0, 100), Vector2(0, 100))
@@ -429,3 +429,41 @@ func test_chaque_zone_a_son_ambiance_et_son_herbe() -> void:
 	assert_gt(carreau.multimesh.instance_count, 10, "Chaque carreau dessine beaucoup de touffes d'un coup")
 	for enfant in herbe.get_children():
 		assert_gt(Vector2(enfant.global_position.x, enfant.global_position.z).length(), 7.0, "Pas d'herbe au cœur de Vazylis")
+
+
+func test_le_menu_test_s_ouvre_et_se_ferme() -> void:
+	var outils: Control = terrain.get_node("Interface/OutilsTest")
+	assert_false(outils.est_ouvert(), "Au départ, seul le bouton « Test » est visible")
+	var menu: Button = terrain.get_node("Interface/OutilsTest/Menu")
+	menu.pressed.emit()
+	assert_true(outils.est_ouvert())
+	var compteur: CanvasLayer = terrain.get_node("Interface/CompteurFPS")
+	assert_false(compteur.visible, "Le panneau de mesure est caché au départ")
+	terrain.get_node("Interface/OutilsTest/Mesures").pressed.emit()
+	assert_true(compteur.visible, "Le bouton Mesures montre le panneau")
+	menu.pressed.emit()
+	assert_false(outils.est_ouvert())
+
+
+func test_l_interface_reste_dans_les_zones_de_securite() -> void:
+	ZoneSecurite.marges_imposees = Vector4(80, 90, 70, 60)
+	var disposition: DispositionInterface = terrain.get_node("Interface/Disposition")
+	disposition.placer()
+	var ecran := terrain.get_viewport().get_visible_rect().size
+	var marges := ZoneSecurite.marges(terrain.get_viewport())
+	var zone := Rect2(Vector2(marges.x, marges.y), ecran - Vector2(marges.x + marges.z, marges.y + marges.w))
+	for chemin in ["Bandeau", "BoutonStatistiques", "BoutonSac", "BoutonsMode", "BoutonAFK", "OutilsTest"]:
+		var element: Control = terrain.get_node("Interface/" + chemin)
+		assert_true(zone.grow(0.5).encloses(element.get_global_rect()), "%s reste à l'abri de l'encoche" % chemin)
+	ZoneSecurite.marges_imposees = Vector4(-1, -1, -1, -1)
+
+
+func test_en_portrait_le_sac_descend_pres_du_pouce() -> void:
+	var disposition: DispositionInterface = terrain.get_node("Interface/Disposition")
+	var sac: Control = terrain.get_node("Interface/BoutonSac")
+	var modes: Control = terrain.get_node("Interface/BoutonsMode")
+	disposition.placer()
+	if disposition.portrait:
+		assert_gt(sac.position.y, modes.position.y - 200.0)
+	else:
+		assert_lt(sac.position.y, modes.position.y - 200.0, "En paysage, le sac reste sous le bandeau")

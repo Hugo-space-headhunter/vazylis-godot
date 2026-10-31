@@ -9,8 +9,8 @@ layer = 10
 offset_right = 400.0
 offset_bottom = 80.0
 mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 40
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
 
 [node name="Texte" type="Label" parent="Marges"]
 layout_mode = 2
