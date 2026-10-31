@@ -76,12 +76,16 @@ func creer(id: String) -> ModeleAsset:
 
 
 ## Multiplie la couleur de toutes les matières du modèle (réglage « teinte »), ou les remplace
-## par une seule couleur sans motif (réglage « couleur_unie », par exemple pour une statue de pierre).
+## par une seule couleur sans motif (réglage « couleur_unie », par exemple pour une statue de pierre),
+## ou par une texture plaquée sur toutes les faces (réglage « texture_matiere », par exemple de la
+## vraie pierre sur un mur aux couleurs trop unies) : {"couleur": chemin, "relief": chemin,
+## "echelle": motifs par unité du modèle}.
 ## Les matières teintées sont partagées entre tous les exemplaires d'un même identifiant.
 func _appliquer_teinte(id: String, modele: Node3D) -> void:
 	var teinte: Color = reglage(id, "teinte", Color.WHITE)
 	var couleur_unie: Color = reglage(id, "couleur_unie", Color(0, 0, 0, 0))
-	if teinte == Color.WHITE and couleur_unie.a == 0.0:
+	var texture: Dictionary = reglage(id, "texture_matiere", {})
+	if teinte == Color.WHITE and couleur_unie.a == 0.0 and texture.is_empty():
 		return
 	var cache: Dictionary = _matieres_teintees.get_or_add(id, {})
 	for noeud in modele.find_children("*", "MeshInstance3D", true, false):
@@ -95,6 +99,15 @@ func _appliquer_teinte(id: String, modele: Node3D) -> void:
 				if couleur_unie.a > 0.0:
 					copie.albedo_texture = null
 					copie.albedo_color = couleur_unie
+				if not texture.is_empty():
+					copie.albedo_texture = load(str(texture["couleur"]))
+					copie.albedo_color = Color.WHITE
+					if texture.has("relief"):
+						copie.normal_enabled = true
+						copie.normal_texture = load(str(texture["relief"]))
+					copie.uv1_triplanar = true
+					copie.uv1_scale = Vector3.ONE * float(texture.get("echelle", 0.5))
+					copie.roughness = 1.0
 				copie.albedo_color *= teinte
 				cache[origine] = copie
 			instance.set_surface_override_material(surface, cache[origine])

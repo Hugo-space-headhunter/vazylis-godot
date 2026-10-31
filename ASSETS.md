@@ -77,6 +77,15 @@ On ne garde que la couleur (1024 px) et le relief (« NormalGL », réduit à 51
 | Gravier (Ruines du Guet) | `assets/textures/sol/gravier/` | Gravel022 | CC0 |
 | Terre sombre (Lisière pourpre) | `assets/textures/sol/terre_sombre/` | Ground048 | CC0 |
 
+## Textures de murs
+
+| Texture du jeu | Dossier | Source | Licence |
+| --- | --- | --- | --- |
+| Pierre irrégulière (murs, murets, éboulis) | `assets/textures/murs/pierre_irreguliere/` | Medieval Village Pack, Quaternius (T_UnevenBrick), réduite à 1024 px | CC0 |
+| Pierre taillée (piliers, colonnes, dalles) | `assets/textures/murs/pierre_taillee/` | Medieval Village Pack, Quaternius (T_RockTrim), réduite à 1024 px | CC0 |
+
+Elles remplacent les aplats de couleur des pièces KayKit (réglage « texture_matiere » du catalogue).
+
 ## Images
 
 | Nom | Fichier | Source | Licence |

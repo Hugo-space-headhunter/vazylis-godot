@@ -582,12 +582,6 @@ script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
 
-[node name="Buisson3" type="Node3D" parent="Nature"]
-transform = Transform3D(-0.2985, 0, 0.9544, 0, 1.0000, 0, -0.9544, 0, -0.2985, -4.926, 0.000, -2.256)
-script = ExtResource("3_r")
-id_asset = "prop.buisson_grand"
-distance_affichage = 30.0
-
 [node name="Buisson4" type="Node3D" parent="Nature"]
 transform = Transform3D(-0.8891, 0, -0.4578, 0, 1.0000, 0, 0.4578, 0, -0.8891, 44.361, 0.000, 15.771)
 script = ExtResource("3_r")
@@ -598,12 +592,6 @@ distance_affichage = 30.0
 transform = Transform3D(0.9741, 0, -0.2260, 0, 1.0000, 0, 0.2260, 0, 0.9741, -36.528, 0.000, -1.579)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
-distance_affichage = 30.0
-
-[node name="Buisson6" type="Node3D" parent="Nature"]
-transform = Transform3D(0.8107, 0, 0.5855, 0, 1.0000, 0, -0.5855, 0, 0.8107, 0.335, 0.000, 26.767)
-script = ExtResource("3_r")
-id_asset = "prop.buisson_grand"
 distance_affichage = 30.0
 
 [node name="Buisson7" type="Node3D" parent="Nature"]
@@ -636,22 +624,10 @@ script = ExtResource("3_r")
 id_asset = "prop.buisson"
 distance_affichage = 30.0
 
-[node name="Buisson12" type="Node3D" parent="Nature"]
-transform = Transform3D(0.5337, 0, -0.8457, 0, 1.0000, 0, 0.8457, 0, 0.5337, 2.657, 0.000, 19.223)
-script = ExtResource("3_r")
-id_asset = "prop.buisson_fleuri"
-distance_affichage = 30.0
-
 [node name="Buisson13" type="Node3D" parent="Nature"]
 transform = Transform3D(0.1788, 0, -0.9839, 0, 1.0000, 0, 0.9839, 0, 0.1788, -31.119, 0.000, -29.765)
 script = ExtResource("3_r")
 id_asset = "prop.buisson"
-distance_affichage = 30.0
-
-[node name="Buisson14" type="Node3D" parent="Nature"]
-transform = Transform3D(-0.8260, 0, -0.5637, 0, 1.0000, 0, 0.5637, 0, -0.8260, 1.434, 0.000, -6.102)
-script = ExtResource("3_r")
-id_asset = "prop.buisson_fleuri"
 distance_affichage = 30.0
 
 [node name="Buisson15" type="Node3D" parent="Nature"]
@@ -686,12 +662,6 @@ distance_affichage = 30.0
 
 [node name="Buisson20" type="Node3D" parent="Nature"]
 transform = Transform3D(0.2631, 0, 0.9648, 0, 1.0000, 0, -0.9648, 0, 0.2631, 23.446, 0.000, -16.864)
-script = ExtResource("3_r")
-id_asset = "prop.buisson_fleuri_bas"
-distance_affichage = 30.0
-
-[node name="Buisson21" type="Node3D" parent="Nature"]
-transform = Transform3D(0.9845, 0, -0.1755, 0, 1.0000, 0, 0.1755, 0, 0.9845, 3.797, 0.000, 28.956)
 script = ExtResource("3_r")
 id_asset = "prop.buisson_fleuri_bas"
 distance_affichage = 30.0
