@@ -9,6 +9,7 @@ extends CharacterBody3D
 ## vie renforcée (Gargouillon), meute (Rat des cryptes), parade (Écuyer creux) et blocage de face
 ## avec une rotation lente (le Gardien sans visage), encerclement (Loup morbide) et rage sous la
 ## moitié de sa vie (Krâg le Mutilé).
+## Morceaux à part : InvocationMonstre (renforts), AttaqueDeZone (cercle au sol), CercleAuSol (aura).
 
 signal mort(monstre: Monstre)
 
@@ -16,7 +17,6 @@ const GROUPE := "monstres"
 const HAUTEUR_INFOS := 0.95
 const COULEUR_CHAMPION := Color(1.0, 0.8, 0.25)
 const COULEUR_SOUS_BOSS := Color(0.85, 0.55, 1.0)
-const COULEUR_ZONE := Color(1.0, 0.25, 0.2)
 const COULEUR_RAGE := Color(1.0, 0.2, 0.15)
 
 enum Etat { ERRANCE, POURSUITE, RETOUR, MORT }
@@ -46,14 +46,10 @@ var _pause_errance := 0.0
 var _recharge_attaque := 0.0
 var _verrou_animation := 0.0
 var _hauteur_infos := HAUTEUR_INFOS
-var _invocation := {}
-var _recharge_invocation := 0.0
-var _invoques: Array[Monstre] = []
+var _invocation := InvocationMonstre.new({})
 var _immobile := false
 var _recul_restant := 0.0
-var _attaque_zone := {}
-var _recharge_zone := 0.0
-var _zone_en_cours := false
+var _attaque_zone := AttaqueDeZone.new({})
 var _vitesse_rotation := 0.0
 ## En rage (« enrage » dans la config) : il frappe plus vite et plus fort.
 var enrage := false
@@ -75,12 +71,10 @@ func initialiser(id: String, un_niveau: int, point: Vector3, joueur: Joueur, cha
 	_passif = str(_definition.get("comportement", "passif")) == "passif"
 	ressource = str(_definition.get("ressource", ""))
 	_immobile = str(_definition.get("deplacement", "normal")) == "immobile"
-	_attaque_zone = _definition.get("attaque_zone", {})
-	_recharge_zone = float(_attaque_zone.get("intervalle", 0.0)) / 2.0
+	_attaque_zone = AttaqueDeZone.new(_definition.get("attaque_zone", {}))
 	if bool(_definition.get("sous_boss", false)):
 		rang = Combat.RANG_SOUS_BOSS
-		_invocation = _definition.get("invocation", {})
-		_recharge_invocation = float(_invocation.get("intervalle", 0.0))
+		_invocation = InvocationMonstre.new(_definition.get("invocation", {}))
 	elif champion:
 		rang = Combat.RANG_CHAMPION
 	pv_max = Combat.pv_monstre(niveau, config, rang) * float(_definition.get("multiplicateur_vie", 1.0))
@@ -112,7 +106,7 @@ func _ready() -> void:
 	var boite := Transform3D(_modele.transform.basis, Vector3.ZERO) * _modele.boite_englobante()
 	_hauteur_infos = maxf(HAUTEUR_INFOS, boite.end.y + 0.25)
 	if rang != Combat.RANG_NORMAL:
-		_ajouter_aura(boite)
+		_matiere_aura = CercleAuSol.aura(self, boite, _couleur_du_rang())
 
 	_etiquette = Label3D.new()
 	_etiquette.text = "%s  niv. %d" % [nom, niveau]
@@ -243,12 +237,13 @@ func _physics_process(delta: float) -> void:
 				var choix := _manoeuvrer()
 				cible = choix[0]
 				vitesse = choix[1]
-				_invoquer(delta)
-				_attaquer_en_zone(delta)
+				if _invocation.mettre_a_jour(self, _joueur, delta, _hasard):
+					_jouer_une_fois("attack")
+				_attaque_zone.mettre_a_jour(self, _distance_sol(_joueur.global_position), delta, _frapper_en_zone)
 		Etat.RETOUR:
 			pv = pv_max
 			_barre.visible = false
-			_renvoyer_les_invoques()
+			_invocation.renvoyer()
 			_calmer()
 			cible = _point_apparition
 			vitesse = float(_definition.get("vitesse_course", 2.0))
@@ -323,7 +318,7 @@ func _calmer() -> void:
 		return
 	enrage = false
 	if _matiere_aura != null:
-		_matiere_aura.albedo_color = Color(COULEUR_SOUS_BOSS if rang == Combat.RANG_SOUS_BOSS else COULEUR_CHAMPION, 0.7)
+		_matiere_aura.albedo_color = Color(_couleur_du_rang(), 0.7)
 	_modele.regler_vitesse_animation(1.0)
 
 
@@ -365,135 +360,18 @@ func _attaquer() -> void:
 	_recul_restant = float(_definition.get("recul", 0.0))
 
 
-## Attaque de zone (Gueule-Fleur) : un cercle rouge grandit au sol pendant le préavis ;
-## si le joueur est encore dedans à la fin, il est frappé. Il a le temps de s'écarter.
-func _attaquer_en_zone(delta: float) -> void:
-	if _attaque_zone.is_empty() or _zone_en_cours:
-		return
-	_recharge_zone -= delta
-	var rayon := float(_attaque_zone.get("rayon", 4.0))
-	if _recharge_zone > 0.0 or _distance_sol(_joueur.global_position) > rayon * 1.5:
-		return
-	_recharge_zone = float(_attaque_zone.get("intervalle", 8.0))
-	_zone_en_cours = true
-	var preavis := float(_attaque_zone.get("preavis", 1.2))
-	var disque := PlaneMesh.new()
-	disque.size = Vector2(rayon * 2.0, rayon * 2.0)
-	var matiere := StandardMaterial3D.new()
-	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	matiere.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	matiere.albedo_color = Color(COULEUR_ZONE, 0.9)
-	matiere.albedo_texture = _anneau()
-	disque.material = matiere
-	var cercle := MeshInstance3D.new()
-	cercle.name = "AttaqueDeZone"
-	cercle.mesh = disque
-	cercle.position.y = 0.05
-	cercle.scale = Vector3.ONE * 0.15
-	cercle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(cercle)
-	var animation := cercle.create_tween()
-	animation.tween_property(cercle, "scale", Vector3.ONE, preavis)
-	animation.tween_callback(_frapper_en_zone.bind(cercle, rayon))
-
-
-func _frapper_en_zone(cercle: Node3D, rayon: float) -> void:
-	_zone_en_cours = false
-	cercle.queue_free()
+## Fin du préavis de l'attaque de zone : le joueur est frappé s'il est encore dans le cercle.
+func _frapper_en_zone(multiplicateur: float, rayon: float) -> void:
 	if not est_vivant() or not _joueur_vivant() or _distance_sol(_joueur.global_position) > rayon:
 		return
 	_jouer_une_fois("attack")
 	var degats := Combat.degats_monstre(niveau, _joueur.niveau(), _passif, float(_definition.get("intervalle_attaque", 1.5)),
-		Config.jeu, rang) * float(_attaque_zone.get("multiplicateur", 2.0))
+		Config.jeu, rang) * multiplicateur
 	_joueur.recevoir_degats(degats, niveau, self)
 
 
-## Un sous-boss qui invoque appelle des renforts à intervalle régulier pendant le combat.
-func _invoquer(delta: float) -> void:
-	if _invocation.is_empty():
-		return
-	_recharge_invocation -= delta
-	if _recharge_invocation > 0.0:
-		return
-	_recharge_invocation = float(_invocation.get("intervalle", 12.0))
-	_invoques = _invoques.filter(func(m: Monstre) -> bool: return is_instance_valid(m) and m.est_vivant())
-	var id := str(_invocation.get("monstre", ""))
-	var definition := Config.jeu.monstre(id)
-	var scene: PackedScene = load(scene_file_path)
-	var place := int(_invocation.get("maximum", 4)) - _invoques.size()
-	for i in mini(int(_invocation.get("nombre", 1)), place):
-		var angle := _hasard.randf() * TAU
-		var point := global_position + Vector3(cos(angle), 0, sin(angle)) * 1.8
-		var invoque: Monstre = scene.instantiate()
-		var niveau_invoque := _hasard.randi_range(int(definition.get("niveau_min", 1)), int(definition.get("niveau_max", 1)))
-		invoque.initialiser(id, niveau_invoque, point, _joueur)
-		invoque.etat = Etat.POURSUITE
-		get_parent().add_child(invoque)
-		_invoques.append(invoque)
-	if place > 0:
-		_jouer_une_fois("attack")
-
-
-## Les renforts disparaissent quand le sous-boss abandonne le combat.
-func _renvoyer_les_invoques() -> void:
-	for invoque in _invoques:
-		if is_instance_valid(invoque) and invoque.est_vivant():
-			invoque.queue_free()
-	_invoques.clear()
-	_recharge_invocation = float(_invocation.get("intervalle", 0.0))
-
-
-## Aura des champions (dorée) et des sous-boss (violette) : un anneau lumineux au sol et des étincelles.
-func _ajouter_aura(boite: AABB) -> void:
-	var couleur := COULEUR_CHAMPION if rang == Combat.RANG_CHAMPION else COULEUR_SOUS_BOSS
-	var rayon := maxf(boite.size.x, boite.size.z) * 0.6 + 0.2
-	var disque := PlaneMesh.new()
-	disque.size = Vector2(rayon * 2.0, rayon * 2.0)
-	var matiere := StandardMaterial3D.new()
-	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	matiere.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	matiere.albedo_color = Color(couleur, 0.7)
-	_matiere_aura = matiere
-	matiere.albedo_texture = _anneau()
-	disque.material = matiere
-	var cercle := MeshInstance3D.new()
-	cercle.name = "Aura"
-	cercle.mesh = disque
-	cercle.position.y = 0.03
-	cercle.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(cercle)
-	var pulsation := cercle.create_tween().set_loops()
-	pulsation.tween_property(cercle, "scale", Vector3.ONE * 1.12, 0.8).set_trans(Tween.TRANS_SINE)
-	pulsation.tween_property(cercle, "scale", Vector3.ONE, 0.8).set_trans(Tween.TRANS_SINE)
-	var particules := ApparenceRarete.ajouter_etincelles(self, "dore", boite, 14)
-	if particules != null:
-		var degrade := particules.color_ramp
-		for i in degrade.get_point_count():
-			degrade.set_color(i, Color(couleur, degrade.get_color(i).a))
-
-
-static var _texture_anneau: Texture2D
-
-
-## Anneau lumineux (transparent au centre et sur le bord).
-static func _anneau() -> Texture2D:
-	if _texture_anneau == null:
-		var degrade := Gradient.new()
-		degrade.set_color(0, Color(1, 1, 1, 0))
-		degrade.add_point(0.55, Color(1, 1, 1, 0.15))
-		degrade.add_point(0.82, Color(1, 1, 1, 1))
-		degrade.set_color(degrade.get_point_count() - 1, Color(1, 1, 1, 0))
-		var texture := GradientTexture2D.new()
-		texture.gradient = degrade
-		texture.fill = GradientTexture2D.FILL_RADIAL
-		texture.fill_from = Vector2(0.5, 0.5)
-		texture.fill_to = Vector2(1.0, 0.5)
-		texture.width = 128
-		texture.height = 128
-		_texture_anneau = texture
-	return _texture_anneau
+func _couleur_du_rang() -> Color:
+	return COULEUR_SOUS_BOSS if rang == Combat.RANG_SOUS_BOSS else COULEUR_CHAMPION
 
 
 func _mourir() -> void:
