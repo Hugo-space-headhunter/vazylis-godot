@@ -95,6 +95,11 @@ func regler_vitesse_animation(vitesse: float) -> void:
 
 ## Ajoute un nœud dans le repère du fichier 3D lui-même (après son échelle et sa rotation du catalogue),
 ## par exemple une cible posée sur la poignée d'une arme.
+## Un point du fichier 3D (repère du modèle), exprimé dans le repère de ce nœud (avec le placement en cours).
+func vers_porteur(point: Vector3) -> Vector3:
+	return _modele.transform * point
+
+
 func ajouter_au_modele(noeud: Node3D) -> void:
 	_modele.add_child(noeud)
 

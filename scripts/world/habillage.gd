@@ -2,6 +2,7 @@ class_name Habillage
 extends RefCounted
 ## Habille un personnage avec ses objets portés : les pièces de tenue (casque, plastron, gants,
 ## bottes, ceinture) se plient avec son squelette ; la cape et l'amulette s'accrochent au dos.
+## La cape flotte avec les mouvements (Tissu) et l'amulette se balance (Pendule).
 ## Chaque pièce prend le rendu de sa rareté ; un objet transcendant entoure le personnage d'une aura.
 
 ## Pièces de tenue qui suivent le squelette du personnage (même squelette que les personnages de base).
@@ -40,6 +41,8 @@ func habiller(personnage: ModeleAsset, equipement: Equipement, femme: bool) -> v
 		var accroche := CatalogueAssets.creer(objet.modele(config, femme))
 		accroche.accrocher_a(personnage, OBJETS_ACCROCHES[emplacement])
 		ApparenceRarete.appliquer(accroche, objet.rarete, _teinte(objet, config))
+		Tissu.animer(accroche, personnage)
+		Pendule.animer(accroche)
 		_noeuds.append(accroche)
 	if _porte_un_transcendant(equipement):
 		var aura := ApparenceRarete.ajouter_etincelles(personnage, "transcendant",

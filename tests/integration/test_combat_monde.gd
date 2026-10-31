@@ -241,3 +241,23 @@ func test_un_coup_qui_porte_fait_un_arret_sur_image_bref() -> void:
 	assert_lt(Engine.time_scale, 1.0, "Coup lourd : le temps ralentit")
 	await wait_seconds(0.3, "Le temps reprend")
 	assert_eq(Engine.time_scale, 1.0)
+
+
+func test_la_cape_flotte_et_l_amulette_se_balance() -> void:
+	_equiper("objet.cape_voyage")
+	_equiper("objet.amulette_lucioles")
+	await wait_physics_frames(2)
+	var tissus := joueur.find_children("*", "Tissu", true, false)
+	assert_eq(tissus.size(), 1, "La cape a son tissu animé")
+	var tissu: Tissu = tissus[0]
+	assert_eq(tissu.setting_count, 3, "Trois colonnes d'os dans la cape")
+	assert_gt(tissu.get_child_count(), 0, "Des capsules protègent le corps")
+	assert_eq(joueur.find_children("*", "Pendule", true, false).size(), 1, "L'amulette a son pendule")
+
+
+func test_l_amulette_prend_du_retard_quand_on_court() -> void:
+	_equiper("objet.amulette_lucioles")
+	var pendule: Pendule = joueur.find_children("*", "Pendule", true, false)[0]
+	joueur.joystick = Vector2(0, -1)
+	await wait_physics_frames(10)
+	assert_gt(pendule.angle.length(), 0.01, "En démarrant, l'amulette bascule")
