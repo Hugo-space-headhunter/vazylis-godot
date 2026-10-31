@@ -78,9 +78,9 @@ var _prise := PriseDeuxMains.new()
 var _tir := TirArc.new()
 ## Rang du prochain coup dans l'enchaînement d'animations de l'arme.
 var _coup_suivant := 0
-## L'arme à deux mains est dans la main droite (pendant un coup) plutôt qu'à la hanche.
+## L'arme à deux mains est levée pour frapper (sinon elle traîne derrière, dans la main droite).
 var _arme_en_main := false
-## Temps depuis la fin du dernier coup : l'arme à deux mains ne retombe à la hanche qu'après une pause.
+## Temps depuis la fin du dernier coup : l'arme à deux mains ne retombe qu'après une pause.
 var _sans_frapper := 0.0
 const PAUSE_AVANT_TRAINE := 1.0
 var _point_afk := Vector3.ZERO
@@ -351,10 +351,10 @@ func _physics_process(delta: float) -> void:
 		_tourner_vers(global_position + direction, 1.0 - exp(-config.lissage_rotation() * delta))
 	if _verrou_animation <= 0.0:
 		_sans_frapper += delta
-		if mode == Mode.COMBAT:
+		if mode == Mode.COMBAT and not _prise.est_installee():
 			_varier_armes(VARIANTE_REPOS)
-			if _sans_frapper >= PAUSE_AVANT_TRAINE:
-				_reposer_arme_deux_mains()
+		elif mode == Mode.COMBAT and _sans_frapper >= PAUSE_AVANT_TRAINE:
+			_reposer_arme_deux_mains()
 		var animation := Deplacement.animation(_allure)
 		var garde := str(arme.get("animation_garde", ""))
 		if mode == Mode.COMBAT and _allure == Deplacement.Allure.ARRET and not garde.is_empty():
@@ -635,14 +635,12 @@ func _ranger_armes() -> void:
 		return
 	_arme_en_main = false
 	for point: String in _armes:
-		if mode == Mode.COMBAT and _prise.est_installee():
-			_armes[point].accrocher_a(_modele, "hanche")
-		elif mode == Mode.COMBAT:
+		if mode == Mode.COMBAT:
 			_armes[point].accrocher_a(_modele, point, VARIANTE_REPOS)
 		else:
 			_armes[point].accrocher_a(_modele, "dos")
 	_prise.relier()
-	_prise.regler(PriseDeuxMains.Tenue.TRAINE if mode == Mode.COMBAT else PriseDeuxMains.Tenue.AUCUNE)
+	_prise.regler(PriseDeuxMains.Tenue.AUCUNE)
 
 
 ## Arme à deux mains : la cinématique inverse posera les mains sur la poignée.
@@ -669,24 +667,22 @@ func _animation_d_attaque() -> String:
 	return animation if _modele.a_animation(animation) else "attack"
 
 
-## Avant un coup : l'arme à deux mains passe de la hanche à la main droite, la gauche la rejoint.
+## Avant un coup : l'arme à deux mains se lève (position de frappe), la main gauche la rejoint.
 func _prendre_arme_deux_mains() -> void:
 	if not _prise.est_installee() or _arme_en_main:
 		return
 	_arme_en_main = true
-	_armes["main_droite"].accrocher_a(_modele, "main_droite")
-	_prise.relier()
+	_armes["main_droite"].varier("")
 	_prise.regler(PriseDeuxMains.Tenue.ATTAQUE)
 
 
-## Après le coup : l'arme retourne à la hanche, traînée à deux mains.
+## Après le coup : l'arme retombe et traîne derrière, dans la main droite ; la gauche la lâche.
 func _reposer_arme_deux_mains() -> void:
 	if not _prise.est_installee() or not _arme_en_main:
 		return
 	_arme_en_main = false
-	_armes["main_droite"].accrocher_a(_modele, "hanche")
-	_prise.relier()
-	_prise.regler(PriseDeuxMains.Tenue.TRAINE)
+	_armes["main_droite"].varier(VARIANTE_REPOS)
+	_prise.regler(PriseDeuxMains.Tenue.AUCUNE)
 
 
 ## Le bouclier (ou l'arme) bloque : courte parade, si le personnage n'est pas en train de frapper.

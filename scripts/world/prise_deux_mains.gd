@@ -1,14 +1,14 @@
 class_name PriseDeuxMains
 extends Node
 ## Tient une arme à deux mains : la cinématique inverse (Godot calcule la position de l'épaule,
-## du coude et du poignet pour qu'une main atteigne une cible) pose les mains sur la poignée.
+## du coude et du poignet pour qu'une main atteigne une cible) pose la main gauche sur la poignée.
 ##
-## Deux tenues :
-##   - TRAINE : l'arme est accrochée à la hanche, pointe au sol derrière ; les DEUX mains la tiennent ;
-##   - ATTAQUE : l'arme est dans la main droite (animation de frappe) ; la main GAUCHE la rejoint.
+## L'arme est toujours dans la main droite. Deux tenues :
+##   - AUCUNE : au repos, l'arme traîne derrière dans la main droite, la main gauche est libre ;
+##   - ATTAQUE : pendant un coup, la main GAUCHE rejoint la droite sur la poignée.
 ## Où poser les mains sur l'arme : réglage « poignee_mains » du catalogue (tools/calculer_prise_deux_mains.gd).
 
-enum Tenue { AUCUNE, ATTAQUE, TRAINE }
+enum Tenue { AUCUNE, ATTAQUE }
 
 ## Durée du passage d'une tenue à l'autre (les mains glissent au lieu de sauter).
 const DUREE_TRANSITION := 0.15
@@ -58,7 +58,7 @@ func installer(porteur: ModeleAsset, arme: ModeleAsset, poignees: Dictionary) ->
 	relier.call_deferred()
 
 
-## Relie chaque main à sa cible. À refaire quand l'arme change de point d'attache (hanche ↔ main) :
+## Relie chaque main à sa cible. À refaire quand l'arme change de point d'attache (dos ↔ main) :
 ## le chemin vers la cible change avec elle.
 func relier() -> void:
 	for cote: String in _ik:
@@ -89,8 +89,8 @@ func regler(nouvelle: Tenue) -> void:
 		return
 	tenue = nouvelle
 	var poids := {
-		"droite": 1.0 if nouvelle == Tenue.TRAINE else 0.0,
-		"gauche": 1.0 if nouvelle != Tenue.AUCUNE else 0.0,
+		"droite": 0.0,
+		"gauche": 1.0 if nouvelle == Tenue.ATTAQUE else 0.0,
 	}
 	if _transition != null:
 		_transition.kill()

@@ -202,17 +202,20 @@ func test_pendant_les_tests_la_sauvegarde_est_eteinte() -> void:
 	assert_false(Sauvegarde.active, "Les tests ne doivent jamais toucher à la partie de Hugo")
 
 
-func test_une_arme_a_deux_mains_se_traine_a_la_hanche_et_se_prend_pour_frapper() -> void:
+func test_une_arme_a_deux_mains_traine_dans_la_main_et_se_prend_a_deux_mains_pour_frapper() -> void:
 	_equiper("objet.lame_guet")
-	assert_true(joueur._prise.est_installee(), "Les mains se posent sur la poignée d'une arme à deux mains")
+	assert_true(joueur._prise.est_installee(), "La main gauche rejoint la poignée d'une arme à deux mains")
 	joueur.changer_mode(Joueur.Mode.COMBAT)
-	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_hanche")
-	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.TRAINE)
+	var lame: ModeleAsset = joueur._armes["main_droite"]
+	assert_eq(lame.get_parent().name, "Attache_main_droite")
+	assert_eq(lame._variante, Joueur.VARIANTE_REPOS, "Au repos, l'arme traîne")
+	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
 	joueur._prendre_arme_deux_mains()
-	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_main_droite")
+	assert_eq(lame._variante, "", "Pour frapper, l'arme se lève")
 	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.ATTAQUE)
 	joueur._reposer_arme_deux_mains()
-	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_hanche")
+	assert_eq(lame._variante, Joueur.VARIANTE_REPOS)
+	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
 
 
 func test_une_arme_a_une_main_n_installe_pas_la_prise_a_deux_mains() -> void:
