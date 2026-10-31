@@ -8,13 +8,14 @@ extends SceneTree
 ## Exemple, depuis le dossier du projet :
 ##   Godot_v4.7.2-stable_win64_console.exe --headless --path . -s res://tools/calculer_prise_deux_mains.gd -- res://assets/models/weapon/claymore/claymore.glb lame 1.009
 ##
-## Arguments : <modèle> <lame|manche> <échelle du catalogue>
+## Arguments : <modèle> <lame|manche> <échelle du catalogue> [axe imposé, ex. « 1,1,0 » si le manche est en diagonale]
 
 const PERSONNAGE := "res://assets/models/character/heros_homme/heros_homme.gltf"
 ## Écart entre les deux mains sur la poignée, en mètres.
 const ECART_MAINS := 0.17
-## Où tombe la main droite quand l'arme traîne (repère du personnage, qui regarde vers +Z ; sa droite est -X).
-const MAIN_DROITE_TRAINE := Vector3(-0.2, 1.03, -0.24)
+## Où tombe la main droite quand l'arme traîne (repère du personnage, qui regarde vers +Z ; sa droite est -X) :
+## le long de la cuisse droite, un peu en avant, pour que les bras restent devant le corps.
+const MAIN_DROITE_TRAINE := Vector3(-0.3, 0.9, 0.1)
 ## Direction de la pointe au sol, vue de dessus : vers l'arrière et un peu sur la droite.
 const DIRECTION_TRAINE := Vector2(-0.25, -1.0)
 
@@ -23,7 +24,11 @@ func _init() -> void:
 	var arguments := OS.get_cmdline_user_args()
 	var outil = load("res://tools/calculer_prise.gd")
 	var points: PackedVector3Array = outil._sommets(arguments[0])
-	var forme: Dictionary = outil._analyser(points, arguments[1], Vector3.ZERO)
+	var axe := Vector3.ZERO
+	if arguments.size() > 3:
+		var morceaux := arguments[3].split(",")
+		axe = Vector3(float(morceaux[0]), float(morceaux[1]), float(morceaux[2])).normalized()
+	var forme: Dictionary = outil._analyser(points, arguments[1], axe)
 	var echelle := float(arguments[2])
 	var poignee: Vector3 = forme["poignee"]
 	var pointe: Vector3 = forme["vers_pointe"]

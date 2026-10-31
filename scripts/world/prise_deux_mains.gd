@@ -13,8 +13,8 @@ enum Tenue { AUCUNE, ATTAQUE, TRAINE }
 ## Durée du passage d'une tenue à l'autre (les mains glissent au lieu de sauter).
 const DUREE_TRANSITION := 0.15
 ## Où pointent les coudes (repère du personnage, qui regarde vers +Z ; sa droite est -X).
-const COUDE_DROIT := Vector3(-0.9, 1.1, -0.6)
-const COUDE_GAUCHE := Vector3(0.9, 1.1, -0.2)
+const COUDE_DROIT := Vector3(-0.9, 1.1, -0.3)
+const COUDE_GAUCHE := Vector3(0.6, 1.0, 0.2)
 const OS_BRAS := {
 	"droite": ["upperarm_r", "lowerarm_r", "hand_r"],
 	"gauche": ["upperarm_l", "lowerarm_l", "hand_l"],
