@@ -5,7 +5,6 @@ extends SubViewportContainer
 
 const TAILLE := Vector2(200, 280)
 const VITESSE_ROTATION := 0.4
-const POINTS_ATTACHE := {"modele_main_droite": "main_droite", "modele_main_gauche": "main_gauche"}
 
 var _vue: SubViewport
 var _socle: Node3D
@@ -66,15 +65,10 @@ func rafraichir() -> void:
 	_habillage.habiller(_modele, _joueur.equipement, _joueur.est_une_femme())
 	var arme := _joueur.equipement.arme()
 	if arme != null:
-		var famille := config.famille_objet(arme.famille)
-		for cle: String in POINTS_ATTACHE:
-			var modele_id := str(famille.get(cle, ""))
-			if modele_id.is_empty():
-				continue
-			var modele_arme := CatalogueAssets.creer(modele_id)
-			ApparenceRarete.appliquer(modele_arme, arme.rarete)
-			ApparenceRarete.ajouter_etincelles(modele_arme, arme.rarete, modele_arme.boite_englobante())
-			modele_arme.accrocher_a(_modele, POINTS_ATTACHE[cle], Joueur.VARIANTE_REPOS)
+		var modeles := ArmesEnMain.creer_modeles(arme, config.arme(arme.type_arme))
+		for point: String in modeles:
+			var modele_arme: ModeleAsset = modeles[point]
+			modele_arme.accrocher_a(_modele, point, ArmesEnMain.VARIANTE_REPOS)
 			_armes.append(modele_arme)
 
 

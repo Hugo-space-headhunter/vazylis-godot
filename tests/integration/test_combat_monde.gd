@@ -57,11 +57,11 @@ func test_en_mode_combat_on_tue_un_cochonnet_et_on_gagne_de_l_xp() -> void:
 
 
 func test_l_arme_change_de_place_selon_le_mode() -> void:
-	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_dos")
-	assert_eq(joueur._armes["main_gauche"].get_parent().name, "Attache_dos")
+	assert_eq(joueur.armes.modeles["main_droite"].get_parent().name, "Attache_dos")
+	assert_eq(joueur.armes.modeles["main_gauche"].get_parent().name, "Attache_dos")
 	joueur.changer_mode(Joueur.Mode.COMBAT)
-	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_main_droite")
-	assert_eq(joueur._armes["main_gauche"].get_parent().name, "Attache_main_gauche")
+	assert_eq(joueur.armes.modeles["main_droite"].get_parent().name, "Attache_main_droite")
+	assert_eq(joueur.armes.modeles["main_gauche"].get_parent().name, "Attache_main_gauche")
 
 
 func test_un_pomelin_charge_le_joueur() -> void:
@@ -119,8 +119,8 @@ func test_chaque_arme_affiche_ses_modeles() -> void:
 			continue
 		_equiper(famille)
 		assert_eq(joueur.id_arme, definition["type_arme"], famille)
-		assert_eq(joueur._armes.has("main_droite"), not str(definition["modele_main_droite"]).is_empty(), famille)
-		assert_eq(joueur._armes.has("main_gauche"), not str(definition["modele_main_gauche"]).is_empty(), famille)
+		assert_eq(joueur.armes.modeles.has("main_droite"), not str(definition["modele_main_droite"]).is_empty(), famille)
+		assert_eq(joueur.armes.modeles.has("main_gauche"), not str(definition["modele_main_gauche"]).is_empty(), famille)
 
 
 func test_l_arc_tue_de_loin() -> void:
@@ -204,40 +204,40 @@ func test_pendant_les_tests_la_sauvegarde_est_eteinte() -> void:
 
 func test_une_arme_a_deux_mains_traine_dans_la_main_et_se_prend_a_deux_mains_pour_frapper() -> void:
 	_equiper("objet.lame_guet")
-	assert_true(joueur._prise.est_installee(), "La main gauche rejoint la poignée d'une arme à deux mains")
+	assert_true(joueur.armes.prise.est_installee(), "La main gauche rejoint la poignée d'une arme à deux mains")
 	joueur.changer_mode(Joueur.Mode.COMBAT)
-	var lame: ModeleAsset = joueur._armes["main_droite"]
+	var lame: ModeleAsset = joueur.armes.modeles["main_droite"]
 	assert_eq(lame.get_parent().name, "Attache_main_droite")
-	assert_eq(lame._variante, Joueur.VARIANTE_REPOS, "Au repos, l'arme traîne")
-	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
-	joueur._prendre_arme_deux_mains()
+	assert_eq(lame._variante, ArmesEnMain.VARIANTE_REPOS, "Au repos, l'arme traîne")
+	assert_eq(joueur.armes.prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
+	joueur.armes.lever()
 	assert_eq(lame._variante, "", "Pour frapper, l'arme se lève")
-	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.ATTAQUE)
-	joueur._reposer_arme_deux_mains()
-	assert_eq(lame._variante, Joueur.VARIANTE_REPOS)
-	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
+	assert_eq(joueur.armes.prise.tenue, PriseDeuxMains.Tenue.ATTAQUE)
+	joueur.armes.reposer()
+	assert_eq(lame._variante, ArmesEnMain.VARIANTE_REPOS)
+	assert_eq(joueur.armes.prise.tenue, PriseDeuxMains.Tenue.AUCUNE)
 
 
 func test_une_arme_a_une_main_n_installe_pas_la_prise_a_deux_mains() -> void:
-	assert_false(joueur._prise.est_installee())
+	assert_false(joueur.armes.prise.est_installee())
 	_equiper("objet.lame_guet")
 	_equiper("objet.arc_chasseur")
-	assert_false(joueur._prise.est_installee())
-	assert_true(joueur._tir.est_installe(), "L'arc installe la main qui tire la corde")
+	assert_false(joueur.armes.prise.est_installee())
+	assert_true(joueur.armes.tir.est_installe(), "L'arc installe la main qui tire la corde")
 
 
 func test_les_coups_s_enchainent_a_tour_de_role() -> void:
 	var animations: Array = joueur.arme["animations_attaque"]
 	var jouees := []
 	for i in animations.size() + 1:
-		jouees.append(joueur._animation_d_attaque())
+		jouees.append(joueur.armes.prochaine_animation())
 	assert_eq(jouees.slice(0, animations.size()), animations)
 	assert_eq(jouees[-1], animations[0], "Après le dernier coup, on recommence au premier")
 
 
 func test_un_coup_qui_porte_fait_un_arret_sur_image_bref() -> void:
 	_equiper("objet.lame_guet")
-	joueur._ressentir_l_impact(false)
+	ImpactDesCoups.ressentir(joueur.get_tree(), false, true)
 	assert_lt(Engine.time_scale, 1.0, "Coup lourd : le temps ralentit")
 	await wait_seconds(0.3, "Le temps reprend")
 	assert_eq(Engine.time_scale, 1.0)
