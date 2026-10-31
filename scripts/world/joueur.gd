@@ -72,6 +72,17 @@ var _recharge_attaque := 0.0
 var _verrou_animation := 0.0
 var _coup_en_attente := -1.0
 var _cible: Monstre
+## Tenue des armes à deux mains (mains posées sur la poignée par cinématique inverse).
+var _prise := PriseDeuxMains.new()
+## Le tir à l'arc (main droite qui tire la corde).
+var _tir := TirArc.new()
+## Rang du prochain coup dans l'enchaînement d'animations de l'arme.
+var _coup_suivant := 0
+## L'arme à deux mains est dans la main droite (pendant un coup) plutôt qu'à la hanche.
+var _arme_en_main := false
+## Temps depuis la fin du dernier coup : l'arme à deux mains ne retombe à la hanche qu'après une pause.
+var _sans_frapper := 0.0
+const PAUSE_AVANT_TRAINE := 1.0
 var _point_afk := Vector3.ZERO
 ## Effets spéciaux des panoplies complètes portées (« regain », « epines », « bastion », « rage »).
 var _effets: Array = []
@@ -82,6 +93,8 @@ var _gravite: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
 	add_to_group(GROUPE)
+	add_child(_prise)
+	add_child(_tir)
 	_hasard.randomize()
 	_depart = global_position
 	experience = Experience.new(Config.jeu)
@@ -172,6 +185,7 @@ func changer_personnage(id: String) -> void:
 	_modele.rotation.y = rotation_actuelle
 	add_child(_modele)
 	_modele.jouer(Deplacement.animation(_allure), 0.0)
+	_installer_la_prise()
 	_ranger_armes()
 	_habillage.habiller(_modele, equipement, est_une_femme())
 
@@ -255,6 +269,8 @@ func _appliquer_arme() -> void:
 			ApparenceRarete.appliquer(modele_arme, objet.rarete)
 			ApparenceRarete.ajouter_etincelles(modele_arme, objet.rarete, modele_arme.boite_englobante())
 			_armes[POINTS_ATTACHE[cle]] = modele_arme
+	_coup_suivant = 0
+	_installer_la_prise()
 	_ranger_armes()
 	_coup_en_attente = -1.0
 	arme_change.emit(id_arme)
@@ -280,6 +296,7 @@ func recevoir_degats(degats_bruts: float, niveau_attaquant: int, attaquant: Mons
 	var tete := global_position + Vector3.UP * 2.0
 	if Combat.bloque(arme, _hasard) or (a_effet("bastion") and _hasard.randf() < Config.jeu.reglage_effet("bastion")):
 		ChiffreFlottant.afficher(get_parent(), tete, "Bloqué", Color(0.75, 0.85, 1.0), 48)
+		_jouer_la_parade()
 		return
 	var degats := Combat.degats_subis(degats_bruts, niveau_attaquant, defense(), Config.jeu)
 	pv = maxf(0.0, pv - degats)
@@ -333,9 +350,16 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector3.ZERO and _verrou_animation <= 0.0:
 		_tourner_vers(global_position + direction, 1.0 - exp(-config.lissage_rotation() * delta))
 	if _verrou_animation <= 0.0:
+		_sans_frapper += delta
 		if mode == Mode.COMBAT:
 			_varier_armes(VARIANTE_REPOS)
-		_modele.jouer(Deplacement.animation(_allure), config.fondu_animation())
+			if _sans_frapper >= PAUSE_AVANT_TRAINE:
+				_reposer_arme_deux_mains()
+		var animation := Deplacement.animation(_allure)
+		var garde := str(arme.get("animation_garde", ""))
+		if mode == Mode.COMBAT and _allure == Deplacement.Allure.ARRET and not garde.is_empty():
+			animation = garde
+		_modele.jouer(animation, config.fondu_animation())
 		_modele.regler_vitesse_animation(Deplacement.vitesse_animation(_allure, horizontale.length(), config))
 
 
@@ -353,7 +377,9 @@ func _combattre(delta: float) -> void:
 	var intervalle := 1.0 / Combat.vitesse_attaque(statistiques_effectives(), arme, Config.jeu, equipement.bonus_totaux(Config.jeu))
 	_recharge_attaque = intervalle
 	_tourner_vers(_cible.global_position, 1.0)
-	var animation := str(arme.get("animation", "attack"))
+	var animation := _animation_d_attaque()
+	_sans_frapper = 0.0
+	_prendre_arme_deux_mains()
 	var duree := _modele.duree(animation)
 	var vitesse := maxf(1.0, duree / intervalle)
 	_varier_armes("")
@@ -361,6 +387,7 @@ func _combattre(delta: float) -> void:
 	_modele.regler_vitesse_animation(vitesse)
 	_verrou_animation = duree / vitesse
 	_coup_en_attente = _verrou_animation * float(arme.get("moment_du_coup", 0.4))
+	_tir.bander(_coup_en_attente)
 
 
 func _frapper() -> void:
@@ -368,6 +395,7 @@ func _frapper() -> void:
 		return
 	var cible := _cible
 	if bool(arme.get("a_distance", false)):
+		_tir.lacher()
 		var depart := global_position + Vector3.UP * 1.4
 		Fleche.tirer(get_parent(), depart, cible, _toucher.bind(cible))
 	else:
@@ -380,7 +408,33 @@ func _toucher(cible: Monstre) -> void:
 	_hors_combat = 0.0
 	var coup := Combat.coup_joueur(experience.niveau, statistiques_effectives(), arme, 0.0, cible.niveau, Config.jeu,
 		_hasard, _degats_arme(), bonus_de_combat())
+	var pv_avant := cible.pv
 	_infliger(cible, coup["degats"], coup["critique"])
+	if not is_instance_valid(cible) or cible.pv < pv_avant:
+		_ressentir_l_impact(coup["critique"])
+
+
+## Un coup porte : la caméra tremble (plus fort pour une arme lourde ou un critique),
+## et le temps s'arrête une fraction de seconde sur les coups lourds et critiques.
+func _ressentir_l_impact(critique: bool) -> void:
+	var lourd := bool(arme.get("deux_mains", false))
+	var genre := "critique" if critique else ("lourde" if lourd else "normale")
+	var camera := get_tree().get_first_node_in_group(CameraSuiveuse.GROUPE) as CameraSuiveuse
+	if camera != null:
+		camera.secouer(Config.jeu.combat("impact", "secousse_" + genre), Config.jeu.combat("impact", "duree_secousse"))
+	var arret := Config.jeu.combat("impact", "arret_critique" if critique else "arret_lourd") if critique or lourd else 0.0
+	if arret > 0.0:
+		_arreter_le_temps(arret)
+
+
+func _arreter_le_temps(duree: float) -> void:
+	Engine.time_scale = Config.jeu.combat("impact", "vitesse_arret")
+	await get_tree().create_timer(duree, true, false, true).timeout
+	Engine.time_scale = 1.0
+
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0
 
 
 ## Bonus en % pour frapper : ceux des objets et des panoplies, plus Rage quand la vie est basse.
@@ -579,11 +633,69 @@ func _tourner_vers(point: Vector3, poids: float) -> void:
 func _ranger_armes() -> void:
 	if _modele == null:
 		return
+	_arme_en_main = false
 	for point: String in _armes:
-		if mode == Mode.COMBAT:
+		if mode == Mode.COMBAT and _prise.est_installee():
+			_armes[point].accrocher_a(_modele, "hanche")
+		elif mode == Mode.COMBAT:
 			_armes[point].accrocher_a(_modele, point, VARIANTE_REPOS)
 		else:
 			_armes[point].accrocher_a(_modele, "dos")
+	_prise.relier()
+	_prise.regler(PriseDeuxMains.Tenue.TRAINE if mode == Mode.COMBAT else PriseDeuxMains.Tenue.AUCUNE)
+
+
+## Arme à deux mains : la cinématique inverse posera les mains sur la poignée.
+## Arc : la main droite tirera la corde. Sinon, rien.
+func _installer_la_prise() -> void:
+	_prise.retirer()
+	_tir.retirer()
+	if _modele != null and bool(arme.get("a_distance", false)) and _armes.has("main_gauche"):
+		var arc: ModeleAsset = _armes["main_gauche"]
+		_tir.installer(_modele, arc, CatalogueAssets.reglage(arc.asset_id, "corde", {}))
+	if _modele == null or not bool(arme.get("deux_mains", false)) or not _armes.has("main_droite"):
+		return
+	var arme_modele: ModeleAsset = _armes["main_droite"]
+	_prise.installer(_modele, arme_modele, CatalogueAssets.reglage(arme_modele.asset_id, "poignee_mains", {}))
+
+
+## Le prochain coup de l'enchaînement de l'arme (« animations_attaque », jouées à tour de rôle).
+func _animation_d_attaque() -> String:
+	var liste: Array = arme.get("animations_attaque", ["attack"])
+	if liste.is_empty():
+		return "attack"
+	var animation := str(liste[_coup_suivant % liste.size()])
+	_coup_suivant += 1
+	return animation if _modele.a_animation(animation) else "attack"
+
+
+## Avant un coup : l'arme à deux mains passe de la hanche à la main droite, la gauche la rejoint.
+func _prendre_arme_deux_mains() -> void:
+	if not _prise.est_installee() or _arme_en_main:
+		return
+	_arme_en_main = true
+	_armes["main_droite"].accrocher_a(_modele, "main_droite")
+	_prise.relier()
+	_prise.regler(PriseDeuxMains.Tenue.ATTAQUE)
+
+
+## Après le coup : l'arme retourne à la hanche, traînée à deux mains.
+func _reposer_arme_deux_mains() -> void:
+	if not _prise.est_installee() or not _arme_en_main:
+		return
+	_arme_en_main = false
+	_armes["main_droite"].accrocher_a(_modele, "hanche")
+	_prise.relier()
+	_prise.regler(PriseDeuxMains.Tenue.TRAINE)
+
+
+## Le bouclier (ou l'arme) bloque : courte parade, si le personnage n'est pas en train de frapper.
+func _jouer_la_parade() -> void:
+	var parade := str(arme.get("animation_parade", ""))
+	if parade.is_empty() or _verrou_animation > 0.0 or not _modele.a_animation(parade):
+		return
+	_modele.jouer(parade, 0.08, false, true)
+	_verrou_animation = minf(_modele.duree(parade), 0.6)
 
 
 func _varier_armes(variante: String) -> void:

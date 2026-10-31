@@ -200,3 +200,41 @@ func test_exporter_puis_importer_la_partie() -> void:
 
 func test_pendant_les_tests_la_sauvegarde_est_eteinte() -> void:
 	assert_false(Sauvegarde.active, "Les tests ne doivent jamais toucher à la partie de Hugo")
+
+
+func test_une_arme_a_deux_mains_se_traine_a_la_hanche_et_se_prend_pour_frapper() -> void:
+	_equiper("objet.lame_guet")
+	assert_true(joueur._prise.est_installee(), "Les mains se posent sur la poignée d'une arme à deux mains")
+	joueur.changer_mode(Joueur.Mode.COMBAT)
+	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_hanche")
+	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.TRAINE)
+	joueur._prendre_arme_deux_mains()
+	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_main_droite")
+	assert_eq(joueur._prise.tenue, PriseDeuxMains.Tenue.ATTAQUE)
+	joueur._reposer_arme_deux_mains()
+	assert_eq(joueur._armes["main_droite"].get_parent().name, "Attache_hanche")
+
+
+func test_une_arme_a_une_main_n_installe_pas_la_prise_a_deux_mains() -> void:
+	assert_false(joueur._prise.est_installee())
+	_equiper("objet.lame_guet")
+	_equiper("objet.arc_chasseur")
+	assert_false(joueur._prise.est_installee())
+	assert_true(joueur._tir.est_installe(), "L'arc installe la main qui tire la corde")
+
+
+func test_les_coups_s_enchainent_a_tour_de_role() -> void:
+	var animations: Array = joueur.arme["animations_attaque"]
+	var jouees := []
+	for i in animations.size() + 1:
+		jouees.append(joueur._animation_d_attaque())
+	assert_eq(jouees.slice(0, animations.size()), animations)
+	assert_eq(jouees[-1], animations[0], "Après le dernier coup, on recommence au premier")
+
+
+func test_un_coup_qui_porte_fait_un_arret_sur_image_bref() -> void:
+	_equiper("objet.lame_guet")
+	joueur._ressentir_l_impact(false)
+	assert_lt(Engine.time_scale, 1.0, "Coup lourd : le temps ralentit")
+	await wait_seconds(0.3, "Le temps reprend")
+	assert_eq(Engine.time_scale, 1.0)

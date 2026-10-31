@@ -6,10 +6,17 @@ extends Node3D
 ## Le nœud suivi (le personnage).
 @export var cible: Node3D
 
+## Groupe pour retrouver la caméra (par exemple pour la secouer quand un coup porte).
+const GROUPE := "camera_suiveuse"
+
 @onready var _camera: Camera3D = $Camera
+var _secousse := 0.0
+var _duree_secousse := 0.0
+var _reste_secousse := 0.0
 
 
 func _ready() -> void:
+	add_to_group(GROUPE)
 	var config := Config.jeu
 	var inclinaison := deg_to_rad(config.inclinaison_camera_degres())
 	var distance := config.distance_camera()
@@ -28,6 +35,29 @@ func _process(delta: float) -> void:
 		return
 	var poids := 1.0 - exp(-Config.jeu.lissage_suivi_camera() * delta)
 	global_position = global_position.lerp(cible.global_position, poids)
+	_secouer_la_vue(delta)
+
+
+## Secoue la caméra : « amplitude » en mètres, qui s'éteint en « duree » secondes.
+func secouer(amplitude: float, duree: float) -> void:
+	if amplitude < _secousse * (_reste_secousse / maxf(_duree_secousse, 0.001)):
+		return
+	_secousse = amplitude
+	_duree_secousse = duree
+	_reste_secousse = duree
+
+
+func _secouer_la_vue(delta: float) -> void:
+	if _reste_secousse <= 0.0:
+		return
+	# Temps réel : la secousse continue pendant un arrêt sur image.
+	_reste_secousse -= delta / maxf(Engine.time_scale, 0.01)
+	var force := _secousse * maxf(0.0, _reste_secousse / _duree_secousse)
+	_camera.h_offset = randf_range(-force, force)
+	_camera.v_offset = randf_range(-force, force)
+	if _reste_secousse <= 0.0:
+		_camera.h_offset = 0.0
+		_camera.v_offset = 0.0
 
 
 ## Tourne la caméra autour du personnage (pixels glissés à l'écran).

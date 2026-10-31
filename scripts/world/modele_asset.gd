@@ -93,6 +93,12 @@ func regler_vitesse_animation(vitesse: float) -> void:
 		_lecteur.speed_scale = vitesse
 
 
+## Ajoute un nœud dans le repère du fichier 3D lui-même (après son échelle et sa rotation du catalogue),
+## par exemple une cible posée sur la poignée d'une arme.
+func ajouter_au_modele(noeud: Node3D) -> void:
+	_modele.add_child(noeud)
+
+
 ## Point d'attache nommé (« main_droite », « dos »…), qui suit l'os correspondant.
 ## Renvoie le modèle lui-même si le point n'existe pas, pour ne jamais planter.
 func point_attache(nom: String) -> Node3D:
@@ -182,6 +188,23 @@ func _vrai_nom(animation_standard: String) -> String:
 
 
 ## Squelette du modèle (null pour un objet sans os).
+## Éclair blanc sur tout le modèle (coup reçu), qui s'efface en « duree » secondes.
+func eclairer(duree: float, force: float) -> void:
+	var matiere := StandardMaterial3D.new()
+	matiere.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	matiere.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	matiere.albedo_color = Color(1, 1, 1, force)
+	var surfaces := find_children("*", "GeometryInstance3D", true, false)
+	for surface: GeometryInstance3D in surfaces:
+		surface.material_overlay = matiere
+	var fondu := create_tween()
+	fondu.tween_property(matiere, "albedo_color:a", 0.0, duree)
+	fondu.tween_callback(func() -> void:
+		for surface in surfaces:
+			if is_instance_valid(surface) and surface.material_overlay == matiere:
+				surface.material_overlay = null)
+
+
 func squelette() -> Skeleton3D:
 	var squelettes := find_children("*", "Skeleton3D", true, false)
 	return squelettes[0] if not squelettes.is_empty() else null

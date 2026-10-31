@@ -158,6 +158,8 @@ func recevoir_coup(degats: int, critique: bool) -> bool:
 			_engager()
 		return false
 	pv = maxf(0.0, pv - degats)
+	if _modele != null:
+		_modele.eclairer(Config.jeu.combat("impact", "duree_eclair"), Config.jeu.combat("impact", "force_eclair"))
 	_barre.visible = true
 	_barre.regler(pv / pv_max)
 	var couleur := ChiffreFlottant.COULEUR_CRITIQUE if critique else ChiffreFlottant.COULEUR_DEGATS
