@@ -169,6 +169,9 @@ func _changer_d_ambiance(zone: Zone) -> void:
 		[environnement, "ambient_light_energy", ambiance.ambiante_energie],
 		[soleil, "light_color", ambiance.soleil_couleur],
 		[soleil, "light_energy", ambiance.soleil_energie],
+		[environnement, "tonemap_exposure", ambiance.exposition],
+		[environnement, "adjustment_contrast", ambiance.contraste],
+		[environnement, "adjustment_saturation", ambiance.saturation],
 	]
 	if _premiere_ambiance:
 		_premiere_ambiance = false

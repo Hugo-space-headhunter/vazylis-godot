@@ -12,3 +12,6 @@ soleil_couleur = Color(1, 0.94, 0.8, 1)
 soleil_energie = 1.15
 ambiante_couleur = Color(0.72, 0.78, 0.9, 1)
 ambiante_energie = 0.55
+exposition = 0.97
+contraste = 1.08
+saturation = 1.08

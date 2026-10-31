@@ -22,3 +22,11 @@ extends Resource
 ## Lumière qui vient de partout (elle éclaire les côtés à l'ombre).
 @export var ambiante_couleur := Color(0.75, 0.8, 0.9)
 @export_range(0.0, 2.0, 0.01) var ambiante_energie := 0.55
+
+@export_group("Image")
+## Luminosité générale (1 = normale ; plus bas = plus sombre, plus dramatique).
+@export_range(0.5, 1.5, 0.01) var exposition := 0.94
+## Contraste (1 = normal ; plus haut = ombres plus profondes et lumières plus franches).
+@export_range(0.5, 1.5, 0.01) var contraste := 1.1
+## Saturation des couleurs (1 = normale ; plus bas = plus terne, plus haut = plus vif).
+@export_range(0.0, 2.0, 0.01) var saturation := 1.05
