@@ -210,6 +210,12 @@ func _butin_de_test() -> void:
 func _sur_objet_obtenu(objet: Objet, case_numero: int, or_gagne: int) -> void:
 	if case_numero == Joueur.CASE_SAC_PLEIN:
 		_annonces.annoncer("Sac plein : %s recyclé (+%d or)" % [objet.nom, or_gagne], Color(1, 0.75, 0.4))
+		return
+	# Une belle trouvaille (doré et au-delà) est annoncée, dans la couleur de sa rareté.
+	var config := Config.jeu
+	if case_numero >= 0 and config.ids_raretes().find(objet.rarete) >= EffetButin.RANG_BELLE_TROUVAILLE:
+		_annonces.annoncer("%s : %s (niv. %d)" % [config.nom_rarete(objet.rarete), objet.nom, objet.niveau],
+			config.couleur_rarete(objet.rarete))
 
 
 func _afficher_points() -> void:
