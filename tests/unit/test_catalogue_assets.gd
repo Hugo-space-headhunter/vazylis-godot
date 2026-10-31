@@ -85,3 +85,13 @@ func test_chaque_decor_des_zones_est_dans_le_catalogue() -> void:
 		for decor: Decor in decors:
 			assert_true(CatalogueAssets.contient(decor.id_asset), "%s : « %s » manque dans le catalogue" % [chemin, decor.id_asset])
 		zone.free()
+
+
+func test_l_heroine_reprend_les_reglages_du_heros() -> void:
+	var heros := IdentifiantsAssets.HEROS_HOMME
+	var heroine := IdentifiantsAssets.HEROS_FEMME
+	assert_eq(CatalogueAssets.reglage(heroine, "modele_de_base", ""), heros)
+	assert_eq(CatalogueAssets.reglage(heroine, "animations", {}), CatalogueAssets.reglage(heros, "animations", {}))
+	assert_ne(CatalogueAssets.reglage(heroine, "fichier", ""), CatalogueAssets.reglage(heros, "fichier", ""),
+		"Ce qu'elle précise elle-même (son fichier) l'emporte")
+	assert_eq(CatalogueAssets.reglage(heroine, "reglage_qui_n_existe_pas", 42), 42)

@@ -13,6 +13,8 @@ const CHEMIN_CATALOGUE := "res://assets/catalogue.cfg"
 const ANIMATIONS_STANDARD: PackedStringArray = ["idle", "walk", "run", "attack", "hit", "die"]
 
 const COULEUR_REPLI_PAR_DEFAUT := Color(1.0, 0.35, 0.6)
+## Nombre maximal de « modele_de_base » enchaînés (évite une boucle sans fin en cas d'erreur).
+const PROFONDEUR_MAX_HERITAGE := 4
 
 var _catalogue := ConfigFile.new()
 var _matieres_teintees := {}
@@ -37,8 +39,17 @@ func identifiants() -> PackedStringArray:
 	return _catalogue.get_sections()
 
 
+## Réglage d'un identifiant. Un identifiant qui a un « modele_de_base » reprend tous les réglages
+## de celui-ci qu'il ne précise pas lui-même (par exemple l'héroïne reprend les animations du héros).
 func reglage(id: String, cle: String, defaut: Variant = null) -> Variant:
-	return _catalogue.get_value(id, cle, defaut)
+	var courant := id
+	for profondeur in PROFONDEUR_MAX_HERITAGE:
+		if _catalogue.has_section_key(courant, cle):
+			return _catalogue.get_value(courant, cle)
+		courant = str(_catalogue.get_value(courant, "modele_de_base", "")) if _catalogue.has_section(courant) else ""
+		if courant.is_empty():
+			break
+	return defaut
 
 
 ## Vrai nom, dans le modèle, d'une animation standard (« idle », « walk »…).
