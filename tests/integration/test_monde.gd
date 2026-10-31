@@ -448,22 +448,25 @@ func test_le_menu_test_s_ouvre_et_se_ferme() -> void:
 func test_l_interface_reste_dans_les_zones_de_securite() -> void:
 	ZoneSecurite.marges_imposees = Vector4(80, 90, 70, 60)
 	var disposition: DispositionInterface = terrain.get_node("Interface/Disposition")
-	disposition.placer()
-	var ecran := terrain.get_viewport().get_visible_rect().size
+	disposition.set_process(false)
 	var marges := ZoneSecurite.marges(terrain.get_viewport())
-	var zone := Rect2(Vector2(marges.x, marges.y), ecran - Vector2(marges.x + marges.z, marges.y + marges.w))
-	for chemin in ["Bandeau", "BoutonStatistiques", "BoutonSac", "BoutonsMode", "BoutonAFK", "OutilsTest"]:
-		var element: Control = terrain.get_node("Interface/" + chemin)
-		assert_true(zone.grow(0.5).encloses(element.get_global_rect()), "%s reste à l'abri de l'encoche" % chemin)
+	for ecran in [Vector2(720, 1558), Vector2(1558, 720)]:
+		disposition.placer(ecran)
+		var zone := Rect2(Vector2(marges.x, marges.y), ecran - Vector2(marges.x + marges.z, marges.y + marges.w))
+		for chemin in ["Bandeau", "BoutonStatistiques", "BoutonSac", "BoutonsMode", "BoutonAFK", "OutilsTest"]:
+			var element: Control = terrain.get_node("Interface/" + chemin)
+			assert_true(zone.grow(0.5).encloses(element.get_global_rect()), "%s reste à l'abri de l'encoche (écran %s)" % [chemin, ecran])
 	ZoneSecurite.marges_imposees = Vector4(-1, -1, -1, -1)
 
 
 func test_en_portrait_le_sac_descend_pres_du_pouce() -> void:
 	var disposition: DispositionInterface = terrain.get_node("Interface/Disposition")
+	disposition.set_process(false)
 	var sac: Control = terrain.get_node("Interface/BoutonSac")
 	var modes: Control = terrain.get_node("Interface/BoutonsMode")
-	disposition.placer()
-	if disposition.portrait:
-		assert_gt(sac.position.y, modes.position.y - 200.0)
-	else:
-		assert_lt(sac.position.y, modes.position.y - 200.0, "En paysage, le sac reste sous le bandeau")
+	disposition.placer(Vector2(720, 1558))
+	assert_true(disposition.portrait)
+	assert_gt(sac.position.y, modes.position.y - 200.0, "En portrait, le sac est juste au-dessus d'Arme et Pied")
+	disposition.placer(Vector2(1558, 720))
+	assert_false(disposition.portrait)
+	assert_lt(sac.position.y, modes.position.y - 200.0, "En paysage, le sac reste sous le bandeau")

@@ -46,11 +46,12 @@ func _process(delta: float) -> void:
 		placer()
 
 
-## Met chaque élément à sa place pour la taille et les marges actuelles de l'écran.
-func placer() -> void:
-	var ecran := get_viewport().get_visible_rect().size
+## Met chaque élément à sa place pour la taille et les marges actuelles de l'écran
+## (« taille_imposee » : une autre taille d'écran, pour les tests).
+func placer(taille_imposee := Vector2.ZERO) -> void:
+	var ecran := get_viewport().get_visible_rect().size if taille_imposee == Vector2.ZERO else taille_imposee
 	_marges = ZoneSecurite.marges(get_viewport())
-	_taille = ecran
+	_taille = get_viewport().get_visible_rect().size
 	portrait = ecran.y > ecran.x
 	var gauche := _marges.x
 	var haut := _marges.y
