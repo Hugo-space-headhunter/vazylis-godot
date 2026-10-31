@@ -110,10 +110,10 @@ Chaque zone a sa palette ; le monde s'assombrit et vire au pourpre en approchant
 | Forgeron | personnage de base | À retoucher | Sans tablier ni marteau |
 | Maisons, chariot, barrière | Medieval Village Pack, fusionnés | Conforme | Texturés, dans le style |
 | Murs, piliers, murets, dalles, éboulis | KayKit + pierre du pack village | Conforme | Aplats remplacés par de la vraie pierre (chantier B) |
-| Tonneaux, caisses, fût, tables, tabourets, coffre | KayKit | À retoucher | Encore en aplats « jouet » ; leur donner du bois texturé |
-| Bannières, torches | KayKit | À retoucher | Aplats ; tissu et métal à texturer |
+| Tonneaux, caisses, fût, tables, tabourets, coffre | KayKit + bois du pack village | Conforme | Bois texturé (chantier C) |
+| Bannières, torches | KayKit | À retoucher | Aplats ; une seule texture remplacerait aussi les flammes et les motifs : à refaire avec un modèle dédié |
 | Arbres | bouleaux, arbres morts (Quaternius) | Conforme | Textures 1 024 px |
-| Érables | Quaternius, feuillage rouge vif | À retoucher | Rouge saumon hors palette de la Vallée claire |
+| Érables | Quaternius, feuillage teinté | Conforme | Vert doré, dans la palette de la Vallée claire (chantier C) |
 | Buissons, fleurs, herbe | Quaternius | Conforme | Buissons ancrés, herbe texturée (chantier B) |
 | Sols | ambientCG | Conforme | Validés par Hugo (chantier B) |
 | Enclume de la forge | formes simples | À remplacer | Provisoire |

@@ -86,6 +86,9 @@ On ne garde que la couleur (1024 px) et le relief (« NormalGL », réduit à 51
 
 Elles remplacent les aplats de couleur des pièces KayKit (réglage « texture_matiere » du catalogue).
 
+| Bois en planches (tonneaux, caisses, fût, tables, tabourets, coffre) | `assets/textures/bois/planches/` | Medieval Village Pack, Quaternius (T_WoodTrim), réduite à 1024 px | CC0 |
+| Feuillage d'érable en niveaux de gris, teinté vert doré | `assets/models/prop/nature/MapleTree_Leaves_BW.png` | Ultimate Stylized Nature, Quaternius | CC0 |
+
 ## Images
 
 | Nom | Fichier | Source | Licence |
