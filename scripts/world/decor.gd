@@ -19,6 +19,10 @@ extends Node3D
 ## un arbre qui passe entre la caméra et le héros ne cache plus l'écran. Zéro : jamais.
 @export var fondu_camera := 0.0
 
+## Taille d'obstacle (plus grande largeur, hauteur) à partir de laquelle le décor masque la caméra.
+## Les troncs d'arbres, trop fins, ne comptent pas : ils s'effacent (fondu_camera).
+const TAILLE_MASQUE_CAMERA := Vector2(1.5, 1.8)
+
 ## Matières déjà préparées pour l'effacement, partagées entre tous les décors.
 static var _matieres_fondues := {}
 
@@ -43,6 +47,9 @@ func _ready() -> void:
 	forme.shape = boite
 	forme.position.y = obstacle.y / 2.0
 	var corps := StaticBody3D.new()
+	# Un grand décor (mur, maison, gros rocher) gêne aussi la vue : la caméra se rapproche devant lui.
+	if maxf(obstacle.x, obstacle.z) >= TAILLE_MASQUE_CAMERA.x and obstacle.y >= TAILLE_MASQUE_CAMERA.y:
+		corps.collision_layer |= CameraSuiveuse.COUCHE_MASQUE
 	corps.add_child(forme)
 	add_child(corps)
 

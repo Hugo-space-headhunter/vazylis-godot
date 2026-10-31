@@ -329,6 +329,11 @@ func lissage_suivi_camera() -> float:
 	return _nombre("commandes", "camera", "lissage_suivi", 8.0)
 
 
+## Autre réglage numérique de la caméra (section [camera] de commandes.cfg).
+func reglage_camera(cle: String, defaut: float) -> float:
+	return _nombre("commandes", "camera", cle, defaut)
+
+
 func sensibilite_rotation_camera() -> float:
 	return _nombre("commandes", "camera", "sensibilite_rotation", 0.35)
 
