@@ -54,6 +54,8 @@ var _vitesse_rotation := 0.0
 ## En rage (« enrage » dans la config) : il frappe plus vite et plus fort.
 var enrage := false
 var _matiere_aura: StandardMaterial3D
+var _echelle_modele := Vector3.ONE
+var _reaction: Tween
 var _sens_encerclement := 1.0
 var _delta := 0.0
 var _hasard := RandomNumberGenerator.new()
@@ -103,6 +105,7 @@ func _ready() -> void:
 	if rang == Combat.RANG_CHAMPION:
 		_modele.scale *= Config.jeu.combat("champion", "echelle")
 		$Collision.scale *= Config.jeu.combat("champion", "echelle")
+	_echelle_modele = _modele.scale
 	var boite := Transform3D(_modele.transform.basis, Vector3.ZERO) * _modele.boite_englobante()
 	_hauteur_infos = maxf(HAUTEUR_INFOS, boite.end.y + 0.25)
 	if rang != Combat.RANG_NORMAL:
@@ -152,8 +155,7 @@ func recevoir_coup(degats: int, critique: bool) -> bool:
 			_engager()
 		return false
 	pv = maxf(0.0, pv - degats)
-	if _modele != null:
-		_modele.eclairer(Config.jeu.combat("impact", "duree_eclair"), Config.jeu.combat("impact", "force_eclair"))
+	_encaisser(critique)
 	_barre.visible = true
 	_barre.regler(pv / pv_max)
 	var couleur := ChiffreFlottant.COULEUR_CRITIQUE if critique else ChiffreFlottant.COULEUR_DEGATS
@@ -374,6 +376,30 @@ func _couleur_du_rang() -> Color:
 	return COULEUR_SOUS_BOSS if rang == Combat.RANG_SOUS_BOSS else COULEUR_CHAMPION
 
 
+## Un coup porte : éclair blanc, étincelles, et le monstre recule un instant en se tassant.
+func _encaisser(critique: bool) -> void:
+	if _modele == null or not is_inside_tree():
+		return
+	var config := Config.jeu
+	_modele.eclairer(config.combat("impact", "duree_eclair"), config.combat("impact", "force_eclair"))
+	var vers_le_monstre := Vector3.FORWARD
+	if _joueur_vivant():
+		vers_le_monstre = global_position - _joueur.global_position
+		vers_le_monstre.y = 0.0
+		vers_le_monstre = vers_le_monstre.normalized() if vers_le_monstre.length() > 0.01 else Vector3.FORWARD
+	EffetsDeCoup.etincelles(get_parent(), global_position + Vector3.UP * _hauteur_infos * 0.55 - vers_le_monstre * 0.3, critique)
+	var recul := config.combat("impact", "recul_monstre") * (1.6 if critique else 1.0)
+	if _reaction != null:
+		_reaction.kill()
+	_modele.position = Vector3.ZERO
+	_modele.scale = _echelle_modele
+	_reaction = create_tween()
+	_reaction.tween_property(_modele, "position", vers_le_monstre * recul, 0.06).set_ease(Tween.EASE_OUT)
+	_reaction.parallel().tween_property(_modele, "scale", _echelle_modele * Vector3(1.08, 0.9, 1.08), 0.06)
+	_reaction.tween_property(_modele, "position", Vector3.ZERO, 0.18).set_trans(Tween.TRANS_SINE)
+	_reaction.parallel().tween_property(_modele, "scale", _echelle_modele, 0.18).set_trans(Tween.TRANS_SINE)
+
+
 func _mourir() -> void:
 	etat = Etat.MORT
 	remove_from_group(GROUPE)
@@ -382,9 +408,13 @@ func _mourir() -> void:
 	_etiquette.visible = false
 	_modele.jouer("die", 0.1, false)
 	mort.emit(self)
+	# Le corps reste un instant, puis s'enfonce dans un nuage de poussière.
+	var taille := clampf(_hauteur_infos / 1.2, 0.6, 2.5)
 	var disparition := create_tween()
-	disparition.tween_interval(1.5)
-	disparition.tween_property(_modele, "scale", Vector3.ONE * 0.01, 0.3)
+	disparition.tween_interval(1.3)
+	disparition.tween_callback(func() -> void: EffetsDeCoup.poussiere(get_parent(), global_position, taille))
+	disparition.tween_property(_modele, "position:y", -0.6 * taille, 0.5).set_ease(Tween.EASE_IN)
+	disparition.parallel().tween_property(_modele, "scale", _echelle_modele * 0.3, 0.5).set_ease(Tween.EASE_IN)
 	disparition.tween_callback(queue_free)
 
 
