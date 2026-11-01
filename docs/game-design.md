@@ -74,6 +74,8 @@ Le niveau est infini, mais le contenu ne peut pas l'être. Deux leviers : de nou
 
 Il n'y a pas de classe : tous les joueurs partent du même personnage standard, homme ou femme au choix à la création, et le style de jeu dépend de l'arme équipée.
 
+*Décidé le 01/11/2026* : le personnage a une **apparence** indépendante de l'équipement, choisie à la création et modifiable : coiffure, barbe (homme), couleur des cheveux (brun, noir, châtain, roux, blond, gris), sourcils assortis. La coiffure se cache sous un casque ; la barbe reste visible. Ce n'est pas un emplacement d'équipement : on ne la loote pas. En attendant l'écran de création, elle se change depuis le menu de test.
+
 | Statistique | Effet |
 | --- | --- |
 | Force | Dégâts |
@@ -195,13 +197,22 @@ Un seul écran réunit tout ce qui touche à l'équipement :
 
 - **Joystick flottant** : il apparaît là où le pouce touche l'écran.
 - **Caméra** : elle suit automatiquement le personnage. Elle peut aussi se tourner avec un deuxième doigt, en option.
+  - *Décidé le 01/11/2026* : la caméra est assez proche pour mettre en valeur le personnage et son équipement (environ 4,6 m en paysage, 5,4 m en portrait, avec un cadrage propre à chaque orientation). Elle regarde un peu devant le personnage quand il avance, et se rapproche quand un mur ou une maison lui cache la vue.
+
+### Présentation (décidée le 01/11/2026)
+
+- **Plein écran** sur iPhone, l'interface reste dans les zones de sécurité (encoche, barre d'accueil). En portrait, les boutons utiles descendent sous le pouce.
+- **Thème** : panneaux bleu nuit presque noirs, bordures dorées, textes ivoire ; le bouton actif se remplit d'or. Les outils de développement ont une bordure rouge pour ne pas être confondus avec l'interface du joueur.
+- **Cadre de la cible** : en haut de l'écran, le monstre combattu, son rang, son niveau et sa vie.
+- **Danger** : le niveau affiché au-dessus d'un monstre est gris (sans intérêt), vert (facile), blanc (à ta mesure), orange (difficile) ou rouge (dangereux), selon l'écart avec le niveau du joueur. Un monstre agressif a son nom cerclé de rouge.
 
 ## Retours visuels
 
 Les effets apparaissent et disparaissent très vite, comme des notifications, sans jamais gêner le jeu.
 
 - **Dégâts** : le chiffre de chaque coup s'affiche sur le monstre.
-- **Butin** : pas de ramassage. À la mort du monstre, l'item apparaît brièvement dans la couleur de sa rareté, puis file dans l'inventaire.
+- **Butin** : pas de ramassage à la main. *Décidé le 01/11/2026* : à la mort du monstre, l'item jaillit et retombe au sol à côté de lui, où il brille dans la couleur de sa rareté (colonne de lumière, anneau). Il file vers le personnage quand celui-ci passe à côté, ou au bout de quelques secondes (plus longtemps pour les raretés hautes) : le mode AFK récupère tout. Une belle trouvaille (doré et au-delà) déclenche une onde lumineuse au sol et une annonce à l'écran. L'item est rangé dans le sac dès sa chute.
+- **Coups** : un coup qui porte fait jaillir quelques étincelles (dorées sur un critique), fait reculer le monstre un instant et le fait clignoter en blanc ; la caméra tremble légèrement, et le temps se fige une fraction de seconde sur les coups lourds et critiques. Un monstre vaincu s'enfonce dans un nuage de poussière.
 - **Montée de niveau** : mention « Level Up », cercle lumineux au sol sous le personnage, et une aura d'énergie autour de lui pendant 1 seconde.
 - **Équipement visible** : chaque arme et pièce d'armure portée se voit sur le personnage. C'est l'une des sources de satisfaction principales du jeu : vaincre un boss et se promener avec son épée.
 - **Son et musique** : plus tard.
@@ -318,6 +329,8 @@ Le style est héroïque, façon World of Warcraft : épaules, capes et armes aff
 | Transcendant | Blanc lumineux et or pâle, aura autour de l'arme et du personnage |
 
 Le violet est volontairement exclu des raretés : le pourpre est la couleur de la corruption de Trazake. Le transcendant, blanc et lumineux, incarne la lumière de Vazylis.
+
+*Confirmé le 01/11/2026* : les six raretés et leurs couleurs sont gardées, plutôt que l'échelle classique gris, vert, bleu, violet, orange. Elles portent l'univers (la lumière de Vazylis contre la corruption pourpre), le rendu de chaque rareté est déjà en place, et les changer aurait demandé de convertir les sauvegardes existantes. La lisibilité est assurée par la couleur du nom, la colonne de lumière au sol et l'annonce des belles trouvailles.
 
 ### Style selon la zone d'origine
 
