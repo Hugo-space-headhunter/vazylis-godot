@@ -2,7 +2,11 @@ class_name FicheObjet
 extends VBoxContainer
 ## Fiche détaillée d'un objet : nom (couleur de sa rareté), niveau, qualité, puissance,
 ## dégâts ou armure, statistiques et bonus en %, et sa panoplie (pièces portées, paliers actifs).
-## Peut le comparer à l'objet porté au même endroit.
+## Peut le comparer à l'objet porté au même endroit : chaque valeur montre son écart avec l'objet porté
+## (vert si c'est mieux, rouge si c'est moins bien), et ce qu'on perdrait est listé à la fin.
+
+const COULEUR_MIEUX := Color(0.5, 1, 0.5)
+const COULEUR_MOINS := Color(1, 0.5, 0.45)
 
 const NOMS_EMPLACEMENTS := {
 	"arme": "Arme", "casque": "Casque", "plastron": "Plastron", "gants": "Gants", "bottes": "Bottes",
@@ -32,21 +36,57 @@ func afficher(objet: Objet, porte: Objet = null, equipement: Equipement = null) 
 	if objet.amelioration > 0:
 		add_child(_texte("Amélioré +%d à la forge : valeurs ×%s" % [objet.amelioration,
 			("%.2f" % config.multiplicateur_amelioration(objet.amelioration)).replace(".", ",")], 17, Color(1, 0.85, 0.4)))
+	var compare := porte if porte != null and porte != objet else null
 	if objet.degats > 0.0:
-		add_child(_texte("Dégâts %s" % _nombre(objet.degats), 20, Color.WHITE))
+		_ligne("Dégâts %s" % _nombre(objet.degats), 20, Color.WHITE, objet.degats, compare.degats if compare else NAN, false)
 	if objet.armure > 0.0:
-		add_child(_texte("Armure %s" % _nombre(objet.armure), 20, Color.WHITE))
+		_ligne("Armure %s" % _nombre(objet.armure), 20, Color.WHITE, objet.armure, compare.armure if compare else NAN, false)
 	for nom: String in objet.statistiques:
-		add_child(_texte("+%d %s" % [objet.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 18, Color(0.75, 0.92, 0.75)))
+		var ancienne: float = float(compare.statistiques.get(nom, 0)) if compare else NAN
+		_ligne("+%d %s" % [objet.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 18, Color(0.75, 0.92, 0.75),
+			float(objet.statistiques[nom]), ancienne, false)
 	for nom: String in objet.bonus:
-		add_child(_texte("+%.1f %% %s" % [float(objet.bonus[nom]) * 100.0, Objet.NOMS_BONUS.get(nom, nom)], 18, Color(0.7, 0.85, 1.0)))
+		var ancien: float = float(compare.bonus.get(nom, 0.0)) * 100.0 if compare else NAN
+		_ligne(("+%.1f %% %s" % [float(objet.bonus[nom]) * 100.0, Objet.NOMS_BONUS.get(nom, nom)]).replace(".", ","), 18, Color(0.7, 0.85, 1.0),
+			float(objet.bonus[nom]) * 100.0, ancien, true)
+	if compare != null:
+		_pertes(objet, compare)
 	_afficher_panoplie(objet, equipement, config)
 	if porte != null and porte != objet:
 		var ecart := objet.puissance(config) - porte.puissance(config)
 		var signe := "+" if ecart > 0 else ""
-		var couleur_ecart := Color(0.5, 1, 0.5) if ecart > 0 else (Color(1, 0.5, 0.45) if ecart < 0 else Color(0.85, 0.85, 0.85))
+		var couleur_ecart := COULEUR_MIEUX if ecart > 0 else (COULEUR_MOINS if ecart < 0 else Color(0.85, 0.85, 0.85))
 		add_child(_texte("Porté : %s (puissance %d) → %s%d" % [porte.nom_affiche(), porte.puissance(config), signe, ecart], 16, couleur_ecart))
 
+
+
+## Une ligne de valeur, suivie de son écart avec l'objet porté (« ancienne » = NAN : pas de comparaison).
+func _ligne(texte: String, taille: int, couleur: Color, valeur: float, ancienne: float, pourcent: bool) -> void:
+	var ligne := HBoxContainer.new()
+	ligne.add_theme_constant_override("separation", 10)
+	var valeur_affichee := _texte(texte, taille, couleur)
+	valeur_affichee.autowrap_mode = TextServer.AUTOWRAP_OFF
+	ligne.add_child(valeur_affichee)
+	if not is_nan(ancienne):
+		var ecart := valeur - ancienne
+		if absf(ecart) >= 0.05:
+			var format := "%+.1f %%" if pourcent else ("%+.1f" if absf(ecart) < 10.0 else "%+.0f")
+			var texte_ecart := (format % ecart).replace(".", ",")
+			var affiche_ecart := _texte(("▲ " if ecart > 0 else "▼ ") + texte_ecart, taille - 3, COULEUR_MIEUX if ecart > 0 else COULEUR_MOINS)
+			affiche_ecart.autowrap_mode = TextServer.AUTOWRAP_OFF
+			ligne.add_child(affiche_ecart)
+	add_child(ligne)
+
+
+## Ce que l'objet porté donne et que celui-ci n'a pas : perdu en changeant.
+func _pertes(objet: Objet, porte: Objet) -> void:
+	for nom: String in porte.statistiques:
+		if not objet.statistiques.has(nom):
+			add_child(_texte("▼ −%d %s (perdu)" % [porte.statistiques[nom], Statistiques.NOMS_AFFICHES.get(nom, nom)], 16, COULEUR_MOINS))
+	for nom: String in porte.bonus:
+		if not objet.bonus.has(nom):
+			add_child(_texte(("▼ −%.1f %% %s (perdu)" % [float(porte.bonus[nom]) * 100.0, Objet.NOMS_BONUS.get(nom, nom)]).replace(".", ","),
+				16, COULEUR_MOINS))
 
 
 ## « Panoplie Couronne du Verger (2/3) », puis ses paliers : en vert ceux qui sont actifs.
