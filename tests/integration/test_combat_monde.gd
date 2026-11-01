@@ -261,3 +261,13 @@ func test_l_amulette_prend_du_retard_quand_on_court() -> void:
 	joueur.joystick = Vector2(0, -1)
 	await wait_physics_frames(10)
 	assert_gt(pendule.angle.length(), 0.01, "En démarrant, l'amulette bascule")
+
+
+func test_le_butin_tombe_au_sol_puis_rejoint_le_heros_qui_passe_a_cote() -> void:
+	var objet := joueur.butin.creer_objet("objet.lame_guet", 1, "standard", RandomNumberGenerator.new())
+	var effet := EffetButin.jouer(arene, Vector3(10, 0, 10), objet, joueur, false)
+	await wait_seconds(0.8)
+	assert_true(is_instance_valid(effet) and effet.est_au_sol(), "L'objet brille au sol tant que le héros est loin")
+	joueur.global_position = Vector3(10, 0, 10)
+	await wait_seconds(0.8)
+	assert_false(is_instance_valid(effet), "Le héros passe à côté : l'objet file vers lui et disparaît")
