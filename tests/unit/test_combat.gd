@@ -191,3 +191,14 @@ func test_les_bonus_des_objets_comptent() -> void:
 	assert_almost_eq(Combat.vitesse_attaque(stats, epee, config, bonus), 1.21, 0.0001)
 	assert_almost_eq(Combat.pv_joueur(10, stats, config, bonus), 250.0 * 1.04, 0.001)
 	assert_almost_eq(Combat.defense_joueur(10, stats, epee, config, 30.0), 50.0, 0.001)
+
+
+func test_le_danger_depend_de_l_ecart_de_niveau() -> void:
+	assert_eq(Combat.danger(20, 10, config), "tres_facile")
+	assert_eq(Combat.danger(20, 17, config), "facile")
+	assert_eq(Combat.danger(20, 20, config), "egal")
+	assert_eq(Combat.danger(20, 22, config), "egal")
+	assert_eq(Combat.danger(20, 23, config), "difficile")
+	assert_eq(Combat.danger(20, 30, config), "mortel")
+	assert_ne(Combat.couleur_danger(20, 30, config), Combat.couleur_danger(20, 10, config))
+

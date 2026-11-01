@@ -4,6 +4,7 @@ extends Node
 ## des zones de sécurité (encoche, barre d'état, barre d'accueil), voir ZoneSecurite.
 ##
 ##   - en haut à gauche : le bandeau (vie, mana, XP) ; en haut à droite : le menu « Test » ;
+##   - le cadre de la cible : en haut au centre (paysage), sous le bandeau (portrait) ;
 ##   - en bas à droite : Arme et Pied, avec AFK à leur gauche ;
 ##   - paysage (deux mains) : statistiques et sac sous le bandeau, forge au-dessus d'AFK ;
 ##   - portrait (une main) : statistiques, sac et forge descendent au-dessus d'Arme et Pied,
@@ -24,6 +25,7 @@ const INTERVALLE_VERIFICATION := 1.0
 @export var outils_test: Control
 @export var annonces: Control
 @export var compteur: Control
+@export var cadre_cible: Control
 
 ## Orientation de la dernière mise en place (pour les tests).
 var portrait := false
@@ -82,6 +84,11 @@ func placer(taille_imposee := Vector2.ZERO) -> void:
 		_mettre(bouton_forge, Vector2(afk.x, afk.y - ECART - _taille_de(bouton_forge).y))
 		bas_des_menus = sous_bandeau + _taille_de(bouton_sac).y + ECART
 	_mettre(compteur, Vector2(gauche, bas_des_menus))
+	var cadre := _taille_de(cadre_cible)
+	if portrait:
+		_mettre(cadre_cible, Vector2((ecran.x - cadre.x) / 2.0, sous_bandeau))
+	else:
+		_mettre(cadre_cible, Vector2((ecran.x - cadre.x) / 2.0, haut))
 
 
 func _taille_de(element: Control) -> Vector2:

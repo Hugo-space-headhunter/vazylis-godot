@@ -24,6 +24,7 @@
 [ext_resource type="Script" path="res://scripts/ui/fenetre_forge.gd" id="22_forge"]
 [ext_resource type="Script" path="res://scripts/world/veille_monstres.gd" id="23_veille"]
 [ext_resource type="Script" path="res://scripts/ui/disposition_interface.gd" id="24_disposition"]
+[ext_resource type="Script" path="res://scripts/ui/cadre_cible.gd" id="25_cible"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Materiau_ciel"]
 sky_top_color = Color(0.3, 0.55, 0.88, 1)
@@ -284,10 +285,14 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 26
 text = "Forge"
 
+[node name="CadreCible" type="PanelContainer" parent="Interface" node_paths=PackedStringArray("joueur")]
+script = ExtResource("25_cible")
+joueur = NodePath("../../Joueur")
+
 [node name="CompteurFPS" parent="Interface" instance=ExtResource("6_fps")]
 visible = false
 
-[node name="Disposition" type="Node" parent="Interface" node_paths=PackedStringArray("bandeau", "bouton_statistiques", "bouton_sac", "bouton_forge", "boutons_mode", "bouton_afk", "outils_test", "annonces", "compteur")]
+[node name="Disposition" type="Node" parent="Interface" node_paths=PackedStringArray("bandeau", "bouton_statistiques", "bouton_sac", "bouton_forge", "boutons_mode", "bouton_afk", "outils_test", "annonces", "compteur", "cadre_cible")]
 script = ExtResource("24_disposition")
 bandeau = NodePath("../Bandeau")
 bouton_statistiques = NodePath("../BoutonStatistiques")
@@ -298,6 +303,7 @@ bouton_afk = NodePath("../BoutonAFK")
 outils_test = NodePath("../OutilsTest")
 annonces = NodePath("../Annonces")
 compteur = NodePath("../CompteurFPS/Marges")
+cadre_cible = NodePath("../CadreCible")
 
 [node name="FenetreStatistiques" type="PanelContainer" parent="Interface"]
 script = ExtResource("12_fenetre")

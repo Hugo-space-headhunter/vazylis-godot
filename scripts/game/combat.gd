@@ -179,3 +179,23 @@ static func coup_joueur(niveau: int, stats: Statistiques, arme: Dictionary, defe
 ## Le bouclier bloque-t-il ce coup ?
 static func bloque(arme: Dictionary, hasard: RandomNumberGenerator) -> bool:
 	return hasard.randf() < float(arme.get("chance_blocage", 0.0))
+
+
+## Niveau de danger d'un monstre pour le joueur : « tres_facile », « facile », « egal », « difficile »
+## ou « mortel », selon l'écart de niveau (config/combat.cfg [danger]).
+static func danger(niveau_joueur: int, niveau_monstre: int, config: ConfigJeu) -> String:
+	var ecart := niveau_monstre - niveau_joueur
+	if ecart >= int(config.combat("danger", "ecart_mortel")):
+		return "mortel"
+	if ecart >= int(config.combat("danger", "ecart_difficile")):
+		return "difficile"
+	if ecart <= int(config.combat("danger", "ecart_tres_facile")):
+		return "tres_facile"
+	if ecart <= int(config.combat("danger", "ecart_facile")):
+		return "facile"
+	return "egal"
+
+
+static func couleur_danger(niveau_joueur: int, niveau_monstre: int, config: ConfigJeu) -> Color:
+	return config.couleur_combat("danger", "couleur_" + danger(niveau_joueur, niveau_monstre, config))
+

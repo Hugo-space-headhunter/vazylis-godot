@@ -126,6 +126,11 @@ func coefficient_xp_minimum() -> float:
 
 # --- Combat ---
 
+## Couleur de combat.cfg (par exemple les couleurs du danger).
+func couleur_combat(section: String, cle: String) -> Color:
+	return _valeur("combat", section, cle, Color.WHITE)
+
+
 ## Valeur numérique de combat.cfg, par exemple combat("critique", "chance").
 func combat(section: String, cle: String) -> float:
 	return _nombre("combat", section, cle, 0.0)

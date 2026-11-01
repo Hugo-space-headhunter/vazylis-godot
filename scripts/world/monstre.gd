@@ -41,6 +41,7 @@ var _joueur: Joueur
 var _modele: ModeleAsset
 var _barre: BarreVie3D
 var _etiquette: Label3D
+var _niveau_affiche: Label3D
 var _destination := Vector3.ZERO
 var _pause_errance := 0.0
 var _recharge_attaque := 0.0
@@ -112,7 +113,7 @@ func _ready() -> void:
 		_matiere_aura = CercleAuSol.aura(self, boite, _couleur_du_rang())
 
 	_etiquette = Label3D.new()
-	_etiquette.text = "%s  niv. %d" % [nom, niveau]
+	_etiquette.text = nom
 	_etiquette.font_size = 40
 	_etiquette.outline_size = 10
 	_etiquette.pixel_size = 0.005
@@ -125,13 +126,41 @@ func _ready() -> void:
 		_etiquette.font_size = 52
 	_etiquette.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_etiquette.position.y = _hauteur_infos + 0.12
+	# Contour rouge : un monstre agressif attaque à vue.
+	if not _passif:
+		_etiquette.outline_modulate = Color(0.45, 0.05, 0.02)
 	add_child(_etiquette)
+
+	# Le niveau, dans la couleur du danger pour le joueur (gris, vert, blanc, orange, rouge).
+	_niveau_affiche = Label3D.new()
+	_niveau_affiche.text = "niv. %d" % niveau
+	_niveau_affiche.font_size = 34
+	_niveau_affiche.outline_size = 9
+	_niveau_affiche.pixel_size = 0.005
+	_niveau_affiche.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_niveau_affiche.position.y = _hauteur_infos + 0.12 + (0.33 if rang == Combat.RANG_SOUS_BOSS else 0.25)
+	add_child(_niveau_affiche)
+	_colorer_selon_le_danger()
+	if is_instance_valid(_joueur):
+		# xp_change part aussi au chargement d'une sauvegarde (le niveau peut alors baisser).
+		_joueur.xp_change.connect(func(_xp: int, _requise: int, _niveau: int) -> void: _colorer_selon_le_danger())
 
 	_barre = BarreVie3D.new()
 	_barre.position.y = _hauteur_infos
 	if rang != Combat.RANG_NORMAL:
 		_barre.scale = Vector3.ONE * 1.6
 	add_child(_barre)
+
+
+## Couleur du niveau affiché selon l'écart avec le niveau du joueur.
+func _colorer_selon_le_danger() -> void:
+	if is_instance_valid(_joueur) and _niveau_affiche != null:
+		_niveau_affiche.modulate = Combat.couleur_danger(_joueur.niveau(), niveau, Config.jeu)
+
+
+## Couleur du niveau affiché (pour les tests et le cadre de la cible).
+func couleur_du_niveau() -> Color:
+	return _niveau_affiche.modulate if _niveau_affiche != null else Color.WHITE
 
 
 func endormir(oui: bool) -> void:
@@ -406,6 +435,7 @@ func _mourir() -> void:
 	collision_layer = 0
 	_barre.visible = false
 	_etiquette.visible = false
+	_niveau_affiche.visible = false
 	_modele.jouer("die", 0.1, false)
 	mort.emit(self)
 	# Le corps reste un instant, puis s'enfonce dans un nuage de poussière.

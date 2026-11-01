@@ -120,6 +120,11 @@ func activer_afk(actif: bool) -> void:
 	afk_change.emit(afk)
 
 
+## Le monstre visé en ce moment (vivant), ou null.
+func cible() -> Monstre:
+	return _cible if is_instance_valid(_cible) and _cible.est_vivant() else null
+
+
 func niveau() -> int:
 	return experience.niveau
 
