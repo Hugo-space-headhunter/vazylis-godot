@@ -18,8 +18,10 @@ signal nouvelle_partie_demandee
 
 
 func _ready() -> void:
-	for bouton in get_children():
+	for bouton: Button in get_children():
 		bouton.add_to_group(CommandesTactiles.GROUPE_UI)
+		# Bordure rouge : ces outils de développement ne font pas partie de l'interface du joueur.
+		bouton.theme_type_variation = "BoutonDev"
 	_niveau.pressed.connect(niveau_demande.emit)
 	_butin.pressed.connect(butin_demande.emit)
 	_nouvelle_partie.pressed.connect(nouvelle_partie_demandee.emit)
