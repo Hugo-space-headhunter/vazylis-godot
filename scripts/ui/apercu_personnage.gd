@@ -62,7 +62,7 @@ func rafraichir() -> void:
 	_socle.add_child(_modele)
 	_socle.rotation.y = rotation_actuelle
 	_modele.jouer("idle", 0.0)
-	_habillage.habiller(_modele, _joueur.equipement, _joueur.est_une_femme())
+	_habillage.habiller(_modele, _joueur.equipement, _joueur.est_une_femme(), _joueur.apparence)
 	var arme := _joueur.equipement.arme()
 	if arme != null:
 		var modeles := ArmesEnMain.creer_modeles(arme, config.arme(arme.type_arme))

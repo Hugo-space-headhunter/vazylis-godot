@@ -5,8 +5,13 @@ extends RefCounted
 ## et des étincelles pour les plus rares. Les réglages sont dans config/raretes.cfg.
 
 
+## Matières déjà transformées, partagées (voir _matiere_pour).
+static var _matieres := {}
+
+
 ## Applique le rendu de la rareté à tous les maillages sous « noeud », et une teinte (celle de
-## la panoplie de l'objet). Les matières sont copiées : le modèle d'origine n'est pas modifié.
+## la panoplie de l'objet, ou la couleur des cheveux). Les matières sont copiées : le modèle d'origine
+## n'est pas modifié.
 static func appliquer(noeud: Node, rarete: String, teinte: Color = Color.WHITE) -> void:
 	var config := Config.jeu
 	var reglages := config.apparence_rarete(rarete)
@@ -15,7 +20,6 @@ static func appliquer(noeud: Node, rarete: String, teinte: Color = Color.WHITE) 
 	var eclat := float(reglages.get("eclat", 0.0))
 	if melange <= 0.0 and metallique <= 0.0 and eclat <= 0.0 and teinte == Color.WHITE:
 		return
-	var couleur := config.couleur_rarete(rarete)
 	var instances: Array = noeud.find_children("*", "MeshInstance3D", true, false)
 	if noeud is MeshInstance3D:
 		instances.append(noeud)
@@ -25,15 +29,32 @@ static func appliquer(noeud: Node, rarete: String, teinte: Color = Color.WHITE) 
 			var origine := instance.get_active_material(surface) as BaseMaterial3D
 			if origine == null:
 				continue
-			var matiere := origine.duplicate() as BaseMaterial3D
-			matiere.albedo_color = (matiere.albedo_color * teinte).lerp(couleur, melange)
-			matiere.metallic = maxf(matiere.metallic, metallique)
-			matiere.roughness = minf(matiere.roughness, 1.0 - metallique * 0.6)
-			if eclat > 0.0:
-				matiere.emission_enabled = true
-				matiere.emission = couleur
-				matiere.emission_energy_multiplier = eclat
-			instance.set_surface_override_material(surface, matiere)
+			instance.set_surface_override_material(surface, _matiere_pour(origine, rarete, teinte))
+
+
+## Matière d'origine transformée pour une rareté et une teinte. Chaque combinaison n'est fabriquée
+## qu'une fois puis partagée : changer souvent de pièce ne crée ni ne détruit de matières
+## (les détruire pendant que le moteur s'en servait encore provoquait l'erreur « material is null »).
+static func _matiere_pour(origine: BaseMaterial3D, rarete: String, teinte: Color) -> BaseMaterial3D:
+	var cle := [origine, rarete, teinte]
+	if _matieres.has(cle):
+		return _matieres[cle]
+	var config := Config.jeu
+	var reglages := config.apparence_rarete(rarete)
+	var melange := float(reglages.get("melange_couleur", 0.0))
+	var metallique := float(reglages.get("metallique", 0.0))
+	var eclat := float(reglages.get("eclat", 0.0))
+	var couleur := config.couleur_rarete(rarete)
+	var matiere := origine.duplicate() as BaseMaterial3D
+	matiere.albedo_color = (matiere.albedo_color * teinte).lerp(couleur, melange)
+	matiere.metallic = maxf(matiere.metallic, metallique)
+	matiere.roughness = minf(matiere.roughness, 1.0 - metallique * 0.6)
+	if eclat > 0.0:
+		matiere.emission_enabled = true
+		matiere.emission = couleur
+		matiere.emission_energy_multiplier = eclat
+	_matieres[cle] = matiere
+	return matiere
 
 
 ## Nombre d'étincelles autour d'un objet de cette rareté (0 = aucune).

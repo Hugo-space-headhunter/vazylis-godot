@@ -69,3 +69,17 @@ func test_un_objet_disparu_du_jeu_est_ignore() -> void:
 	assert_not_null(relue)
 	assert_null(relue.inventaire.objet(0))
 	assert_not_null(relue.inventaire.objet(7))
+
+
+func test_l_apparence_est_sauvegardee_et_une_ancienne_sauvegarde_garde_l_apparence_par_defaut() -> void:
+	var partie := _partie_exemple()
+	partie.apparence.coiffure = 2
+	partie.apparence.couleur = 4
+	var relue := Partie.depuis_dictionnaire(JSON.parse_string(JSON.stringify(partie.vers_dictionnaire())), config)
+	assert_eq(relue.apparence.coiffure, 2)
+	assert_eq(relue.apparence.couleur, 4)
+	var ancienne := partie.vers_dictionnaire()
+	ancienne.erase("apparence")
+	var relue_ancienne := Partie.depuis_dictionnaire(JSON.parse_string(JSON.stringify(ancienne)), config)
+	assert_not_null(relue_ancienne, "Une sauvegarde d'avant l'apparence se relit toujours")
+	assert_eq(relue_ancienne.apparence.coiffure, 0)

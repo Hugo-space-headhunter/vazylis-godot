@@ -107,7 +107,6 @@ Non fait faute de ressources ou par choix de Hugo :
 ## Recyclage
 
 - Filtre par matériau (« tout ce qui est en fer ») : quand les matériaux existeront (étape 7).
-- Message d'erreur sans gravité dans la console de Godot (« Parameter "material" is null ») quand on change plusieurs fois de suite une pièce de rareté argentée ou plus : à comprendre.
 
 ## Sauvegarde
 

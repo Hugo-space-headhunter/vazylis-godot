@@ -1,11 +1,14 @@
 extends VBoxContainer
 ## Menu de test provisoire (en haut à droite) : le bouton « Test » ouvre la liste : homme ou femme,
-## +1 niveau, butin, nouvelle partie, et le panneau de mesure (images par seconde).
+## +1 niveau, butin, nouvelle partie, le panneau de mesure (images par seconde) et l'apparence
+## (coiffure, barbe, couleur des cheveux).
 ## Il disparaîtra avec l'écran de création du personnage.
 
 signal niveau_demande
 signal butin_demande
 signal nouvelle_partie_demandee
+## Choix suivant pour l'apparence : « coiffure », « barbe » ou « couleur ».
+signal apparence_demandee(champ: String)
 
 @onready var _niveau: Button = $Niveau
 @onready var _butin: Button = $Butin
@@ -25,6 +28,10 @@ func _ready() -> void:
 	_niveau.pressed.connect(niveau_demande.emit)
 	_butin.pressed.connect(butin_demande.emit)
 	_nouvelle_partie.pressed.connect(nouvelle_partie_demandee.emit)
+	# En attendant un écran de création du personnage : changer d'apparence.
+	$Coiffure.pressed.connect(apparence_demandee.emit.bind("coiffure"))
+	$Barbe.pressed.connect(apparence_demandee.emit.bind("barbe"))
+	$CouleurCheveux.pressed.connect(apparence_demandee.emit.bind("couleur"))
 	_menu.pressed.connect(func() -> void: ouvrir(not est_ouvert()))
 	_mesures.pressed.connect(func() -> void:
 		if compteur != null:

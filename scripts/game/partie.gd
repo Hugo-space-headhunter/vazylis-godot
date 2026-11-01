@@ -15,6 +15,7 @@ var statistiques := Statistiques.new()
 var inventaire: Inventaire
 var equipement := Equipement.new()
 var recyclage_auto := RecyclageAuto.new()
+var apparence := Apparence.new()
 var monstres_sans_dore := 0
 var monstres_sans_epique := 0
 var victoires_sans_epique := {}
@@ -36,6 +37,7 @@ func vers_dictionnaire() -> Dictionary:
 		"sac": {"cases": cases, "or": inventaire.or_possede, "ressources": inventaire.ressources},
 		"equipement": equipement.vers_dictionnaire(),
 		"recyclage_auto": recyclage_auto.vers_dictionnaire(),
+		"apparence": apparence.vers_dictionnaire(),
 		"garantie": {"monstres_sans_dore": monstres_sans_dore, "monstres_sans_epique": monstres_sans_epique,
 			"victoires_sans_epique": victoires_sans_epique},
 	}
@@ -75,6 +77,8 @@ static func depuis_dictionnaire(donnees: Variant, config: ConfigJeu) -> Partie:
 			partie.equipement.objets[emplacement] = objet
 
 	partie.recyclage_auto = RecyclageAuto.depuis_dictionnaire(donnees.get("recyclage_auto", {}))
+	# Une sauvegarde d'avant l'apparence n'en a pas : apparence par défaut.
+	partie.apparence = Apparence.depuis_dictionnaire(donnees.get("apparence", {}))
 	var garantie: Dictionary = donnees.get("garantie", {})
 	partie.monstres_sans_dore = int(garantie.get("monstres_sans_dore", 0))
 	partie.monstres_sans_epique = int(garantie.get("monstres_sans_epique", 0))

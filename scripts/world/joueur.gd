@@ -51,6 +51,8 @@ var butin: Butin
 var forge: Forge
 var equipement := Equipement.new()
 var recyclage_auto := RecyclageAuto.new()
+## Coiffure, barbe et couleur des cheveux (indépendantes de l'équipement).
+var apparence := Apparence.new()
 ## Type de l'arme portée (section de config/armes.cfg) et ses réglages.
 var id_arme := ""
 var arme := {}
@@ -162,6 +164,13 @@ func caracteristiques(points: Statistiques = null) -> Dictionary:
 	}
 
 
+## Change de coiffure, de barbe ou de couleur de cheveux (« champ ») : choix suivant de la liste.
+func changer_apparence(champ: String) -> void:
+	apparence.suivante(champ, Config.jeu, est_une_femme())
+	_habillage.habiller(_modele, equipement, est_une_femme(), apparence)
+	equipement_change.emit()
+
+
 ## Remplace le modèle affiché (ex. homme ↔ femme), sans toucher au reste.
 func changer_personnage(id: String) -> void:
 	var rotation_actuelle := 0.0
@@ -175,7 +184,7 @@ func changer_personnage(id: String) -> void:
 	add_child(_modele)
 	_modele.jouer(Deplacement.animation(_allure), 0.0)
 	armes.porter_par(_modele, mode == Mode.COMBAT)
-	_habillage.habiller(_modele, equipement, est_une_femme())
+	_habillage.habiller(_modele, equipement, est_une_femme(), apparence)
 
 
 func est_une_femme() -> bool:
@@ -202,7 +211,7 @@ func equiper_objet(objet: Objet, emplacement: String = "") -> Objet:
 	if objet.est_arme():
 		_appliquer_arme()
 	else:
-		_habillage.habiller(_modele, equipement, est_une_femme())
+		_habillage.habiller(_modele, equipement, est_une_femme(), apparence)
 	_recalculer(false)
 	equipement_change.emit()
 	return ancien
@@ -230,7 +239,7 @@ func retirer_vers_sac(emplacement: String) -> bool:
 	if emplacement == "arme" or equipement.objet(emplacement) == null or inventaire.est_plein():
 		return false
 	inventaire.ajouter(equipement.retirer(emplacement))
-	_habillage.habiller(_modele, equipement, est_une_femme())
+	_habillage.habiller(_modele, equipement, est_une_femme(), apparence)
 	_recalculer(false)
 	equipement_change.emit()
 	return true
@@ -482,6 +491,7 @@ func exporter_partie() -> Dictionary:
 	partie.inventaire = inventaire
 	partie.equipement = equipement
 	partie.recyclage_auto = recyclage_auto
+	partie.apparence = apparence
 	partie.monstres_sans_dore = butin.monstres_sans_dore
 	partie.monstres_sans_epique = butin.monstres_sans_epique
 	partie.victoires_sans_epique = butin.victoires_sans_epique
@@ -503,6 +513,9 @@ func importer_partie(partie: Partie) -> void:
 	recyclage_auto.rarete_limite = partie.recyclage_auto.rarete_limite
 	recyclage_auto.types = partie.recyclage_auto.types
 	recyclage_auto.materiaux = partie.recyclage_auto.materiaux
+	apparence.coiffure = partie.apparence.coiffure
+	apparence.barbe = partie.apparence.barbe
+	apparence.couleur = partie.apparence.couleur
 	butin.monstres_sans_dore = partie.monstres_sans_dore
 	butin.monstres_sans_epique = partie.monstres_sans_epique
 	butin.victoires_sans_epique = partie.victoires_sans_epique
@@ -512,7 +525,7 @@ func importer_partie(partie: Partie) -> void:
 	if partie.personnage in [IdentifiantsAssets.HEROS_HOMME, IdentifiantsAssets.HEROS_FEMME]:
 		changer_personnage(partie.personnage)
 	_appliquer_arme()
-	_habillage.habiller(_modele, equipement, est_une_femme())
+	_habillage.habiller(_modele, equipement, est_une_femme(), apparence)
 	_recalculer(true)
 	_annoncer()
 
@@ -520,7 +533,7 @@ func importer_partie(partie: Partie) -> void:
 ## Relie les changements à sauvegarder au signal « partie_change ».
 func _surveiller_la_partie() -> void:
 	var signaler := func(_a = null, _b = null, _c = null) -> void: partie_change.emit()
-	for source: Signal in [xp_change, equipement_change, inventaire.change, statistiques.change, recyclage_auto.change]:
+	for source: Signal in [xp_change, equipement_change, inventaire.change, statistiques.change, recyclage_auto.change, apparence.change]:
 		source.connect(signaler)
 
 

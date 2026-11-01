@@ -329,6 +329,12 @@ func lissage_suivi_camera() -> float:
 	return _nombre("commandes", "camera", "lissage_suivi", 8.0)
 
 
+## Liste de choix d'apparence (« coiffures », « barbes », « sourcils », « couleurs_cheveux »),
+## pour l'homme ou la femme (config/personnage.cfg [apparence]).
+func liste_apparence(liste: String, femme: bool) -> Array:
+	return _valeur("personnage", "apparence", liste + ("_femme" if femme else "_homme"), [])
+
+
 ## Autre réglage numérique de la caméra (section [camera] de commandes.cfg).
 func reglage_camera(cle: String, defaut: float) -> float:
 	return _nombre("commandes", "camera", cle, defaut)

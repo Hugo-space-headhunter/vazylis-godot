@@ -12,6 +12,14 @@ Chaque asset du jeu est noté ici : nom, source, licence.
 | --- | --- | --- | --- |
 | `character.heros_homme` | `assets/models/character/heros_homme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
 | `character.heros_femme` | `assets/models/character/heros_femme/` | Quaternius, Universal Base Characters (version gratuite), https://quaternius.com — textures réduites à 1024 px | CC0 |
+| `cosmetic.cheveux_courts` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.cheveux_longs` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.cheveux_rases` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.cheveux_rases_femme` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.chignon` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.barbe` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.sourcils` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
+| `cosmetic.sourcils_femme` | `assets/models/character/coiffures/` | Quaternius, Universal Base Characters (coiffures « Rigged to Head Bone »), https://quaternius.com — textures réduites à 512 px | CC0 |
 | `monster.cochonnet_suie` | `assets/models/monster/cochonnet_suie/` | Quaternius, Ultimate Monsters (« Dog »), https://quaternius.com — teinté et réduit dans le catalogue | CC0 |
 | `monster.corbac` | `assets/models/monster/corbac/` | Quaternius, Ultimate Monsters (« Pigeon ») — teinté et réduit dans le catalogue | CC0 |
 | `monster.pomelin` | `assets/models/monster/pomelin/` | Quaternius, Ultimate Monsters (« GreenBlob ») — teinté et réduit dans le catalogue | CC0 |

@@ -168,9 +168,9 @@ func test_l_equipement_se_voit_sur_le_personnage() -> void:
 	# La peau recule sous le plastron (le maillage de la peau a changé).
 	var peau := squelette.find_child("SuperHero_Male", false, false) as MeshInstance3D
 	assert_ne(peau.mesh, joueur._habillage._peau_origine)
-	# Changer de personnage garde la tenue.
+	# Changer de personnage garde la tenue (l'héroïne n'a pas de barbe : un morceau de moins).
 	joueur.changer_personnage(IdentifiantsAssets.HEROS_FEMME)
-	assert_eq(joueur._habillage.nombre_de_morceaux(), morceaux + 1)
+	assert_eq(joueur._habillage.nombre_de_morceaux(), morceaux)
 
 
 func test_exporter_puis_importer_la_partie() -> void:
@@ -271,3 +271,16 @@ func test_le_butin_tombe_au_sol_puis_rejoint_le_heros_qui_passe_a_cote() -> void
 	joueur.global_position = Vector3(10, 0, 10)
 	await wait_seconds(0.8)
 	assert_false(is_instance_valid(effet), "Le héros passe à côté : l'objet file vers lui et disparaît")
+
+
+func test_coiffure_barbe_et_sourcils_et_coiffure_cachee_sous_un_casque() -> void:
+	var avant := joueur._habillage.nombre_de_morceaux()
+	assert_gt(avant, 0, "Le héros a une coiffure, une barbe et des sourcils")
+	joueur.changer_apparence("barbe")
+	assert_eq(joueur._habillage.nombre_de_morceaux(), avant - 1, "Sans barbe, un morceau de moins")
+	joueur.changer_apparence("barbe")
+	_equiper("objet.capuche_rodeur")
+	var ids := joueur.apparence
+	assert_ne(ids.id_coiffure(Config.jeu, false), "")
+	for maillage in joueur._habillage._noeuds:
+		assert_false(String(maillage.name).contains("Hair_SimpleParted"), "La coiffure est cachée sous le casque")

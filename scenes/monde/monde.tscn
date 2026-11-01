@@ -152,6 +152,27 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "Mesures (i/s)"
 
+[node name="Coiffure" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Coiffure suivante"
+
+[node name="Barbe" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Barbe"
+
+[node name="CouleurCheveux" type="Button" parent="Interface/OutilsTest"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "Couleur des cheveux"
+
 [node name="Bandeau" parent="Interface" instance=ExtResource("11_bandeau")]
 
 [node name="BoutonStatistiques" type="Button" parent="Interface"]

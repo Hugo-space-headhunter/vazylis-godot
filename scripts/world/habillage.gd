@@ -17,8 +17,9 @@ var _peau: MeshInstance3D
 var _peau_origine: Mesh
 
 
-## Remplace la tenue affichée par celle de l'équipement.
-func habiller(personnage: ModeleAsset, equipement: Equipement, femme: bool) -> void:
+## Remplace la tenue affichée par celle de l'équipement, avec la coiffure, la barbe et les sourcils
+## de l'apparence (la coiffure est cachée sous un casque).
+func habiller(personnage: ModeleAsset, equipement: Equipement, femme: bool, apparence: Apparence = null) -> void:
 	vider()
 	var config := Config.jeu
 	var squelette := personnage.squelette()
@@ -44,6 +45,8 @@ func habiller(personnage: ModeleAsset, equipement: Equipement, femme: bool) -> v
 		Tissu.animer(accroche, personnage)
 		Pendule.animer(accroche)
 		_noeuds.append(accroche)
+	if apparence != null:
+		_coiffer(squelette, apparence, femme, equipement.objet("casque") != null)
 	if _porte_un_transcendant(equipement):
 		var aura := ApparenceRarete.ajouter_etincelles(personnage, "transcendant",
 			AABB(Vector3(-0.35, 0.1, -0.35), Vector3(0.7, 1.7, 0.7)), AURA_ETINCELLES)
@@ -104,6 +107,18 @@ func _coudre(squelette: Skeleton3D, modele_id: String, rarete: String, teinte: C
 		ApparenceRarete.appliquer(maillage, rarete, teinte)
 		_noeuds.append(maillage)
 	piece.free()
+
+
+## Coiffure (sauf sous un casque), barbe et sourcils, teintés de la couleur des cheveux.
+func _coiffer(squelette: Skeleton3D, apparence: Apparence, femme: bool, casque: bool) -> void:
+	var config := Config.jeu
+	var couleur := apparence.couleur_cheveux(config)
+	var pieces := [apparence.id_barbe(config, femme), apparence.id_sourcils(config, femme)]
+	if not casque:
+		pieces.append(apparence.id_coiffure(config, femme))
+	for id: String in pieces:
+		if not id.is_empty():
+			_coudre(squelette, id, "standard", couleur)
 
 
 func _porte_un_transcendant(equipement: Equipement) -> bool:

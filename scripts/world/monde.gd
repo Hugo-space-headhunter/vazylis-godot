@@ -55,6 +55,7 @@ func _ready() -> void:
 	_joueur.statistiques.change.connect(_afficher_points)
 	_bandeau.afficher_nom(NOMS[_joueur.personnage])
 	_outils_test.nouvelle_partie_demandee.connect(_demander_nouvelle_partie)
+	_outils_test.apparence_demandee.connect(_joueur.changer_apparence)
 	Sauvegarde.etat_change.connect(_bandeau.afficher_sauvegarde)
 	Sauvegarde.sauvegarde_en_ligne_plus_recente.connect(func() -> void:
 		_annonces.annoncer("Une sauvegarde en ligne plus récente existe : relance l'app pour la reprendre.",
