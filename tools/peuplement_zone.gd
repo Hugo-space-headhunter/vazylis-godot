@@ -5,7 +5,10 @@ extends RefCounted
 ##   - le décor semé au hasard (Decor) sous le nœud « Peuplement », en évitant les places libres,
 ##     le chemin, les monstres et en gardant un écart entre deux objets.
 ## Il ne remplace que ce qu'il a lui-même posé : les groupes de monstres nommés dans le plan et le
-## nœud « Peuplement ». Le reste de la zone (sol, retouches faites à la main…) n'est pas touché.
+## nœud « Peuplement ». Le reste de la zone (sol, retouches faites à la main…) n'est pas touché,
+## et le nouveau décor évite ce qui y est déjà (décors posés à la main, groupes de monstres).
+## Un groupe de décor peut être réservé aux bords de la zone (« pres_du_bord » : largeur de la bande
+## en mètres), pour encadrer la zone et lui donner de la profondeur sans encombrer le centre.
 ## Le hasard est fixé par « graine » : relancer l'outil avec le même plan redonne la même zone.
 ##
 ## Lancer : tools/peupler_zone.gd.
@@ -15,7 +18,10 @@ const SCRIPT_APPARITION := "res://scripts/world/zone_apparition.gd"
 const NOEUD_MONSTRES := "Monstres"
 const NOEUD_PEUPLEMENT := "Peuplement"
 ## Essais au hasard pour placer un objet avant d'abandonner (zone trop pleine).
-const ESSAIS_PAR_OBJET := 40
+const ESSAIS_PAR_OBJET := 60
+## Place gardée libre autour d'un décor déjà posé, et en plus du rayon d'un groupe de monstres (mètres).
+const ECART_DECOR_EXISTANT := 1.5
+const ECART_MONSTRES_EXISTANTS := 3.0
 
 
 ## Remplit « zone » (la racine de la scène, avec le script Zone) selon le plan.
@@ -29,6 +35,8 @@ static func peupler(zone: Node3D, plan: ConfigFile) -> int:
 	var occupes: Array = []
 	for place: Array in libres:
 		occupes.append([Vector2(place[0], place[1]), float(place[2])])
+	_retirer(zone.get_node_or_null(NOEUD_PEUPLEMENT))
+	_noter_l_existant(zone, zone, Transform3D.IDENTITY, occupes)
 
 	var monstres := _noeud(zone, NOEUD_MONSTRES)
 	for section in plan.get_sections():
@@ -48,7 +56,6 @@ static func peupler(zone: Node3D, plan: ConfigFile) -> int:
 		_ajouter(monstres, apparition, zone)
 		occupes.append([position, rayon + 2.0])
 
-	_retirer(zone.get_node_or_null(NOEUD_PEUPLEMENT))
 	var peuplement := _noeud(zone, NOEUD_PEUPLEMENT)
 	var poses := 0
 	for section in plan.get_sections():
@@ -59,8 +66,9 @@ static func peupler(zone: Node3D, plan: ConfigFile) -> int:
 		var ecart := float(plan.get_value(section, "ecart_min", 2.0))
 		var echelles: Array = plan.get_value(section, "echelle", [1.0, 1.0])
 		var marge := float(plan.get_value(section, "marge_bord", 2.0))
+		var bande := float(plan.get_value(section, "pres_du_bord", 0.0))
 		for i in int(plan.get_value(section, "nombre", 0)):
-			var point := _trouver_une_place(hasard, taille, marge, ecart, occupes, chemin)
+			var point := _trouver_une_place(hasard, taille, marge, ecart, occupes, chemin, bande)
 			if point == Vector2.INF or assets.is_empty():
 				push_warning("PeuplementZone : plus de place pour « %s » (%d posés sur %d)." % [groupe, i, int(plan.get_value(section, "nombre", 0))])
 				break
@@ -83,10 +91,12 @@ static func peupler(zone: Node3D, plan: ConfigFile) -> int:
 
 ## Une place libre dans la zone (repère de la zone, x et z), ou Vector2.INF s'il n'y en a plus.
 static func _trouver_une_place(hasard: RandomNumberGenerator, taille: Vector2, marge: float, ecart: float,
-		occupes: Array, chemin: Dictionary) -> Vector2:
+		occupes: Array, chemin: Dictionary, bande: float = 0.0) -> Vector2:
 	var demi := taille / 2.0 - Vector2.ONE * marge
 	for essai in ESSAIS_PAR_OBJET:
 		var point := Vector2(hasard.randf_range(-demi.x, demi.x), hasard.randf_range(-demi.y, demi.y))
+		if bande > 0.0 and absf(point.x) < demi.x - bande and absf(point.y) < demi.y - bande:
+			continue
 		if _sur_le_chemin(point, chemin, ecart / 2.0):
 			continue
 		var libre := true
@@ -104,6 +114,22 @@ static func _sur_le_chemin(point: Vector2, chemin: Dictionary, marge: float) -> 
 	if chemin.is_empty():
 		return false
 	return absf(point.x - float(chemin.get("x", 0.0))) < float(chemin.get("demi_largeur", 3.0)) + marge
+
+
+## Note la place prise par ce qui est déjà dans la zone : décors (« id_asset ») et groupes de monstres
+## (« monstre_id »), à n'importe quelle profondeur. Positions dans le repère de la zone.
+static func _noter_l_existant(zone: Node3D, noeud: Node, repere: Transform3D, occupes: Array) -> void:
+	for enfant in noeud.get_children():
+		var enfant_3d := enfant as Node3D
+		if enfant_3d == null:
+			continue
+		var position := repere * enfant_3d.transform
+		var au_sol := Vector2(position.origin.x, position.origin.z)
+		if enfant.get("monstre_id") != null:
+			occupes.append([au_sol, float(enfant.get("rayon")) + ECART_MONSTRES_EXISTANTS])
+		elif enfant.get("id_asset") != null and not str(enfant.get("id_asset")).is_empty():
+			occupes.append([au_sol, ECART_DECOR_EXISTANT])
+		_noter_l_existant(zone, enfant, position, occupes)
 
 
 static func _noeud(zone: Node3D, nom: String) -> Node3D:
