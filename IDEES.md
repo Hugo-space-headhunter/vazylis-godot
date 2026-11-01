@@ -38,6 +38,26 @@ Cette passe devra être sérieuse et prendre du temps : Hugo compte énormément
 - Lisière pourpre : Pomelin noirci sans épines ni yeux violets, Loup morbide sans côtes visibles ni pelage fumant, Villageois corrompu sans vêtements de paysan ni veines pourpres ; à embellir (modèles dédiés, ou tenue de paysan teintée sur le villageois).
 - Performances : les monstres faits avec le personnage de base (Gardien, Villageois) sont lourds (environ 14 000 triangles chacun) ; si l'iPhone ralentit dans la Lisière, leur retirer l'ombre ou utiliser un modèle plus léger.
 
+## Mission de modernisation (01/11/2026) : points à décider avec Hugo
+
+La mission demandait des choix qui contredisent le game design ; ils n'ont pas été appliqués :
+- **Raretés gris / vert / bleu / violet / orange** : le game design a six raretés (standard, argenté, doré, épique,
+  mythique, transcendant) et exclut volontairement le violet (couleur de la corruption de Trazake).
+- **Butin au sol à ramasser** : le game design prévoit « pas de ramassage » (l'objet file dans le sac).
+  À la place, les belles trouvailles sont mieux mises en valeur (onde au sol, annonce).
+- **Coiffures, barbes, pantalons comme emplacements** : absents des emplacements du game design
+  (casque, plastron, gants, bottes, ceinture, cape). Une personnalisation de l'apparence (coiffure, barbe)
+  à la création du personnage serait une nouvelle décision.
+- **Android** : Hugo avait choisi de rester sur iOS pour l'instant (chantier F reporté).
+
+Non fait faute de ressources ou par choix de Hugo :
+- **Sons** : aucun son dans le projet ; il faut un pack CC0 (par exemple Kenney), à télécharger avec l'accord de Hugo.
+- **Nouveaux décors naturels** (rochers, racines, champignons) : seuls quelques modèles du pack nature sont présents ;
+  récupérer le reste du pack Ultimate Stylized Nature. L'outil tools/peupler_zone.gd pourra alors les semer.
+- **Architecture des bâtiments** et **tenue des armes à deux mains** : reportées par Hugo (voir plus haut).
+- **Héros en sous-vêtements au départ** : le personnage de base n'a que l'arme ; une tenue de départ visible
+  changerait le game design (« ce qu'on loote est ce qu'on voit »).
+
 ## Technique
 
 - Relief (chantier B, 30/10/2026) : le sol de jeu reste plat (des bosses obligeraient à reposer décors et monstres) ; ajouter plus tard des collines en bordure de zone et des variations de hauteur décoratives, si le rendu le demande.

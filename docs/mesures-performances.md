@@ -69,3 +69,25 @@ portrait, captures du 30/10/2026 après le chantier A :
   C'est l'endroit le plus chargé, à surveiller quand on ajoutera des décors (chantier B).
 - Textures : affichage correct, rien de noir.
 - À vérifier : la chauffe et la batterie sur une longue session (30 minutes de farm).
+
+## Après la mission de modernisation (01/11/2026), mesures sur le PC
+
+Caméra rapprochée (4,6 m en paysage, 5,4 m en portrait), image par zone (exposition, contraste,
+saturation), étincelles et poussière en combat, thème d'interface. Mesures sur le PC uniquement
+(build/demo/mesure.gd, joueur au centre de chaque zone, après 7 secondes) : **pas encore mesuré sur l'iPhone**.
+
+| Endroit | Paysage : appels / triangles | Portrait : appels / triangles |
+| --- | --- | --- |
+| Vazylis | 193 / 185 000 | 329 / 228 000 |
+| Prés | 126 / 90 000 | 251 / 138 000 |
+| Bois des Lucioles | 141 / 183 000 | 228 / 211 000 |
+| Ruines du Guet | 114 / 110 000 | 153 / 126 000 |
+| Lisière pourpre | 134 / 142 000 | 142 / 149 000 |
+
+- La caméra plus proche voit moins loin : Vazylis passe de 380 appels (iPhone, portrait) à 329 sur le PC en portrait,
+  et de 227 à 193 en paysage.
+- Le temps d'image sur le PC (environ 7 ms) ne dit rien du téléphone : refaire le tableau ci-dessus sur l'iPhone
+  avec le panneau « Mesures » du menu Test.
+- Les étincelles (9 à 18 particules) et la poussière (14 particules) ne vivent qu'une fraction de seconde :
+  coût négligeable, à confirmer en AFK dans un groupe de monstres.
+
